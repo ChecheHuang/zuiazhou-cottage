@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #eda09d;
+  --color-brand-soft: #f5c9c7;
+  --color-brand-accent: #d7bba5;
+  --color-brand-ink: #555555;
+  --color-brand-cream: #f5eae2;
+  --color-brand-beige: #ffeee1;
+
+  --font-sans: var(--font-noto-tc), "Noto Sans TC", ui-sans-serif, system-ui,
+    sans-serif;
+  --font-display: var(--font-cormorant), "Cormorant Garamond", "Times New Roman",
+    serif;
+
+  --container-content: 1200px;
+}
+
+:root[data-theme="teal"] {
+  --color-brand: #5fb39a;
+  --color-brand-soft: #b6e3d2;
+  --color-brand-accent: #e2c3a0;
+  --color-brand-cream: #d8eee3;
+  --color-brand-beige: #f1f8f4;
+}
+
+html {
+  color-scheme: light;
+}
+
+html,
+body {
+  transition: color 0.4s ease;
+}
+
+body {
+  color: var(--color-brand-ink);
+  font-family: var(--font-sans);
+  background-color: var(--color-brand-beige);
+  background-image:
+    linear-gradient(
+      135deg,
+      var(--color-brand-beige) 0%,
+      var(--color-brand-cream) 30%,
+      color-mix(in srgb, var(--color-brand-soft) 55%, #ffffff) 65%,
+      #ffffff 100%
+    );
+  background-size: 220% 220%;
+  background-position: 0% 0%;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  animation: brand-breathe 20s ease-in-out infinite;
+}
+
+@keyframes brand-breathe {
+  0%,
+  100% {
+    background-position: 0% 0%;
+    background-size: 220% 220%;
+  }
+  50% {
+    background-position: 100% 100%;
+    background-size: 260% 260%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+    background-size: 200% 200%;
+    background-position: 30% 30%;
+  }
+}
+
+.party-swiper .swiper-pagination-bullet {
+  background-color: #ffffff;
+  opacity: 0.7;
+  width: 9px;
+  height: 9px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.party-swiper .swiper-pagination-bullet-active {
+  background-color: var(--color-brand);
+  width: 28px;
+  border-radius: 9999px;
+  opacity: 1;
+}
