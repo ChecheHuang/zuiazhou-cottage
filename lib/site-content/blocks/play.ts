@@ -28,6 +28,38 @@ export const playSeo = defineBlock({
   },
 });
 
+export const playFortune = defineBlock({
+  key: "play.fortune",
+  page: PAGE,
+  label: "抓周命盤",
+  description:
+    "抓周結果下方的「抓周命盤」：選填寶寶生日後，依生肖、星座與抓到的物品產生個性、天賦與祝福。{name} 會換成寶寶的小名。",
+  fields: [
+    { type: "text", key: "button", label: "開啟命盤的按鈕" },
+    { type: "text", key: "title", label: "命盤標題" },
+    { type: "text", key: "birthdayLabel", label: "生日輸入框標題" },
+    { type: "text", key: "generateButton", label: "產生命盤按鈕" },
+    { type: "text", key: "personality", label: "段落標題：個性" },
+    { type: "text", key: "talent", label: "段落標題：天賦" },
+    { type: "text", key: "blessing", label: "段落標題：祝福" },
+    { type: "text", key: "copyButton", label: "複製命盤按鈕" },
+    { type: "text", key: "copied", label: "已複製的提示" },
+    { type: "text", key: "disclaimer", label: "命盤下方的小字" },
+  ],
+  defaults: {
+    button: "🔮 看寶寶的抓周命盤",
+    title: "{name}的抓周命盤",
+    birthdayLabel: "寶寶生日（只在你的手機上計算生肖與星座）",
+    generateButton: "產生命盤",
+    personality: "🌟 個性",
+    talent: "🎁 天賦",
+    blessing: "💝 祝福",
+    copyButton: "複製命盤文字",
+    copied: "已複製！",
+    disclaimer: "命盤內容僅供娛樂，每個寶貝都是獨一無二的。",
+  },
+});
+
 export const playGame = defineBlock({
   key: "play.game",
   page: PAGE,
@@ -113,6 +145,12 @@ export const playGame = defineBlock({
     { type: "text", key: "ctaMoreButton", label: "了解方案按鈕" },
     {
       type: "text",
+      key: "inviteLink",
+      label: "邀請文案產生器連結",
+      hint: "留空就不顯示",
+    },
+    {
+      type: "text",
       key: "disclaimer",
       label: "頁面最下方的小字",
       hint: "留空就不顯示",
@@ -150,6 +188,7 @@ export const playGame = defineBlock({
     ctaText: "線上抓好玩，現場抓更難忘！\n帶寶貝來抓周小屋，留下一輩子的回憶。",
     ctaLineButton: "LINE 預約抓周",
     ctaMoreButton: "看抓周方案",
+    inviteLink: "✉️ 順便產生派對邀請文案 →",
     disclaimer: "結果為隨機產生，僅供娛樂。",
   },
 });

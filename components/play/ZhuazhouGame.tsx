@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useContent } from "@/components/SiteContentProvider";
+import { FortunePanel } from "@/components/play/FortunePanel";
 import { RoomScene } from "@/components/play/RoomScene";
 import {
   ROOM_THEME_IDS,
@@ -246,7 +247,16 @@ export const ZhuazhouGame = ({
               {copied ? c.copiedText : " "}
             </p>
 
+            {!phase.shared && (
+              <FortunePanel
+                key={`${phase.result.item.name}-${phase.result.babyName}`}
+                item={phase.result.item}
+                babyName={phase.result.babyName || c.defaultName}
+              />
+            )}
+
             <BookingCta
+              inviteLabel={c.inviteLink}
               text={c.ctaText}
               lineLabel={c.ctaLineButton}
               moreLabel={c.ctaMoreButton}
@@ -618,11 +628,13 @@ const ResultCard = ({
 );
 
 const BookingCta = ({
+  inviteLabel,
   text,
   lineLabel,
   moreLabel,
   lineUrl,
 }: {
+  inviteLabel: string;
   text: string;
   lineLabel: string;
   moreLabel: string;
@@ -646,5 +658,13 @@ const BookingCta = ({
         {moreLabel}
       </Link>
     </div>
+    {inviteLabel && (
+      <Link
+        href="/invite"
+        className="text-sm font-medium text-brand underline-offset-4 hover:underline"
+      >
+        {inviteLabel}
+      </Link>
+    )}
   </div>
 );

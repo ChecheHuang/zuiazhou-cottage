@@ -466,14 +466,22 @@ export const partyPlayEntry = defineBlock({
   key: "party.playEntry",
   page: PAGE,
   label: "模擬抓周入口",
-  description: "抓周物品區下方，連到線上模擬抓周小遊戲的按鈕。",
+  description:
+    "抓周物品區下方，連到線上模擬抓周小遊戲與派對邀請文案產生器的按鈕。",
   fields: [
     { type: "text", key: "text", label: "說明文字" },
     { type: "text", key: "button", label: "按鈕文字" },
+    {
+      type: "text",
+      key: "inviteButton",
+      label: "邀請文案產生器按鈕",
+      hint: "留空就不顯示",
+    },
   ],
   defaults: {
     text: "想先猜猜寶寶會抓到什麼嗎？",
     button: "線上模擬抓周 →",
+    inviteButton: "✉️ 產生派對邀請文案",
   },
 });
 

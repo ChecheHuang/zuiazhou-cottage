@@ -39,6 +39,7 @@ const NAV_ITEMS: NavItem[] = [
       { href: "/baby-party#birthday", labelKey: "navBabyPartyBirthday" },
       { href: "/baby-party#gender", labelKey: "navBabyPartyGender" },
       { href: "/play", labelKey: "navBabyPartyPlay" },
+      { href: "/invite", labelKey: "navBabyPartyInvite" },
     ],
   },
   {
@@ -314,7 +315,7 @@ export const SiteHeader = () => {
       <div
         className={cn(
           "overflow-hidden border-t border-brand-soft/40 bg-white/95 backdrop-blur-md transition-[max-height,opacity] duration-300 lg:hidden",
-          menuOpen ? "max-h-[720px] opacity-100" : "max-h-0 opacity-0",
+          menuOpen ? "max-h-[760px] opacity-100" : "max-h-0 opacity-0",
         )}
       >
         <nav className="flex flex-col px-6 py-4" aria-label="行動選單">

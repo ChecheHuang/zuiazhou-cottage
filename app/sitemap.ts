@@ -11,6 +11,7 @@ const PAGES: {
   { path: "/", priority: 1, changeFrequency: "weekly" },
   { path: "/baby-party", priority: 0.9, changeFrequency: "weekly" },
   { path: "/play", priority: 0.6, changeFrequency: "monthly" },
+  { path: "/invite", priority: 0.5, changeFrequency: "monthly" },
   { path: "/photo", priority: 0.7, changeFrequency: "monthly" },
   { path: "/food", priority: 0.7, changeFrequency: "monthly" },
   { path: "/products", priority: 0.8, changeFrequency: "weekly" },

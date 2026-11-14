@@ -1,9 +1,11 @@
 import * as about from "./blocks/about";
+import * as ai from "./blocks/ai";
 import * as babyParty from "./blocks/baby-party";
 import * as contact from "./blocks/contact";
 import * as faq from "./blocks/faq";
 import * as food from "./blocks/food";
 import * as home from "./blocks/home";
+import * as invite from "./blocks/invite";
 import * as layout from "./blocks/layout";
 import * as photo from "./blocks/photo";
 import * as play from "./blocks/play";
@@ -18,6 +20,8 @@ const modules = [
   home,
   babyParty,
   play,
+  invite,
+  ai,
   about,
   photo,
   food,
