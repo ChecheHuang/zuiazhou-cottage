@@ -2,6 +2,7 @@ import { partyPlans } from "@/lib/site-content/blocks/baby-party";
 import { layoutSeo } from "@/lib/site-content/blocks/layout";
 import { siteBusiness } from "@/lib/site-content/blocks/site";
 import { getContent } from "@/lib/site-content/server";
+import { parseOpeningHours } from "@/lib/business-hours";
 import { absoluteUrl } from "@/lib/seo";
 import { JsonLd } from "./JsonLd";
 
@@ -40,6 +41,16 @@ const priceRangeOf = (prices: string[]) => {
   return min === max ? fmt(min) : `${fmt(min)}–${fmt(max)}`;
 };
 
+const EVERY_DAY = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+
 export const LocalBusinessJsonLd = async () => {
   const [biz, seo, plans] = await Promise.all([
     getContent(siteBusiness),
@@ -68,20 +79,14 @@ export const LocalBusinessJsonLd = async () => {
   const priceRange = priceRangeOf(plans.plans.map((p) => p.price));
   if (priceRange) data.priceRange = priceRange;
 
-  if (/24\s*小時/.test(biz.hours)) {
+  // 解析不了的寫法（例如分平假日）就不輸出，避免給 Google 錯誤資訊；每天營業時間相同
+  const hours = parseOpeningHours(biz.hours);
+  if (hours) {
     data.openingHoursSpecification = {
       "@type": "OpeningHoursSpecification",
-      dayOfWeek: [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday",
-      ],
-      opens: "00:00",
-      closes: "23:59",
+      dayOfWeek: EVERY_DAY,
+      opens: hours.opens,
+      closes: hours.closes,
     };
   }
 
