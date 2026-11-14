@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata = {
-  title: "派對加購方案 - Happy 抓週小屋",
+  title: "派對加購方案 - Happy 抓周小屋",
   description:
     "攝影師加購、空飄氣球、客製立牌、寶寶猜測版等加購方案，自由搭配為派對升級。",
 };

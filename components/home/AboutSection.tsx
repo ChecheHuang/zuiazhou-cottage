@@ -64,7 +64,7 @@ export const AboutSection = () => (
           <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl shadow-[0_24px_56px_rgba(237,160,157,0.20)]">
             <Image
               src={ABOUT_PHOTO}
-              alt="抓週小屋的派對佈置與寶寶互動"
+              alt="抓周小屋的派對佈置與寶寶互動"
               fill
               sizes="(min-width: 768px) 58vw, 100vw"
               className="object-cover"
@@ -97,7 +97,7 @@ export const AboutSection = () => (
               id="about-heading"
               className="mt-3 text-2xl font-semibold leading-snug text-brand md:text-3xl"
             >
-              👶 Happy 抓週小屋｜寶寶的專屬派對
+              👶 Happy 抓周小屋｜寶寶的專屬派對
             </h3>
             <div className="mt-6 space-y-4 leading-loose text-brand-ink">
               <p>
@@ -107,7 +107,7 @@ export const AboutSection = () => (
                 我們用心打造專屬的抓週儀式，結合溫馨佈置、專業主持、活動流程引導與攝影紀錄，讓每一場派對都是獨一無二的回憶。
               </p>
               <p>
-                由主理人帶領的團隊，擅長帶動氣氛、與寶寶互動，現場笑聲不斷、回憶滿滿。歡迎一同走進 Happy 抓週小屋的故事。
+                由主理人帶領的團隊，擅長帶動氣氛、與寶寶互動，現場笑聲不斷、回憶滿滿。歡迎一同走進 Happy 抓周小屋的故事。
               </p>
             </div>
             <Link

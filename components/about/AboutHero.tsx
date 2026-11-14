@@ -52,7 +52,7 @@ export const AboutHero = () => (
       >
         <Image
           src={aboutHeroPhoto}
-          alt="Happy 抓週小屋現場照"
+          alt="Happy 抓周小屋現場照"
           fill
           priority
           sizes="(min-width: 768px) 480px, 90vw"
@@ -63,7 +63,7 @@ export const AboutHero = () => (
           <p className="text-xs uppercase tracking-[0.4em] text-white/80">
             Happy One House
           </p>
-          <p className="mt-1 text-base font-medium">桃園楊梅 · 抓週派對小屋</p>
+          <p className="mt-1 text-base font-medium">桃園平鎮 · 抓週派對小屋</p>
         </div>
       </motion.div>
     </div>

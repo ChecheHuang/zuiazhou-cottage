@@ -6,7 +6,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { businessInfo } from "@/data/home";
 
 export const metadata = {
-  title: "常見問題 - Happy 抓週小屋",
+  title: "常見問題 - Happy 抓周小屋",
   description:
     "抓周流程、人數限制、攝影、寵物入場、雙寶加價等常見問題與貼心提醒。",
 };

@@ -122,12 +122,12 @@ export const SiteHeader = () => {
       >
         <Link
           href="/"
-          aria-label="Happy 抓週小屋"
+          aria-label="Happy 抓周小屋"
           className="flex items-center gap-3"
         >
           <Image
             src="/photos/logo.png"
-            alt="Happy 抓週小屋"
+            alt="Happy 抓周小屋"
             width={64}
             height={64}
             priority
@@ -142,7 +142,7 @@ export const SiteHeader = () => {
               scrolled ? "text-base" : "text-lg md:text-xl",
             )}
           >
-            抓週小屋
+            抓周小屋
           </span>
         </Link>
 

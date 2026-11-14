@@ -62,7 +62,7 @@ export const SiteFooter = () => (
       <Link
         href="/"
         className="flex items-center gap-3"
-        aria-label="Happy 抓週小屋"
+        aria-label="Happy 抓周小屋"
       >
         <Image
           src="/photos/logo.png"
@@ -72,12 +72,12 @@ export const SiteFooter = () => (
           className="size-14"
         />
         <span className="text-lg font-semibold text-brand">
-          Happy 抓週小屋
+          Happy 抓周小屋
         </span>
       </Link>
 
       <p className="max-w-xl leading-loose text-brand-ink/80">
-        抓週派對 / 生日派對 / 性別揭曉派對｜桃園楊梅包場
+        抓週派對 / 生日派對 / 性別揭曉派對｜桃園平鎮包場
         <br />
         從場佈、流程、主持到攝影，一站式為寶貝留下最美的紀念。
       </p>
@@ -102,8 +102,8 @@ export const SiteFooter = () => (
       </ul>
 
       <div className="mt-4 w-full border-t border-brand-soft/40 pt-6 text-xs text-brand-ink/60">
-        © {new Date().getFullYear()} Happy 抓週小屋. Made with warmth in
-        桃園楊梅.
+        © {new Date().getFullYear()} Happy 抓周小屋. Made with warmth in
+        桃園平鎮.
       </div>
     </div>
   </footer>

@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { businessInfo } from "@/data/home";
+import { businessInfo, mapEmbedUrl } from "@/data/home";
 import { SectionHeading } from "@/components/SectionHeading";
 
 const InfoLine = ({
@@ -34,7 +34,7 @@ export const InformationSection = () => (
     className="bg-white/65 py-24 md:py-32"
   >
     <div className="mx-auto max-w-content px-6">
-      <SectionHeading watermark="Information" title="交通資訊" />
+      <SectionHeading watermark="Information" title="位置資訊" />
 
       <motion.div
         initial={{ opacity: 0, y: 24 }}
@@ -60,8 +60,8 @@ export const InformationSection = () => (
           className="relative overflow-hidden rounded-3xl shadow-[0_18px_40px_rgba(237,160,157,0.16)]"
         >
           <iframe
-            title="抓週小屋位置地圖"
-            src="https://www.google.com/maps?q=%E6%A1%83%E5%9C%92%E5%B8%82%E6%A5%8A%E6%A2%85%E5%8D%80%E5%B9%BC%E7%8D%85%E8%B7%AF%E4%BA%8C%E6%AE%B5218%E5%B7%B7360%E5%BC%8439%E8%99%9F&hl=zh-TW&z=16&output=embed"
+            title="抓周小屋位置地圖"
+            src={mapEmbedUrl}
             width="100%"
             height="100%"
             style={{ border: 0, minHeight: 380 }}
@@ -90,17 +90,6 @@ export const InformationSection = () => (
             label="Instagram"
             value={businessInfo.instagram}
           />
-
-          <div className="rounded-2xl border border-brand-soft/40 bg-white/70 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-accent">
-              Access
-            </p>
-            <ul className="mt-2 space-y-1 text-sm text-brand-ink">
-              {businessInfo.access.map((line) => (
-                <li key={line}>{line}</li>
-              ))}
-            </ul>
-          </div>
 
           <div className="mt-2 flex flex-col gap-3 sm:flex-row">
             <a

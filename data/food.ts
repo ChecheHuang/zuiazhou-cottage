@@ -52,7 +52,7 @@ export const foodPlans: FoodPlan[] = [
   {
     kind: "combo",
     code: "A",
-    title: "Happy 抓週小屋 專屬組合菜色",
+    title: "Happy 抓周小屋 專屬組合菜色",
     subtitle: "為抓周設計的喜氣套餐",
     desc: "我們特別為抓周活動設計的專屬餐點組合，菜色搭配完整又喜氣，適合想一次搞定用餐＋活動的爸媽們。",
     dishes: [

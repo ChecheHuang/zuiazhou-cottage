@@ -1,7 +1,7 @@
-# Happy 抓週小屋 — 專案規格
+# Happy 抓周小屋 — 專案規格
 
 > **參考來源**：`https://beberudostudio.com/`（首頁互動）+ `https://beberudostudio.com/baby-party/`（寶寶派對頁）
-> **品牌**：Happy 抓週小屋（桃園市楊梅區幼獅路二段 218 巷 360 弄 43 號 / 0981 987 355 / IG @happyonehouse）
+> **品牌**：Happy 抓周小屋（桃園市平鎮區延平路二段 146 巷 4 弄 30 號 / 0981 987 355 / IG @happyonehouse）
 > **技術棧**：Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4 + framer-motion + Swiper + yet-another-react-lightbox
 > **用途**：給 AI（Claude Code / Cursor）讀取後接續開發、調整或復刻
 
@@ -90,7 +90,7 @@ app/
 | `ReviewSection` | 3 張評論卡片（avatar + 5 星 + 引言）+ 8 張小圖 grid，stagger 進場、hover 縮放 |
 | `HomeGallery` | 8 張預覽 grid（2/3/4 欄）、點擊開 Lightbox、CTA 連到 `/baby-party#gallery` |
 | `BookingSteps` | 4 步驟卡片，stagger 0.12s，每張頂部圓形 emoji 徽章；底部 LINE CTA + 電話 |
-| `InformationSection` | Google Maps iframe（楊梅實際座標）+ 右側資訊卡（地址/時間/電話/IG/Access）+ 雙 CTA |
+| `InformationSection` | Google Maps iframe（依 businessInfo.address 產生）+ 右側資訊卡（地址/時間/電話/IG）+ 雙 CTA |
 | `BlogSection` | 3 張部落格卡片，hover 上浮 + 圖片放大 + 箭頭間距變化 |
 
 ### 4.3 寶寶派對頁專用（`components/`）
@@ -160,7 +160,7 @@ app/
 ## 8. 照片資源
 
 - 本地照片：`public/photos/p01.jpg` ~ `p57.jpg`（57 張實拍）
-- Logo：`public/photos/logo.png`（圓形「Happy 抓週小屋」）
+- Logo：`public/photos/logo.png`（圓形「Happy 抓周小屋」）
 - Favicon：`app/favicon.ico`（複製自 `public/photos/favicon.ico`）
 - 抓週物品（31 項）：仍使用 `picsum.photos` 占位，待後續補實拍
 
@@ -221,4 +221,4 @@ app/
 | 燈箱 | Elementor 內建 | yet-another-react-lightbox |
 | 字體 | Noto Sans TC + ADLaM Display | Noto Sans TC + Cormorant Garamond |
 | 主色 | `#EDA09D` | 同 |
-| 品牌 | 貝貝魯多（台中北屯） | Happy 抓週小屋（桃園楊梅） |
+| 品牌 | 貝貝魯多（台中北屯） | Happy 抓周小屋（桃園平鎮） |

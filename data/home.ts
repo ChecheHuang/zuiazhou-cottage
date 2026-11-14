@@ -74,7 +74,7 @@ export interface BlogPost {
 export const blogPosts: BlogPost[] = [
   {
     slug: "venue-guide",
-    title: "桃園楊梅抓週場地全攻略！5 大類型場地＋費用比較，爸媽不再選擇困難！",
+    title: "桃園平鎮抓週場地全攻略！5 大類型場地＋費用比較，爸媽不再選擇困難！",
     excerpt:
       "從專業派對小屋到自家客廳，五種場地各有什麼優缺點？費用、空間、便利性一次比較給你看。",
     category: "場地推薦",
@@ -134,21 +134,20 @@ export const reviews: Review[] = [
 ];
 
 export const businessInfo = {
-  brand: "Happy 抓週小屋",
-  subtitle: "桃園楊梅 · 抓週派對小屋",
+  brand: "Happy 抓周小屋",
+  subtitle: "桃園平鎮 · 抓週派對小屋",
   tagline: "抓週 × 派對 × 慶生 × 性別趴 × 婚宴 × 求婚",
-  address: "桃園市楊梅區幼獅路二段 218 巷 360 弄 43 號",
-  hours: "週一至週日 07:30 – 21:00（全日預約制）",
+  address: "桃園市平鎮區延平路二段 146 巷 4 弄 30 號",
+  hours: "24 小時營業",
   phone: "0981 987 355",
   instagram: "@happyonehouse",
-  access: [
-    "🚗 楊梅交流道 10 分鐘",
-    "🚌 楊梅火車站 8 分鐘",
-    "🅿 免費停車 20 格",
-  ],
   socials: {
     instagram: "https://www.instagram.com/happyonehouse",
-    facebook: "https://www.facebook.com/",
+    facebook: "https://www.facebook.com/happyonehouse913/",
     line: "https://line.me/",
   },
 };
+
+export const mapEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(
+  businessInfo.address.replace(/\s/g, ""),
+)}&hl=zh-TW&z=16&output=embed`;

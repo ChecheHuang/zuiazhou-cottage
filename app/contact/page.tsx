@@ -3,11 +3,12 @@ import { ContactInfo } from "@/components/contact/ContactInfo";
 import { SectionHeading } from "@/components/SectionHeading";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { businessInfo, mapEmbedUrl } from "@/data/home";
 
 export const metadata = {
-  title: "聯絡我們 - Happy 抓週小屋",
+  title: "聯絡我們 - Happy 抓周小屋",
   description:
-    "桃園楊梅 Happy 抓週小屋聯絡資訊、地圖與線上預約表單，歡迎留言或加 LINE 諮詢。",
+    "桃園平鎮 Happy 抓周小屋聯絡資訊、地圖與線上預約表單，歡迎留言或加 LINE 諮詢。",
 };
 
 export default function ContactPage() {
@@ -44,15 +45,15 @@ export default function ContactPage() {
                 Find us
               </p>
               <h2 className="mt-3 text-2xl font-semibold text-brand md:text-3xl">
-                位置與交通
+                位置資訊
               </h2>
               <p className="mt-4 leading-loose text-brand-ink/80">
-                桃園楊梅交流道下車約 10 分鐘車程，鄰近楊梅火車站，現場提供 20 格免費停車位。
+                地址：{businessInfo.address}
               </p>
               <div className="mt-8 overflow-hidden rounded-3xl shadow-[0_18px_40px_rgba(237,160,157,0.16)]">
                 <iframe
-                  title="Happy 抓週小屋位置地圖"
-                  src="https://www.google.com/maps?q=%E6%A1%83%E5%9C%92%E5%B8%82%E6%A5%8A%E6%A2%85%E5%8D%80%E5%B9%BC%E7%8D%85%E8%B7%AF%E4%BA%8C%E6%AE%B5218%E5%B7%B7360%E5%BC%8439%E8%99%9F&hl=zh-TW&z=16&output=embed"
+                  title="Happy 抓周小屋位置地圖"
+                  src={mapEmbedUrl}
                   width="100%"
                   height={420}
                   style={{ border: 0 }}

@@ -12,9 +12,9 @@ import { ZhuazhouGrid } from "@/components/ZhuazhouGrid";
 import { careerItems, traditionalItems } from "@/data/zhuazhou-items";
 
 export const metadata = {
-  title: "寶寶派對 - Happy 抓週小屋",
+  title: "寶寶派對 - Happy 抓周小屋",
   description:
-    "桃園楊梅包場寶寶抓週派對、兒童生日派對、性別揭曉派對推薦，從場佈、流程到攝影一站式包辦。",
+    "桃園平鎮包場寶寶抓週派對、兒童生日派對、性別揭曉派對推薦，從場佈、流程到攝影一站式包辦。",
 };
 
 export default function BabyPartyPage() {

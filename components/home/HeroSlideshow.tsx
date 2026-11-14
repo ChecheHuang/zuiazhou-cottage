@@ -57,7 +57,7 @@ export const HeroSlideshow = () => {
             最珍貴的派對時光
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-base leading-loose text-white/90 md:text-lg">
-            桃園楊梅 ｜ 抓週派對 × 兒童生日派對 × 性別揭曉派對
+            桃園平鎮 ｜ 抓週派對 × 兒童生日派對 × 性別揭曉派對
             <br />
             場佈、流程、主持、攝影一站式包辦
           </p>
@@ -72,7 +72,7 @@ export const HeroSlideshow = () => {
               href="#about"
               className="rounded-full border border-white/70 bg-white/10 px-8 py-3 text-sm font-medium text-white backdrop-blur-md transition-all duration-300 hover:scale-105 hover:bg-white/20"
             >
-              認識 Happy 抓週小屋
+              認識 Happy 抓周小屋
             </a>
           </div>
         </motion.div>

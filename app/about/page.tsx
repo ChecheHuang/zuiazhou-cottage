@@ -9,9 +9,9 @@ import {
 } from "@/data/about";
 
 export const metadata = {
-  title: "關於我們 - Happy 抓週小屋",
+  title: "關於我們 - Happy 抓周小屋",
   description:
-    "Happy 抓週小屋主理人團隊的故事、合作餐點夥伴與場地環境照片。",
+    "Happy 抓周小屋主理人團隊的故事、合作餐點夥伴與場地環境照片。",
 };
 
 export default function AboutPage() {
@@ -30,7 +30,7 @@ export default function AboutPage() {
         <AboutPhotoStrip
           watermark="Environment"
           title="環境照片"
-          description="桃園楊梅 15 坪派對小屋，搭配溫柔色系的派對佈景。"
+          description="桃園平鎮 15 坪派對小屋，搭配溫柔色系的派對佈景。"
           images={aboutEnvironmentGallery}
           bg="beige"
         />
