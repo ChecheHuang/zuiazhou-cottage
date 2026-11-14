@@ -2,12 +2,12 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { upload } from "@vercel/blob/client";
 import {
   resetSlotImages,
   saveSlotImages,
   type SaveResult,
 } from "@/app/admin/(panel)/actions";
+import { IMAGE_ACCEPT, uploadImage } from "@/lib/admin/upload-client";
 import { cn } from "@/lib/cn";
 
 interface SlotEditorProps {
@@ -25,27 +25,6 @@ type Status =
   | { kind: "busy"; message: string }
   | { kind: "saved" }
   | { kind: "error"; message: string };
-
-const ACCEPT = "image/jpeg,image/png,image/webp,image/avif";
-const MULTIPART_THRESHOLD = 8 * 1024 * 1024;
-
-const extOf = (file: File) => {
-  const fromType = file.type.split("/")[1];
-  if (fromType) return fromType === "jpeg" ? "jpg" : fromType;
-  return file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-};
-
-// Blob 路徑只用英數字，避免中文檔名造成網址問題
-const blobPath = (slotKey: string, file: File) => {
-  const base =
-    file.name
-      .replace(/\.[^.]+$/, "")
-      .normalize("NFKD")
-      .replace(/[^a-zA-Z0-9-_]+/g, "-")
-      .replace(/^-+|-+$/g, "")
-      .slice(0, 40) || "photo";
-  return `site-images/${slotKey}/${base}.${extOf(file)}`;
-};
 
 const sameList = (a: string[], b: string[]) =>
   a.length === b.length && a.every((v, i) => v === b[i]);
@@ -100,12 +79,7 @@ export const SlotEditor = ({
           kind: "busy",
           message: `上傳中 ${i + 1}/${files.length}…`,
         });
-        const blob = await upload(blobPath(slotKey, file), file, {
-          access: "public",
-          handleUploadUrl: "/api/admin/upload",
-          multipart: file.size > MULTIPART_THRESHOLD,
-        });
-        urls.push(blob.url);
+        urls.push(await uploadImage(slotKey, file));
       }
       await save(multiple ? [...images, ...urls] : [urls[0]]);
     } catch (error) {
@@ -183,7 +157,7 @@ export const SlotEditor = ({
           <input
             ref={fileInput}
             type="file"
-            accept={ACCEPT}
+            accept={IMAGE_ACCEPT}
             multiple={multiple}
             hidden
             onChange={(e) => void onFiles(e.target.files)}

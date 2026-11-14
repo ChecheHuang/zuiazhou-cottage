@@ -6,21 +6,24 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import Lightbox from "yet-another-react-lightbox";
 import { useSlotImages } from "@/components/SiteImagesProvider";
+import { useContent } from "@/components/SiteContentProvider";
+import { photoPortfolio as photoPortfolioBlock } from "@/lib/site-content/blocks/photo";
 import { SectionHeading } from "@/components/SectionHeading";
 
 import "yet-another-react-lightbox/styles.css";
 
 export const PhotoPortfolio = () => {
   const photoPortfolio = useSlotImages("photo.portfolio");
+  const c = useContent(photoPortfolioBlock);
   const [index, setIndex] = useState(-1);
 
   return (
     <section className="bg-white/65 py-20 md:py-28">
       <div className="mx-auto max-w-content px-6">
         <SectionHeading
-          watermark="Portfolio"
-          title="攝影作品"
-          description="長期合作的攝影師團隊，擅長捕捉寶寶最真實的表情與互動。"
+          watermark={c.watermark}
+          title={c.title}
+          description={c.description}
         />
 
         <motion.ul
@@ -65,7 +68,7 @@ export const PhotoPortfolio = () => {
             href="/baby-party#gallery"
             className="inline-flex items-center gap-2 rounded-full border border-brand/30 bg-white px-7 py-3 text-sm font-medium text-brand transition-all duration-300 hover:scale-105 hover:bg-brand-soft/30"
           >
-            我要看更多照片
+            {c.moreButton}
             <span aria-hidden>→</span>
           </Link>
         </div>

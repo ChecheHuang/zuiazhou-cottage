@@ -2,7 +2,12 @@
 
 import { motion } from "framer-motion";
 import { cn } from "@/lib/cn";
-import type { ZhuazhouItem } from "@/data/zhuazhou-items";
+
+interface ZhuazhouItem {
+  emoji: string;
+  name: string;
+  meaning: string;
+}
 
 interface ZhuazhouGridProps {
   eyebrow: string;
@@ -56,9 +61,9 @@ export const ZhuazhouGrid = ({
             : "grid-cols-3 md:grid-cols-5",
         )}
       >
-        {items.map((item) => (
+        {items.map((item, i) => (
           <motion.li
-            key={item.name}
+            key={`${i}-${item.name}`}
             variants={{
               hidden: { opacity: 0, y: 16 },
               show: { opacity: 1, y: 0 },

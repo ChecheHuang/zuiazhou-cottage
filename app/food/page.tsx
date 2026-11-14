@@ -1,12 +1,14 @@
+import type { Metadata } from "next";
 import { FoodHero } from "@/components/food/FoodHero";
 import { FoodPlansSection } from "@/components/food/FoodPlansSection";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { foodSeo } from "@/lib/site-content/blocks/food";
+import { getContent } from "@/lib/site-content/server";
 
-export const metadata = {
-  title: "餐食加購 - Happy 抓周小屋",
-  description:
-    "Happy 抓周小屋專屬組合菜色、單點、合菜桌菜、下午茶點心，儀式結束後直接入座。",
+export const generateMetadata = async (): Promise<Metadata> => {
+  const seo = await getContent(foodSeo);
+  return { title: seo.title, description: seo.description };
 };
 
 export default function FoodPage() {

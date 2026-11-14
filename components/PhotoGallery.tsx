@@ -5,12 +5,15 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import Lightbox from "yet-another-react-lightbox";
 import { useSlotImages } from "@/components/SiteImagesProvider";
+import { useContent } from "@/components/SiteContentProvider";
+import { partyGallery } from "@/lib/site-content/blocks/baby-party";
 
 import "yet-another-react-lightbox/styles.css";
 
 export const PhotoGallery = () => {
   const [index, setIndex] = useState(-1);
   const photos = useSlotImages("gallery");
+  const c = useContent(partyGallery);
 
   return (
     <section
@@ -27,16 +30,16 @@ export const PhotoGallery = () => {
           className="mb-12 text-center"
         >
           <p className="text-sm uppercase tracking-[0.4em] text-brand-accent">
-            Photo Gallery
+            {c.eyebrow}
           </p>
           <h2
             id="gallery-heading"
             className="mt-3 text-3xl font-semibold tracking-wide text-brand md:text-4xl"
           >
-            攝影作品
+            {c.title}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl leading-loose text-brand-ink/80">
-            從佈置到寶寶笑容，每一刻都值得珍藏。
+          <p className="mx-auto mt-4 max-w-2xl whitespace-pre-line leading-loose text-brand-ink/80">
+            {c.intro}
           </p>
         </motion.div>
 

@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { reviews } from "@/data/home";
 import { useSlotImages } from "@/components/SiteImagesProvider";
 import { SectionHeading } from "@/components/SectionHeading";
+import { useContent } from "@/components/SiteContentProvider";
+import { homeReviews } from "@/lib/site-content/blocks/home";
 
 const Star = () => (
   <svg aria-hidden viewBox="0 0 24 24" fill="currentColor" className="size-4">
@@ -12,8 +13,13 @@ const Star = () => (
   </svg>
 );
 
+// 後台填的是文字，轉成 0–5 顆星
+const starCount = (rating: string) =>
+  Math.min(5, Math.max(0, Number.parseInt(rating, 10) || 0));
+
 export const ReviewSection = () => {
   const photos = useSlotImages("home.reviews");
+  const c = useContent(homeReviews);
   return (
     <section
       id="reviews"
@@ -22,9 +28,9 @@ export const ReviewSection = () => {
     >
       <div className="mx-auto max-w-content px-6">
         <SectionHeading
-          watermark="Testimonial"
-          title="好評分享"
-          description="爸爸媽媽們的真實回饋，是我們繼續用心做下去的最大動力。"
+          watermark={c.watermark}
+          title={c.title}
+          description={c.description}
         />
 
         <motion.ul
@@ -37,9 +43,9 @@ export const ReviewSection = () => {
           }}
           className="mt-10 grid items-stretch gap-8 md:mt-12 md:grid-cols-3"
         >
-          {reviews.map((r) => (
+          {c.items.map((r, idx) => (
             <motion.li
-              key={r.name}
+              key={`${idx}-${r.name}`}
               variants={{
                 hidden: { opacity: 0, y: 28 },
                 show: { opacity: 1, y: 0 },
@@ -60,11 +66,11 @@ export const ReviewSection = () => {
                 </div>
               </div>
               <div className="mt-4 flex gap-0.5 text-brand">
-                {Array.from({ length: r.rating }).map((_, i) => (
+                {Array.from({ length: starCount(r.rating) }).map((_, i) => (
                   <Star key={i} />
                 ))}
               </div>
-              <p className="mt-4 flex-1 leading-relaxed text-brand-ink">
+              <p className="mt-4 flex-1 whitespace-pre-line leading-relaxed text-brand-ink">
                 「{r.body}」
               </p>
             </motion.li>

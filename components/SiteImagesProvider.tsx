@@ -30,9 +30,3 @@ export const useSlotImages = (key: string): string[] =>
   resolve(useContext(SiteImagesContext), key);
 
 export const useSlotImage = (key: string): string => useSlotImages(key)[0];
-
-// 在 .map() 裡依序取不同位置的圖片時使用（hook 不能在迴圈裡呼叫）
-export const useSlotResolver = () => {
-  const overrides = useContext(SiteImagesContext);
-  return (key: string) => resolve(overrides, key);
-};

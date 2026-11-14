@@ -1,15 +1,14 @@
 "use client";
 
-import { useSlotResolver } from "@/components/SiteImagesProvider";
-
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { services } from "@/data/home";
+import { useContent } from "@/components/SiteContentProvider";
+import { homeService } from "@/lib/site-content/blocks/home";
 import { SectionHeading } from "@/components/SectionHeading";
 
 export const ServiceSection = () => {
-  const images = useSlotResolver();
+  const c = useContent(homeService);
   return (
     <section
       id="service"
@@ -18,9 +17,9 @@ export const ServiceSection = () => {
     >
       <div className="mx-auto max-w-content px-6">
         <SectionHeading
-          watermark="Service"
-          title="服務項目"
-          description="從佈置到主持，每一場派對都為您量身打造。"
+          watermark={c.watermark}
+          title={c.title}
+          description={c.description}
         />
 
         <motion.ul
@@ -33,9 +32,9 @@ export const ServiceSection = () => {
           }}
           className="mt-16 grid gap-8 md:grid-cols-3 md:gap-10"
         >
-          {services.map((s, i) => (
+          {c.items.map((s, i) => (
             <motion.li
-              key={s.title}
+              key={`${i}-${s.title}`}
               variants={{
                 hidden: { opacity: 0, y: 32 },
                 show: { opacity: 1, y: 0 },
@@ -43,12 +42,12 @@ export const ServiceSection = () => {
               transition={{ duration: 0.7, ease: "easeOut" }}
             >
               <Link
-                href={s.href}
+                href="/baby-party"
                 className="group block overflow-hidden rounded-3xl bg-white shadow-[0_8px_32px_rgba(237,160,157,0.10)] ring-1 ring-brand-soft/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_24px_48px_rgba(237,160,157,0.20)]"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Image
-                    src={images(`home.service.${i}`)[0]}
+                    src={s.image}
                     alt={s.title}
                     fill
                     sizes="(min-width: 768px) 33vw, 100vw"
@@ -60,11 +59,11 @@ export const ServiceSection = () => {
                   <h3 className="text-xl font-semibold text-brand md:text-2xl">
                     {s.title}
                   </h3>
-                  <p className="mt-3 leading-relaxed text-brand-ink/85">
+                  <p className="mt-3 whitespace-pre-line leading-relaxed text-brand-ink/85">
                     {s.desc}
                   </p>
                   <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-brand-accent transition-all duration-300 group-hover:gap-3">
-                    查看詳情
+                    {c.cardLink}
                     <span
                       aria-hidden
                       className="transition-transform duration-300 group-hover:translate-x-1"
@@ -89,7 +88,7 @@ export const ServiceSection = () => {
             href="/baby-party"
             className="inline-flex items-center gap-2 rounded-full bg-brand px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-all duration-300 hover:scale-105 hover:bg-brand/90"
           >
-            查看所有服務
+            {c.button}
             <span aria-hidden>→</span>
           </Link>
         </motion.div>

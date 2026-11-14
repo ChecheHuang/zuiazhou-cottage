@@ -5,7 +5,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/cn";
-import { useSlotImages } from "@/components/SiteImagesProvider";
 
 import "swiper/css";
 import "swiper/css/pagination";
@@ -14,7 +13,7 @@ interface PartyPlanProps {
   title: string;
   price?: string;
   features: string[];
-  slot: string;
+  images: string[];
   reverse?: boolean;
   autoplayDelay?: number;
 }
@@ -23,12 +22,12 @@ export const PartyPlan = ({
   title,
   price,
   features,
-  slot,
+  images: srcs,
   reverse,
   autoplayDelay = 3800,
 }: PartyPlanProps) => {
   const name = title.replace(/^[^\p{L}\p{N}]+/u, "").trim();
-  const images = useSlotImages(slot).map((src, i) => ({
+  const images = srcs.map((src, i) => ({
     src,
     alt: `${name}佈置 ${i + 1}`,
   }));
@@ -62,7 +61,7 @@ export const PartyPlan = ({
             className="party-swiper aspect-[4/3]"
           >
             {images.map((img, i) => (
-              <SwiperSlide key={img.src}>
+              <SwiperSlide key={`${i}-${img.src}`}>
                 <div className="relative size-full">
                   <Image
                     src={img.src}
@@ -94,8 +93,8 @@ export const PartyPlan = ({
           )}
           <div className="mb-6" />
           <ul className="space-y-3 text-brand-ink">
-            {features.map((feature) => (
-              <li key={feature} className="flex items-center gap-3">
+            {features.map((feature, i) => (
+              <li key={`${i}-${feature}`} className="flex items-center gap-3">
                 <span className="mt-1 inline-block size-2 shrink-0 rounded-full bg-brand-soft" />
                 <span className="leading-relaxed">{feature}</span>
               </li>

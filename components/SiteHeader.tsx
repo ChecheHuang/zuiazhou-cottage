@@ -4,44 +4,50 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useContent } from "@/components/SiteContentProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { layoutHeader } from "@/lib/site-content/blocks/layout";
+import { siteBusiness } from "@/lib/site-content/blocks/site";
 import { cn } from "@/lib/cn";
+
+type LabelKey = keyof typeof layoutHeader.defaults;
 
 interface SubLink {
   href: string;
-  label: string;
+  labelKey: LabelKey;
 }
 
 interface NavItem {
   href: string;
-  label: string;
+  labelKey: LabelKey;
   children?: SubLink[];
 }
 
+// 連結固定，顯示文字從後台「頁首頁尾 › 頁首導覽列」讀取
 const NAV_ITEMS: NavItem[] = [
-  { href: "/", label: "首頁" },
-  { href: "/about", label: "關於我們" },
+  { href: "/", labelKey: "navHome" },
+  { href: "/about", labelKey: "navAbout" },
   {
     href: "/baby-party",
-    label: "寶寶派對",
+    labelKey: "navBabyParty",
     children: [
-      { href: "/baby-party", label: "抓周派對" },
-      { href: "/baby-party#party", label: "收涎派對" },
-      { href: "/baby-party#birthday", label: "生日派對" },
-      { href: "/baby-party#gender", label: "性別揭曉派對" },
+      { href: "/baby-party", labelKey: "navBabyPartyZhuazhou" },
+      { href: "/baby-party#party", labelKey: "navBabyPartySaliva" },
+      { href: "/baby-party#birthday", labelKey: "navBabyPartyBirthday" },
+      { href: "/baby-party#gender", labelKey: "navBabyPartyGender" },
     ],
   },
   {
     href: "/photo",
-    label: "派對加購方案",
+    labelKey: "navPhoto",
     children: [
-      { href: "/photo", label: "攝影師加購" },
-      { href: "/photo#other", label: "其他加購" },
+      { href: "/photo", labelKey: "navPhotoPhotographer" },
+      { href: "/photo#other", labelKey: "navPhotoOther" },
     ],
   },
-  { href: "/food", label: "餐食加購" },
-  { href: "/faq", label: "常見問題" },
-  { href: "/contact", label: "聯絡我們" },
+  { href: "/food", labelKey: "navFood" },
+  { href: "/faq", labelKey: "navFaq" },
+  { href: "/contact", labelKey: "navContact" },
 ];
 
 const isItemActive = (item: NavItem, pathname: string) => {
@@ -66,6 +72,8 @@ const ChevronIcon = () => (
 
 export const SiteHeader = () => {
   const pathname = usePathname();
+  const c = useContent(layoutHeader);
+  const biz = useContent(siteBusiness);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -122,12 +130,12 @@ export const SiteHeader = () => {
       >
         <Link
           href="/"
-          aria-label="Happy 抓周小屋"
+          aria-label={biz.brand}
           className="flex items-center gap-3"
         >
           <Image
             src="/photos/logo.png"
-            alt="Happy 抓周小屋"
+            alt={biz.brand}
             width={64}
             height={64}
             priority
@@ -142,14 +150,11 @@ export const SiteHeader = () => {
               scrolled ? "text-base" : "text-lg md:text-xl",
             )}
           >
-            抓周小屋
+            {c.logoText}
           </span>
         </Link>
 
-        <nav
-          className="hidden items-center gap-7 lg:flex"
-          aria-label="主選單"
-        >
+        <nav className="hidden items-center gap-7 lg:flex" aria-label="主選單">
           {NAV_ITEMS.map((item) => {
             const active = isItemActive(item, pathname);
             const hasChildren = !!item.children?.length;
@@ -174,7 +179,7 @@ export const SiteHeader = () => {
                         : "font-medium text-brand-ink hover:text-brand",
                     )}
                   >
-                    {item.label}
+                    {c[item.labelKey]}
                     <ChevronIcon />
                     <span
                       aria-hidden
@@ -206,7 +211,7 @@ export const SiteHeader = () => {
                           role="menuitem"
                           className="block rounded-xl px-4 py-2.5 text-sm text-brand-ink transition-colors duration-200 hover:bg-brand-soft/30 hover:text-brand"
                         >
-                          {sub.label}
+                          {c[sub.labelKey]}
                         </Link>
                       ))}
                     </div>
@@ -227,7 +232,7 @@ export const SiteHeader = () => {
                     : "font-medium text-brand-ink hover:text-brand",
                 )}
               >
-                {item.label}
+                {c[item.labelKey]}
                 <span
                   aria-hidden
                   className={cn(
@@ -282,9 +287,7 @@ export const SiteHeader = () => {
       <div
         className={cn(
           "overflow-hidden border-t border-brand-soft/40 bg-white/95 backdrop-blur-md transition-[max-height,opacity] duration-300 lg:hidden",
-          menuOpen
-            ? "max-h-[640px] opacity-100"
-            : "max-h-0 opacity-0",
+          menuOpen ? "max-h-[640px] opacity-100" : "max-h-0 opacity-0",
         )}
       >
         <nav className="flex flex-col px-6 py-4" aria-label="行動選單">
@@ -312,7 +315,7 @@ export const SiteHeader = () => {
                       active ? "w-4 opacity-100" : "w-0 opacity-0",
                     )}
                   />
-                  {item.label}
+                  {c[item.labelKey]}
                 </Link>
                 {item.children && (
                   <ul className="mb-2 ml-7 flex flex-col gap-1">
@@ -322,7 +325,7 @@ export const SiteHeader = () => {
                           href={sub.href}
                           className="block py-1.5 text-sm text-brand-ink/80 transition-colors hover:text-brand"
                         >
-                          · {sub.label}
+                          · {c[sub.labelKey]}
                         </Link>
                       </li>
                     ))}

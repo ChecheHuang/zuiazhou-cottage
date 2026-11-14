@@ -1,14 +1,14 @@
 "use client";
 
-import { useSlotResolver } from "@/components/SiteImagesProvider";
+import { useContent } from "@/components/SiteContentProvider";
 
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/cn";
-import { ritualSteps } from "@/data/ritual-steps";
+import { partyRitual } from "@/lib/site-content/blocks/baby-party";
 
 export const RitualTimeline = () => {
-  const images = useSlotResolver();
+  const c = useContent(partyRitual);
   return (
     <section
       id="timeline"
@@ -24,16 +24,16 @@ export const RitualTimeline = () => {
           className="mb-16 text-center"
         >
           <p className="text-sm uppercase tracking-[0.4em] text-brand-accent">
-            Ritual Flow
+            {c.eyebrow}
           </p>
           <h2
             id="timeline-heading"
             className="mt-3 text-3xl font-semibold tracking-wide text-brand md:text-4xl"
           >
-            抓周派對流程
+            {c.title}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl leading-loose text-brand-ink/80">
-            十個步驟、一段珍貴回憶，從穿虎衣到合影留念，由主持人陪伴全家完整走完。
+          <p className="mx-auto mt-4 max-w-2xl whitespace-pre-line leading-loose text-brand-ink/80">
+            {c.intro}
           </p>
         </motion.div>
 
@@ -42,11 +42,12 @@ export const RitualTimeline = () => {
             aria-hidden
             className="absolute left-2 top-2 bottom-2 w-0.5 bg-brand-soft md:left-1/2 md:-translate-x-1/2"
           />
-          {ritualSteps.map((step, i) => {
+          {c.steps.map((step, i) => {
             const onLeft = i % 2 === 0;
+            const num = i + 1;
             return (
               <motion.li
-                key={step.step}
+                key={`${i}-${step.title}`}
                 initial={{ opacity: 0, y: 32 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
@@ -67,7 +68,7 @@ export const RitualTimeline = () => {
                     onLeft ? "md:-right-[1.125rem]" : "md:-left-[1.125rem]",
                   )}
                 >
-                  {step.step}
+                  {num}
                 </span>
                 <div
                   className={cn(
@@ -76,17 +77,17 @@ export const RitualTimeline = () => {
                   )}
                 >
                   <p className="text-xs uppercase tracking-[0.3em] text-brand-accent">
-                    Step {step.step}
+                    {c.stepLabel} {num}
                   </p>
                   <h3 className="mt-2 text-xl font-semibold text-brand md:text-2xl">
                     {step.title}
                   </h3>
-                  <p className="mt-3 leading-relaxed text-brand-ink">
+                  <p className="mt-3 whitespace-pre-line leading-relaxed text-brand-ink">
                     {step.desc}
                   </p>
                   <div className="relative mt-5 aspect-[16/10] overflow-hidden rounded-2xl">
                     <Image
-                      src={images(`ritual.${step.step}`)[0]}
+                      src={step.image}
                       alt={step.title}
                       fill
                       sizes="(min-width: 768px) 480px, 100vw"

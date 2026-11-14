@@ -7,12 +7,15 @@ import { motion } from "framer-motion";
 import Lightbox from "yet-another-react-lightbox";
 import { useSlotImages } from "@/components/SiteImagesProvider";
 import { SectionHeading } from "@/components/SectionHeading";
+import { useContent } from "@/components/SiteContentProvider";
+import { homeGallery } from "@/lib/site-content/blocks/home";
 
 import "yet-another-react-lightbox/styles.css";
 
 export const HomeGallery = () => {
   const [index, setIndex] = useState(-1);
   const previewPhotos = useSlotImages("gallery").slice(0, 8);
+  const c = useContent(homeGallery);
 
   return (
     <section
@@ -22,9 +25,9 @@ export const HomeGallery = () => {
     >
       <div className="mx-auto max-w-content px-6">
         <SectionHeading
-          watermark="Photo Portfolio"
-          title="攝影作品"
-          description="點擊任一張照片，看見每場派對最動人的瞬間。"
+          watermark={c.watermark}
+          title={c.title}
+          description={c.description}
         />
 
         <motion.ul
@@ -76,7 +79,7 @@ export const HomeGallery = () => {
             href="/baby-party#gallery"
             className="inline-flex items-center gap-2 rounded-full border border-brand-soft/60 bg-white px-8 py-3 text-sm font-medium text-brand transition-all duration-300 hover:scale-105 hover:bg-brand hover:text-white"
           >
-            觀看完整作品集
+            {c.button}
             <span aria-hidden>→</span>
           </Link>
         </motion.div>

@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Noto_Sans_TC } from "next/font/google";
 import Script from "next/script";
 import { FloatingActions } from "@/components/FloatingActions";
+import { SiteContentProvider } from "@/components/SiteContentProvider";
 import { SiteImagesProvider } from "@/components/SiteImagesProvider";
+import { layoutSeo } from "@/lib/site-content/blocks/layout";
+import { getContent, getContentOverrides } from "@/lib/site-content/server";
 import { getSiteImageOverrides } from "@/lib/site-images/server";
 import "./globals.css";
 
@@ -19,11 +22,10 @@ const cormorant = Cormorant_Garamond({
   style: ["normal", "italic"],
 });
 
-export const metadata: Metadata = {
-  title: "Happy 抓周小屋｜桃園平鎮抓週派對推薦",
-  description:
-    "桃園平鎮包場抓週派對、兒童生日派對、性別揭曉派對，從場佈、流程到攝影一站式包辦，給寶貝最美的人生第一場派對。",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getContent(layoutSeo);
+  return { title: seo.title, description: seo.description };
+}
 
 const themeBootScript = `(function(){try{var t=localStorage.getItem('theme');if(t==='teal'){document.documentElement.setAttribute('data-theme','teal');}}catch(e){}})()`;
 
@@ -32,7 +34,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const imageOverrides = await getSiteImageOverrides();
+  const [imageOverrides, contentOverrides] = await Promise.all([
+    getSiteImageOverrides(),
+    getContentOverrides(),
+  ]);
 
   return (
     <html
@@ -44,10 +49,12 @@ export default async function RootLayout({
         <Script id="theme-init" strategy="beforeInteractive">
           {themeBootScript}
         </Script>
-        <SiteImagesProvider overrides={imageOverrides}>
-          {children}
-          <FloatingActions />
-        </SiteImagesProvider>
+        <SiteContentProvider overrides={contentOverrides}>
+          <SiteImagesProvider overrides={imageOverrides}>
+            {children}
+            <FloatingActions />
+          </SiteImagesProvider>
+        </SiteContentProvider>
       </body>
     </html>
   );

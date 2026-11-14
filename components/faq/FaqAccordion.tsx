@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { faqItems } from "@/data/faq";
+import { useContent } from "@/components/SiteContentProvider";
+import { faqList } from "@/lib/site-content/blocks/faq";
 import { cn } from "@/lib/cn";
 
 const PlusIcon = ({ open }: { open: boolean }) => (
@@ -28,6 +29,7 @@ const PlusIcon = ({ open }: { open: boolean }) => (
 );
 
 export const FaqAccordion = () => {
+  const { items } = useContent(faqList);
   const [openIndex, setOpenIndex] = useState<number>(0);
 
   return (
@@ -41,11 +43,11 @@ export const FaqAccordion = () => {
       }}
       className="mx-auto mt-14 max-w-3xl space-y-4"
     >
-      {faqItems.map((item, i) => {
+      {items.map((item, i) => {
         const open = openIndex === i;
         return (
           <motion.li
-            key={item.q}
+            key={`${i}-${item.q}`}
             variants={{
               hidden: { opacity: 0, y: 16 },
               show: { opacity: 1, y: 0 },
@@ -90,7 +92,7 @@ export const FaqAccordion = () => {
                     className="overflow-hidden"
                   >
                     <div className="border-t border-brand-soft/40 px-5 py-5 md:px-6 md:py-6">
-                      <p className="leading-loose text-brand-ink md:text-[15px]">
+                      <p className="whitespace-pre-line leading-loose text-brand-ink md:text-[15px]">
                         {item.a}
                       </p>
                     </div>

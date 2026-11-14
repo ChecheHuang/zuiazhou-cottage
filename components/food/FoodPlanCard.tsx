@@ -1,15 +1,14 @@
 "use client";
 
-import { useSlotImage } from "@/components/SiteImagesProvider";
-
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { businessInfo } from "@/data/home";
-import type { FoodPlan } from "@/data/food";
+import { useContent } from "@/components/SiteContentProvider";
+import { siteBusiness } from "@/lib/site-content/blocks/site";
+import type { FoodPlanItem } from "@/lib/site-content/blocks/food";
 import { cn } from "@/lib/cn";
 
 interface FoodPlanCardProps {
-  plan: FoodPlan;
+  plan: FoodPlanItem;
   index: number;
 }
 
@@ -22,9 +21,9 @@ const PriceTag = ({ price, seats }: { price: string; seats?: string }) => (
 
 const DishGrid = ({ items }: { items: string[] }) => (
   <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-2 text-brand-ink md:grid-cols-3">
-    {items.map((dish) => (
+    {items.map((dish, i) => (
       <li
-        key={dish}
+        key={`${i}-${dish}`}
         className="flex items-center gap-2 border-b border-brand-soft/30 py-1.5 text-sm md:text-[15px]"
       >
         <span className="size-1 shrink-0 rounded-full bg-brand-accent" />
@@ -35,7 +34,7 @@ const DishGrid = ({ items }: { items: string[] }) => (
 );
 
 export const FoodPlanCard = ({ plan, index }: FoodPlanCardProps) => {
-  const photo = useSlotImage(`food.plan.${index}`);
+  const biz = useContent(siteBusiness);
   const reverse = index % 2 === 1;
 
   return (
@@ -53,15 +52,17 @@ export const FoodPlanCard = ({ plan, index }: FoodPlanCardProps) => {
         )}
       >
         <Image
-          src={photo}
+          src={plan.image}
           alt={plan.title}
           fill
           sizes="(min-width: 1024px) 480px, 90vw"
           className="object-cover"
         />
-        <span className="absolute left-6 top-6 grid size-14 place-items-center rounded-full bg-white/95 text-2xl font-semibold text-brand shadow-lg backdrop-blur">
-          {plan.code}
-        </span>
+        {plan.code && (
+          <span className="absolute left-6 top-6 grid size-14 place-items-center rounded-full bg-white/95 text-2xl font-semibold text-brand shadow-lg backdrop-blur">
+            {plan.code}
+          </span>
+        )}
       </div>
 
       <div className={cn(reverse && "lg:order-1")}>
@@ -73,93 +74,94 @@ export const FoodPlanCard = ({ plan, index }: FoodPlanCardProps) => {
         <h2 className="mt-3 text-2xl font-semibold text-brand md:text-3xl">
           {plan.title}
         </h2>
-        <p className="mt-4 leading-loose text-brand-ink/85">{plan.desc}</p>
+        <p className="mt-4 whitespace-pre-line leading-loose text-brand-ink/85">
+          {plan.desc}
+        </p>
 
-        {plan.kind === "combo" && (
-          <>
-            <DishGrid items={plan.dishes} />
-            <div className="mt-8">
-              <PriceTag price={plan.price} seats={plan.seats} />
-            </div>
-          </>
+        {plan.dishes.length > 0 && <DishGrid items={plan.dishes} />}
+
+        {plan.bullets.length > 0 && (
+          <ul className="mt-6 space-y-2.5 text-brand-ink">
+            {plan.bullets.map((b, i) => (
+              <li
+                key={`${i}-${b}`}
+                className="flex items-start gap-3 leading-relaxed"
+              >
+                <span className="mt-2 inline-block size-1.5 shrink-0 rounded-full bg-brand-accent" />
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
         )}
 
-        {plan.kind === "simple" && (
+        {plan.price && (
+          <div className={plan.bullets.length > 0 ? "mt-6" : "mt-8"}>
+            <PriceTag price={plan.price} seats={plan.seats} />
+          </div>
+        )}
+
+        {plan.menus.length > 0 && (
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {plan.menus.map((menu, i) => (
+              <details
+                key={`${i}-${menu.title}`}
+                className="group rounded-2xl border border-brand-soft/40 bg-brand-beige/40 p-5 transition-shadow duration-300 hover:shadow-md open:bg-white"
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold text-brand">
+                  <span>{menu.title}</span>
+                  <span
+                    aria-hidden
+                    className="grid size-6 place-items-center rounded-full bg-white text-brand transition-transform group-open:rotate-45"
+                  >
+                    +
+                  </span>
+                </summary>
+                <ul className="mt-4 space-y-1.5 text-sm text-brand-ink/85">
+                  {menu.dishes.map((d, j) => (
+                    <li key={`${j}-${d}`} className="flex items-start gap-2">
+                      <span className="mt-1.5 size-1 shrink-0 rounded-full bg-brand-accent" />
+                      {d}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ))}
+          </div>
+        )}
+
+        {plan.desserts.length > 0 && (
+          <div className="mt-8">
+            {plan.dessertsTitle && (
+              <p className="text-sm font-semibold text-brand">
+                {plan.dessertsTitle}
+              </p>
+            )}
+            <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 md:grid-cols-3">
+              {plan.desserts.map((d, i) => (
+                <li
+                  key={`${i}-${d}`}
+                  className="flex items-center gap-2 rounded-full border border-brand-soft/40 bg-white px-3 py-1.5 text-xs text-brand-ink"
+                >
+                  <span className="size-1 shrink-0 rounded-full bg-brand-accent" />
+                  {d}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {plan.ctaLabel && (
           <div className="mt-8">
             <a
-              href={businessInfo.socials.line}
+              href={biz.lineUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-white px-6 py-3 text-sm font-medium text-brand transition-all duration-300 hover:scale-105 hover:bg-brand-soft/30"
             >
-              {plan.ctaLabel ?? "查看菜單"}
+              {plan.ctaLabel}
               <span aria-hidden>→</span>
             </a>
           </div>
-        )}
-
-        {plan.kind === "banquet" && (
-          <>
-            <div className="mt-8">
-              <PriceTag price={plan.priceRange} seats={plan.seats} />
-            </div>
-            <div className="mt-8 grid gap-4 md:grid-cols-3">
-              {plan.menus.map((menu) => (
-                <details
-                  key={menu.price}
-                  className="group rounded-2xl border border-brand-soft/40 bg-brand-beige/40 p-5 transition-shadow duration-300 hover:shadow-md open:bg-white"
-                >
-                  <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold text-brand">
-                    <span>{menu.price} 套餐菜色</span>
-                    <span
-                      aria-hidden
-                      className="grid size-6 place-items-center rounded-full bg-white text-brand transition-transform group-open:rotate-45"
-                    >
-                      +
-                    </span>
-                  </summary>
-                  <ul className="mt-4 space-y-1.5 text-sm text-brand-ink/85">
-                    {menu.dishes.map((d) => (
-                      <li key={d} className="flex items-start gap-2">
-                        <span className="mt-1.5 size-1 shrink-0 rounded-full bg-brand-accent" />
-                        {d}
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              ))}
-            </div>
-          </>
-        )}
-
-        {plan.kind === "dessert" && (
-          <>
-            <ul className="mt-6 space-y-2.5 text-brand-ink">
-              {plan.bullets.map((b) => (
-                <li key={b} className="flex items-start gap-3 leading-relaxed">
-                  <span className="mt-2 inline-block size-1.5 shrink-0 rounded-full bg-brand-accent" />
-                  <span>{b}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-6">
-              <PriceTag price={plan.price} />
-            </div>
-            <div className="mt-8">
-              <p className="text-sm font-semibold text-brand">可選餐點種類</p>
-              <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 md:grid-cols-3">
-                {plan.desserts.map((d) => (
-                  <li
-                    key={d}
-                    className="flex items-center gap-2 rounded-full border border-brand-soft/40 bg-white px-3 py-1.5 text-xs text-brand-ink"
-                  >
-                    <span className="size-1 shrink-0 rounded-full bg-brand-accent" />
-                    {d}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </>
         )}
       </div>
     </motion.article>

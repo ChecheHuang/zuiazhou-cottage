@@ -4,12 +4,15 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useSlotImages } from "@/components/SiteImagesProvider";
+import { useContent } from "@/components/SiteContentProvider";
+import { homeHero } from "@/lib/site-content/blocks/home";
 
 const SLIDE_DURATION = 4500;
 
 export const HeroSlideshow = () => {
   const [active, setActive] = useState(0);
   const slides = useSlotImages("home.hero");
+  const c = useContent(homeHero);
   const count = slides.length;
 
   useEffect(() => {
@@ -51,30 +54,28 @@ export const HeroSlideshow = () => {
           className="max-w-3xl"
         >
           <p className="font-display text-2xl italic tracking-wide text-white/90 md:text-3xl">
-            Happy moments, lasting memories
+            {c.eyebrow}
           </p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight tracking-wide drop-shadow-lg md:text-6xl">
-            為寶貝留下
+            {c.titleLine1}
             <br className="md:hidden" />
-            最珍貴的派對時光
+            {c.titleLine2}
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base leading-loose text-white/90 md:text-lg">
-            桃園平鎮 ｜ 抓週派對 × 兒童生日派對 × 性別揭曉派對
-            <br />
-            場佈、流程、主持、攝影一站式包辦
+          <p className="mx-auto mt-6 max-w-xl whitespace-pre-line text-base leading-loose text-white/90 md:text-lg">
+            {c.subtitle}
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href="/baby-party"
               className="rounded-full bg-brand px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/40 transition-all duration-300 hover:scale-105 hover:bg-brand/90"
             >
-              查看派對方案
+              {c.primaryButton}
             </Link>
             <a
               href="#about"
               className="rounded-full border border-white/70 bg-white/10 px-8 py-3 text-sm font-medium text-white backdrop-blur-md transition-all duration-300 hover:scale-105 hover:bg-white/20"
             >
-              認識 Happy 抓周小屋
+              {c.secondaryButton}
             </a>
           </div>
         </motion.div>

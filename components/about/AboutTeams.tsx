@@ -1,21 +1,20 @@
 "use client";
 
-import { useSlotResolver } from "@/components/SiteImagesProvider";
-
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { aboutTeams } from "@/data/about";
+import { useContent } from "@/components/SiteContentProvider";
+import { aboutTeams } from "@/lib/site-content/blocks/about";
 import { SectionHeading } from "@/components/SectionHeading";
 
 export const AboutTeams = () => {
-  const images = useSlotResolver();
+  const c = useContent(aboutTeams);
   return (
     <section className="bg-white/65 py-20 md:py-28">
       <div className="mx-auto max-w-content px-6">
         <SectionHeading
-          watermark="Team"
-          title="與我們同行的夥伴"
-          description="主理人團隊與長期合作的餐點夥伴，一起把每一場派對的細節照顧到位。"
+          watermark={c.watermark}
+          title={c.title}
+          description={c.description}
         />
 
         <motion.ul
@@ -28,9 +27,9 @@ export const AboutTeams = () => {
           }}
           className="mt-14 grid gap-8 md:grid-cols-2 md:gap-10"
         >
-          {aboutTeams.map((team, i) => (
+          {c.teams.map((team, i) => (
             <motion.li
-              key={team.title}
+              key={`${i}-${team.title}`}
               variants={{
                 hidden: { opacity: 0, y: 24 },
                 show: { opacity: 1, y: 0 },
@@ -39,7 +38,7 @@ export const AboutTeams = () => {
             >
               <div className="relative aspect-square w-32 shrink-0 overflow-hidden rounded-3xl ring-4 ring-white md:w-40">
                 <Image
-                  src={images(`about.team.${i}`)[0]}
+                  src={team.image}
                   alt={team.title}
                   fill
                   sizes="(min-width: 768px) 160px, 128px"
@@ -53,7 +52,9 @@ export const AboutTeams = () => {
                 <h3 className="mt-2 text-xl font-semibold text-brand md:text-2xl">
                   {team.title}
                 </h3>
-                <p className="mt-3 leading-loose text-brand-ink">{team.desc}</p>
+                <p className="mt-3 whitespace-pre-line leading-loose text-brand-ink">
+                  {team.desc}
+                </p>
               </div>
             </motion.li>
           ))}

@@ -1,11 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
-import { businessInfo } from "@/data/home";
+import { getContent } from "@/lib/site-content/server";
+import { layoutFooter } from "@/lib/site-content/blocks/layout";
+import { siteBusiness } from "@/lib/site-content/blocks/site";
 
-const SOCIAL_LINKS = [
+const SOCIAL_LINKS: {
+  label: string;
+  field: "instagramUrl" | "facebookUrl" | "lineUrl";
+  icon: React.ReactNode;
+}[] = [
   {
     label: "Instagram",
-    href: businessInfo.socials.instagram,
+    field: "instagramUrl",
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -25,7 +31,7 @@ const SOCIAL_LINKS = [
   },
   {
     label: "Facebook",
-    href: businessInfo.socials.facebook,
+    field: "facebookUrl",
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -39,7 +45,7 @@ const SOCIAL_LINKS = [
   },
   {
     label: "Line",
-    href: businessInfo.socials.line,
+    field: "lineUrl",
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -53,58 +59,59 @@ const SOCIAL_LINKS = [
   },
 ];
 
-export const SiteFooter = () => (
-  <footer
-    id="contact"
-    className="relative bg-white pt-16 pb-10"
-  >
-    <div className="mx-auto flex max-w-content flex-col items-center gap-6 px-6 text-center">
-      <Link
-        href="/"
-        className="flex items-center gap-3"
-        aria-label="Happy 抓周小屋"
-      >
-        <Image
-          src="/photos/logo.png"
-          alt=""
-          width={56}
-          height={56}
-          className="size-14"
-        />
-        <span className="text-lg font-semibold text-brand">
-          Happy 抓周小屋
-        </span>
-      </Link>
+export const SiteFooter = async () => {
+  const [biz, c] = await Promise.all([
+    getContent(siteBusiness),
+    getContent(layoutFooter),
+  ]);
+  const copyright = c.copyright
+    .replaceAll("{年份}", String(new Date().getFullYear()))
+    .replaceAll("{店名}", biz.brand);
+  return (
+    <footer id="contact" className="relative bg-white pt-16 pb-10">
+      <div className="mx-auto flex max-w-content flex-col items-center gap-6 px-6 text-center">
+        <Link
+          href="/"
+          className="flex items-center gap-3"
+          aria-label={biz.brand}
+        >
+          <Image
+            src="/photos/logo.png"
+            alt=""
+            width={56}
+            height={56}
+            className="size-14"
+          />
+          <span className="text-lg font-semibold text-brand">{biz.brand}</span>
+        </Link>
 
-      <p className="max-w-xl leading-loose text-brand-ink/80">
-        抓週派對 / 生日派對 / 性別揭曉派對｜桃園平鎮包場
-        <br />
-        從場佈、流程、主持到攝影，一站式為寶貝留下最美的紀念。
-      </p>
-      <p className="text-sm text-brand-ink/70">
-        {businessInfo.phone} · {businessInfo.address}
-      </p>
+        <p className="max-w-xl whitespace-pre-line leading-loose text-brand-ink/80">
+          {c.intro}
+        </p>
+        <p className="text-sm text-brand-ink/70">
+          {biz.phone} · {biz.address}
+        </p>
 
-      <ul className="flex items-center gap-4" aria-label="社群連結">
-        {SOCIAL_LINKS.map((s) => (
-          <li key={s.label}>
-            <a
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={s.label}
-              className="grid size-11 place-items-center rounded-full border border-brand-soft/60 text-brand transition-all duration-300 hover:scale-90 hover:bg-brand hover:text-white"
-            >
-              {s.icon}
-            </a>
-          </li>
-        ))}
-      </ul>
+        <ul className="flex items-center gap-4" aria-label="社群連結">
+          {SOCIAL_LINKS.map((s) => (
+            <li key={s.label}>
+              <a
+                href={biz[s.field]}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={s.label}
+                className="grid size-11 place-items-center rounded-full border border-brand-soft/60 text-brand transition-all duration-300 hover:scale-90 hover:bg-brand hover:text-white"
+              >
+                {s.icon}
+              </a>
+            </li>
+          ))}
+        </ul>
 
-      <div className="mt-4 w-full border-t border-brand-soft/40 pt-6 text-xs text-brand-ink/60">
-        © {new Date().getFullYear()} Happy 抓周小屋. Made with warmth in
-        桃園平鎮.
+        <div className="mt-4 w-full border-t border-brand-soft/40 pt-6 text-xs text-brand-ink/60">
+          {copyright}
+        </div>
       </div>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};

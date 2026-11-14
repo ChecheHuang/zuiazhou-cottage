@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { businessInfo } from "@/data/home";
+import { useContent } from "@/components/SiteContentProvider";
+import { layoutFloating } from "@/lib/site-content/blocks/layout";
+import { siteBusiness } from "@/lib/site-content/blocks/site";
 import { cn } from "@/lib/cn";
 
 const LineIcon = () => (
@@ -29,6 +31,8 @@ const ArrowUpIcon = () => (
 
 export const FloatingActions = () => {
   const pathname = usePathname();
+  const biz = useContent(siteBusiness);
+  const c = useContent(layoutFloating);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -46,10 +50,10 @@ export const FloatingActions = () => {
   return (
     <>
       <a
-        href={businessInfo.socials.line}
+        href={biz.lineUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="加入官方 LINE"
+        aria-label={c.lineLabel}
         className={cn(
           "fixed right-4 z-50 grid size-16 place-items-center rounded-full",
           "bg-[#06c755] text-white shadow-[0_8px_24px_rgba(6,199,85,0.45)]",
@@ -62,7 +66,7 @@ export const FloatingActions = () => {
           aria-hidden
           className="pointer-events-none absolute -top-2 right-0 h-5 min-w-5 rounded-full bg-white px-1.5 text-[10px] font-bold leading-5 text-[#06c755] shadow-md"
         >
-          LINE
+          {c.lineBadge}
         </span>
       </a>
 
@@ -71,7 +75,7 @@ export const FloatingActions = () => {
           <motion.button
             type="button"
             onClick={scrollToTop}
-            aria-label="返回頂端"
+            aria-label={c.scrollTopLabel}
             initial={{ opacity: 0, y: 16, scale: 0.85 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.85 }}
@@ -83,7 +87,7 @@ export const FloatingActions = () => {
             )}
           >
             <ArrowUpIcon />
-            <span className="sr-only">返回頂端</span>
+            <span className="sr-only">{c.scrollTopLabel}</span>
           </motion.button>
         )}
       </AnimatePresence>

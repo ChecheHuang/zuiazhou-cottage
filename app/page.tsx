@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { AboutSection } from "@/components/home/AboutSection";
 import { BlogSection } from "@/components/home/BlogSection";
 import { BookingSteps } from "@/components/home/BookingSteps";
@@ -9,6 +10,13 @@ import { ReviewSection } from "@/components/home/ReviewSection";
 import { ServiceSection } from "@/components/home/ServiceSection";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { homeSeo } from "@/lib/site-content/blocks/home";
+import { getContent } from "@/lib/site-content/server";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getContent(homeSeo);
+  return { title: seo.title, description: seo.description };
+}
 
 export default function Home() {
   return (

@@ -3,9 +3,12 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useSlotImage } from "@/components/SiteImagesProvider";
+import { useContent } from "@/components/SiteContentProvider";
+import { partyHostIntro } from "@/lib/site-content/blocks/baby-party";
 
 export const HostIntro = () => {
   const photo = useSlotImage("party.host");
+  const c = useContent(partyHostIntro);
   return (
     <section
       id="host"
@@ -21,7 +24,7 @@ export const HostIntro = () => {
         >
           <Image
             src={photo}
-            alt="主理人團隊"
+            alt={c.title}
             fill
             sizes="(min-width: 768px) 288px, 224px"
             className="object-cover"
@@ -36,15 +39,13 @@ export const HostIntro = () => {
           className="text-center md:text-left"
         >
           <p className="text-sm uppercase tracking-[0.4em] text-brand-accent">
-            Meet your host
+            {c.eyebrow}
           </p>
           <h3 className="mt-3 text-3xl font-semibold text-brand md:text-4xl">
-            主理人團隊
+            {c.title}
           </h3>
           <p className="mt-6 whitespace-pre-line text-base leading-loose text-brand-ink md:text-lg">
-            {`擁有多年活動主持經驗，專注於親子互動與抓周流程引導。
-善於用溫柔穩定的節奏，帶領寶寶安心參與、讓家人自在融入，
-每一場都是獨一無二、充滿笑聲與感動的紀念時刻。`}
+            {c.body}
           </p>
         </motion.div>
       </div>

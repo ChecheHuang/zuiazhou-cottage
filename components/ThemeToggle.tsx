@@ -1,6 +1,8 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { useContent } from "@/components/SiteContentProvider";
+import { layoutHeader } from "@/lib/site-content/blocks/layout";
 import { cn } from "@/lib/cn";
 
 type Theme = "rose" | "teal";
@@ -43,7 +45,12 @@ const getServerTheme = (): Theme => "rose";
 const noopSubscribe = () => () => {};
 
 export const ThemeToggle = ({ className }: ThemeToggleProps) => {
-  const theme = useSyncExternalStore(subscribeTheme, readDomTheme, getServerTheme);
+  const c = useContent(layoutHeader);
+  const theme = useSyncExternalStore(
+    subscribeTheme,
+    readDomTheme,
+    getServerTheme,
+  );
   const mounted = useSyncExternalStore(
     noopSubscribe,
     () => true,
@@ -54,7 +61,7 @@ export const ThemeToggle = ({ className }: ThemeToggleProps) => {
     applyTheme(theme === "rose" ? "teal" : "rose");
   };
 
-  const label = theme === "rose" ? "目前粉色，點擊切換青綠" : "目前青綠，點擊切換粉色";
+  const label = theme === "rose" ? c.themeRoseLabel : c.themeTealLabel;
 
   return (
     <button

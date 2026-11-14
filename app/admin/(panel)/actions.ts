@@ -1,17 +1,14 @@
 "use server";
 
-import { del } from "@vercel/blob";
-import { eq, inArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { cleanupBlobs } from "@/lib/admin/blob-cleanup";
 import { requireAdmin } from "@/lib/admin-auth";
 import { requireDb } from "@/lib/db";
 import { siteImages } from "@/lib/db/schema";
 import { SITE_IMAGES_TAG } from "@/lib/site-images/server";
-import {
-  SLOT_MAP,
-  isAllowedImageUrl,
-  isBlobUrl,
-} from "@/lib/site-images/slots";
+import { SLOT_MAP } from "@/lib/site-images/slots";
+import { isAllowedImageUrl } from "@/lib/site-images/urls";
 
 const MAX_IMAGES_PER_SLOT = 60;
 
@@ -24,25 +21,6 @@ const refreshSite = () => {
   // 立刻讓前台拿到新圖片，不提供舊快取
   revalidateTag(SITE_IMAGES_TAG, { expire: 0 });
   revalidatePath("/", "layout");
-};
-
-// 刪掉已經沒有任何位置在用的 Blob 檔案，避免佔用儲存空間
-const cleanupBlobs = async (candidates: string[]) => {
-  const blobUrls = [...new Set(candidates.filter(isBlobUrl))];
-  if (blobUrls.length === 0) return;
-  const db = requireDb();
-  const stillUsed = await db
-    .select({ url: siteImages.url })
-    .from(siteImages)
-    .where(inArray(siteImages.url, blobUrls));
-  const used = new Set(stillUsed.map((r) => r.url));
-  const orphans = blobUrls.filter((u) => !used.has(u));
-  if (orphans.length === 0) return;
-  try {
-    await del(orphans);
-  } catch (error) {
-    console.error("[admin] 刪除 Blob 檔案失敗", orphans, error);
-  }
 };
 
 const readSlot = async (slot: string) => {

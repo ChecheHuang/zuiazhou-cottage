@@ -1,13 +1,15 @@
+import type { Metadata } from "next";
 import { AddonGrid } from "@/components/photo/AddonGrid";
 import { PhotoPortfolio } from "@/components/photo/PhotoPortfolio";
 import { PhotographerPlan } from "@/components/photo/PhotographerPlan";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { photoSeo } from "@/lib/site-content/blocks/photo";
+import { getContent } from "@/lib/site-content/server";
 
-export const metadata = {
-  title: "派對加購方案 - Happy 抓周小屋",
-  description:
-    "攝影師加購、空飄氣球、客製立牌、寶寶猜測版等加購方案，自由搭配為派對升級。",
+export const generateMetadata = async (): Promise<Metadata> => {
+  const seo = await getContent(photoSeo);
+  return { title: seo.title, description: seo.description };
 };
 
 export default function PhotoPage() {

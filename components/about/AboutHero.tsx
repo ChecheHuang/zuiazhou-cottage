@@ -2,11 +2,13 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { aboutStory } from "@/data/about";
+import { useContent } from "@/components/SiteContentProvider";
+import { aboutHero } from "@/lib/site-content/blocks/about";
 import { useSlotImage } from "@/components/SiteImagesProvider";
 
 export const AboutHero = () => {
   const photo = useSlotImage("about.hero");
+  const c = useContent(aboutHero);
   return (
     <section className="relative overflow-hidden bg-brand-beige/55 py-20 md:py-28">
       <span
@@ -29,22 +31,26 @@ export const AboutHero = () => {
             aria-hidden
             className="block font-display italic leading-none text-brand-cream text-[88px] md:text-[140px]"
           >
-            About
+            {c.watermark}
           </span>
           <h1 className="-mt-8 text-3xl font-semibold tracking-wide text-brand md:-mt-12 md:text-4xl">
-            關於我們
+            {c.title}
           </h1>
 
           <div className="mt-8 space-y-5 text-base leading-loose text-brand-ink md:text-[17px]">
-            {aboutStory.map((line) => (
-              <p key={line}>{line}</p>
+            {c.story.map((line, i) => (
+              <p key={`${i}-${line}`} className="whitespace-pre-line">
+                {line}
+              </p>
             ))}
           </div>
 
-          <p className="mt-10 inline-flex items-center gap-2 rounded-full border border-brand-soft/60 bg-white px-5 py-2 text-sm text-brand-accent">
-            <span className="size-1.5 rounded-full bg-brand" />
-            主理人團隊
-          </p>
+          {c.badge && (
+            <p className="mt-10 inline-flex items-center gap-2 rounded-full border border-brand-soft/60 bg-white px-5 py-2 text-sm text-brand-accent">
+              <span className="size-1.5 rounded-full bg-brand" />
+              {c.badge}
+            </p>
+          )}
         </motion.div>
 
         <motion.div
@@ -64,11 +70,9 @@ export const AboutHero = () => {
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/40 to-transparent" />
           <div className="absolute bottom-6 left-6 text-white">
             <p className="text-xs uppercase tracking-[0.4em] text-white/80">
-              Happy One House
+              {c.photoEyebrow}
             </p>
-            <p className="mt-1 text-base font-medium">
-              桃園平鎮 · 抓週派對小屋
-            </p>
+            <p className="mt-1 text-base font-medium">{c.photoCaption}</p>
           </div>
         </motion.div>
       </div>

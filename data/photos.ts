@@ -19,16 +19,13 @@ export const THEME_ROOM_PHOTOS = {
 
 export const HOST_PHOTO = photo(40);
 
-export const GALLERY_PHOTOS = [
-  ...range(25, 39),
-  ...range(41, 49),
-];
+export const GALLERY_PHOTOS = [...range(25, 39), ...range(41, 49)];
 
 export const BACKGROUND_SLIDESHOW = range(50, 57);
 
 export const BIRTHDAY_PHOTO = photo(12);
 
-// 抓周流程 10 步，依序對應 data/ritual-steps.ts，截自 FB Reels 的儀式畫面
+// 抓周流程 10 步，依序作為 party.ritual 各步驟的預設照片，截自 FB Reels 的儀式畫面
 export const STEP_PHOTOS = Array.from(
   { length: 10 },
   (_, i) => `/photos/ritual/step${String(i + 1).padStart(2, "0")}.jpg`,

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { logout } from "@/app/admin/login/actions";
+import { AdminNav } from "@/components/admin/AdminNav";
 import { isAdmin } from "@/lib/admin-auth";
 
 export const metadata: Metadata = {
@@ -20,9 +21,15 @@ export default async function AdminPanelLayout({
     <div className="flex min-h-full flex-1 flex-col bg-brand-beige/40">
       <header className="sticky top-0 z-20 border-b border-brand-soft/40 bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <Link href="/admin" className="font-semibold text-brand">
-            抓周小屋後台
-          </Link>
+          <div className="flex items-center gap-1 sm:gap-3">
+            <Link
+              href="/admin"
+              className="mr-2 hidden font-semibold text-brand sm:inline"
+            >
+              抓周小屋後台
+            </Link>
+            <AdminNav />
+          </div>
           <div className="flex items-center gap-2 text-sm">
             <Link
               href="/"

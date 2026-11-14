@@ -3,9 +3,12 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useSlotImage } from "@/components/SiteImagesProvider";
+import { useContent } from "@/components/SiteContentProvider";
+import { homeParallax } from "@/lib/site-content/blocks/home";
 
 export const ParallaxBreak = () => {
   const bg = useSlotImage("home.parallax");
+  const c = useContent(homeParallax);
   return (
     <section
       aria-label="環境照片"
@@ -30,10 +33,10 @@ export const ParallaxBreak = () => {
           className="relative text-center"
         >
           <span className="block font-display italic tracking-tight text-white/35 text-[64px] leading-none drop-shadow-md sm:text-[88px] md:text-[128px]">
-            Environment
+            {c.watermark}
           </span>
           <h3 className="relative -mt-6 text-2xl font-semibold text-white drop-shadow-md md:-mt-10 md:text-3xl">
-            走進溫柔的派對小屋
+            {c.title}
           </h3>
           <div className="mx-auto mt-5 flex justify-center">
             <Image
@@ -44,8 +47,8 @@ export const ParallaxBreak = () => {
               className="opacity-90"
             />
           </div>
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-loose text-white/90 drop-shadow md:text-base">
-            四大主題空間、專業主持、滿滿的祝福儀式——所有讓你拍照不踩雷的元素，我們都準備好了。
+          <p className="mx-auto mt-4 max-w-xl whitespace-pre-line text-sm leading-loose text-white/90 drop-shadow md:text-base">
+            {c.description}
           </p>
         </motion.div>
       </div>

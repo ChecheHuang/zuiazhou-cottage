@@ -5,11 +5,14 @@ import { useSlotImage } from "@/components/SiteImagesProvider";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { businessInfo } from "@/data/home";
-import { photographerPlan } from "@/data/photo";
+import { useContent } from "@/components/SiteContentProvider";
+import { siteBusiness } from "@/lib/site-content/blocks/site";
+import { photoPlan } from "@/lib/site-content/blocks/photo";
 
 export const PhotographerPlan = () => {
   const hero = useSlotImage("photo.hero");
+  const biz = useContent(siteBusiness);
+  const photographerPlan = useContent(photoPlan);
   return (
     <section
       id="photographer"
@@ -48,39 +51,46 @@ export const PhotographerPlan = () => {
           </h1>
 
           <div className="mt-6 inline-flex items-baseline gap-3 rounded-full border border-brand-soft/60 bg-white px-6 py-2.5 shadow-sm">
-            <span className="text-sm text-brand-accent">方案費用</span>
+            <span className="text-sm text-brand-accent">
+              {photographerPlan.priceLabel}
+            </span>
             <span className="text-2xl font-semibold text-brand md:text-3xl">
               {photographerPlan.price}
             </span>
           </div>
 
           <ul className="mt-8 space-y-4 text-brand-ink">
-            {photographerPlan.bullets.map((b) => (
-              <li key={b} className="flex items-start gap-3 leading-relaxed">
+            {photographerPlan.bullets.map((b, i) => (
+              <li
+                key={`${i}-${b}`}
+                className="flex items-start gap-3 leading-relaxed"
+              >
                 <span className="mt-2 inline-block size-1.5 shrink-0 rounded-full bg-brand-accent" />
                 <span>{b}</span>
               </li>
             ))}
           </ul>
 
-          <p className="mt-6 rounded-2xl border border-brand-soft/40 bg-white/80 p-4 text-sm leading-relaxed text-brand-ink/80">
-            ※ {photographerPlan.note}
-          </p>
+          {photographerPlan.note && (
+            <p className="mt-6 whitespace-pre-line rounded-2xl border border-brand-soft/40 bg-white/80 p-4 text-sm leading-relaxed text-brand-ink/80">
+              ※ {photographerPlan.note}
+            </p>
+          )}
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a
-              href={businessInfo.socials.line}
+              href={biz.lineUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-[#06c755] px-7 py-3 text-sm font-medium text-white shadow-lg shadow-[#06c755]/30 transition-all duration-300 hover:scale-105"
             >
-              LINE 線上諮詢
+              {photographerPlan.lineButton}
             </a>
             <Link
               href="#other"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-soft/60 bg-white px-7 py-3 text-sm font-medium text-brand transition-all duration-300 hover:scale-105 hover:bg-brand-soft/30"
             >
-              查看其他加購
+              {photographerPlan.otherButton}
             </Link>
           </div>
         </motion.div>

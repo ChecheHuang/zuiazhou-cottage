@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useSlotImages } from "@/components/SiteImagesProvider";
+import { useContent } from "@/components/SiteContentProvider";
+import { partyMemories } from "@/lib/site-content/blocks/baby-party";
 
 interface BackgroundSlideshowProps {
   intervalMs?: number;
@@ -13,6 +15,7 @@ export const BackgroundSlideshow = ({
 }: BackgroundSlideshowProps) => {
   const [active, setActive] = useState(0);
   const slides = useSlotImages("party.background");
+  const c = useContent(partyMemories);
   const count = slides.length;
 
   useEffect(() => {
@@ -48,13 +51,13 @@ export const BackgroundSlideshow = ({
         className="relative mx-auto max-w-3xl px-6 text-center"
       >
         <p className="text-sm uppercase tracking-[0.4em] text-white/80">
-          Forever Memories
+          {c.eyebrow}
         </p>
         <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-wide text-white md:text-5xl">
-          紀錄每個美好瞬間
+          {c.title}
         </h2>
-        <p className="mx-auto mt-6 max-w-xl text-base leading-loose text-white/85 md:text-lg">
-          從寶寶第一次穿上虎衣，到全家圍著生日蛋糕的笑容，我們替您留住所有值得珍藏的細節。
+        <p className="mx-auto mt-6 max-w-xl whitespace-pre-line text-base leading-loose text-white/85 md:text-lg">
+          {c.body}
         </p>
       </motion.div>
     </section>

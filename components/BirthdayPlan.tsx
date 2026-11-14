@@ -3,24 +3,12 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useSlotImage } from "@/components/SiteImagesProvider";
-
-const features = [
-  "場地包場 2.5 小時",
-  "背板公版佈置",
-  "生日氣球（空飄數字氣球）",
-  "拍照佈置",
-  "指定主持人，需另加 $2000",
-];
-
-const notes = [
-  "此方案限定 2-9 歲，10 歲以上價格 +300（多一組生日氣球柱）",
-  "此方案不包含餐點和攝影師，如有需要攝影服務或餐點，皆以加購服務",
-  "如自帶外食或外匯餐點，酌收 2000 元清潔費",
-  "場地容納人數依主題場地而定：福氣滿滿屋推薦 10～15 人；森林童話屋、奶油寶貝屋推薦 15～25 人；星河派對屋推薦 25～100 人，最多可容納 150 人",
-];
+import { useContent } from "@/components/SiteContentProvider";
+import { partyBirthdayPlan } from "@/lib/site-content/blocks/baby-party";
 
 export const BirthdayPlan = () => {
   const photo = useSlotImage("party.birthday");
+  const c = useContent(partyBirthdayPlan);
   return (
     <section
       id="birthday"
@@ -37,7 +25,7 @@ export const BirthdayPlan = () => {
         >
           <Image
             src={photo}
-            alt="兒童生日派對佈置"
+            alt={`${c.title}佈置`}
             fill
             sizes="(min-width: 768px) 50vw, 100vw"
             className="object-cover"
@@ -51,21 +39,21 @@ export const BirthdayPlan = () => {
           transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
         >
           <p className="text-sm uppercase tracking-[0.4em] text-brand-accent">
-            Birthday Party
+            {c.eyebrow}
           </p>
           <h2
             id="birthday-heading"
             className="mt-3 text-3xl font-semibold tracking-wide text-brand md:text-4xl"
           >
-            兒童生日派對
+            {c.title}
           </h2>
-          <p className="mt-4 leading-loose text-brand-ink/80">
-            寶貝的每個生日都很重要，爸爸媽媽只想陪著你過每個美好瞬間！
+          <p className="mt-4 whitespace-pre-line leading-loose text-brand-ink/80">
+            {c.intro}
           </p>
 
           <ul className="mt-8 space-y-3 text-brand-ink">
-            {features.map((f) => (
-              <li key={f} className="flex items-start gap-3">
+            {c.features.map((f, i) => (
+              <li key={`${i}-${f}`} className="flex items-start gap-3">
                 <span className="mt-1 inline-block size-2 shrink-0 rounded-full bg-brand-soft" />
                 <span className="leading-relaxed">{f}</span>
               </li>
@@ -73,8 +61,10 @@ export const BirthdayPlan = () => {
           </ul>
 
           <div className="mt-8 space-y-2 border-t border-brand-soft/50 pt-6 text-sm leading-relaxed text-brand-ink/80">
-            {notes.map((n) => (
-              <p key={n}>・{n}</p>
+            {c.notes.map((n, i) => (
+              <p key={`${i}-${n}`} className="whitespace-pre-line">
+                ・{n}
+              </p>
             ))}
           </div>
         </motion.div>

@@ -3,15 +3,27 @@ import { ContactInfo } from "@/components/contact/ContactInfo";
 import { SectionHeading } from "@/components/SectionHeading";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { businessInfo, mapEmbedUrl } from "@/data/home";
+import { getContent } from "@/lib/site-content/server";
+import type { Metadata } from "next";
+import {
+  contactIntro,
+  contactLocation,
+  contactSeo,
+  fillBusinessTokens,
+} from "@/lib/site-content/blocks/contact";
+import { mapEmbedUrlFor, siteBusiness } from "@/lib/site-content/blocks/site";
 
-export const metadata = {
-  title: "聯絡我們 - Happy 抓周小屋",
-  description:
-    "桃園平鎮 Happy 抓周小屋聯絡資訊、地圖與線上預約表單，歡迎留言或加 LINE 諮詢。",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getContent(contactSeo);
+  return { title: seo.title, description: seo.description };
+}
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const [biz, intro, location] = await Promise.all([
+    getContent(siteBusiness),
+    getContent(contactIntro),
+    getContent(contactLocation),
+  ]);
   return (
     <>
       <SiteHeader />
@@ -28,9 +40,9 @@ export default function ContactPage() {
 
           <div className="relative mx-auto max-w-content px-6">
             <SectionHeading
-              watermark="Contact Us"
-              title="聯絡我們"
-              description="想預約抓週、收涎或生日派對？歡迎透過 LINE 或下方表單與我們聯絡。"
+              watermark={intro.watermark}
+              title={intro.title}
+              description={intro.description}
             />
             <div className="mt-14">
               <ContactInfo />
@@ -42,20 +54,18 @@ export default function ContactPage() {
           <div className="mx-auto grid max-w-content gap-12 px-6 lg:grid-cols-[5fr_7fr] lg:gap-16">
             <div>
               <p className="text-sm uppercase tracking-[0.4em] text-brand-accent">
-                Find us
+                {location.eyebrow}
               </p>
               <h2 className="mt-3 text-2xl font-semibold text-brand md:text-3xl">
-                位置資訊
+                {location.title}
               </h2>
-              <p className="mt-4 leading-loose text-brand-ink/80">
-                地址：{businessInfo.address}
-                <br />
-                {businessInfo.landmark}
+              <p className="mt-4 whitespace-pre-line leading-loose text-brand-ink/80">
+                {fillBusinessTokens(location.body, biz)}
               </p>
               <div className="mt-8 overflow-hidden rounded-3xl shadow-[0_18px_40px_rgba(237,160,157,0.16)]">
                 <iframe
-                  title="Happy 抓周小屋位置地圖"
-                  src={mapEmbedUrl}
+                  title={`${biz.brand}位置地圖`}
+                  src={mapEmbedUrlFor(biz.address)}
                   width="100%"
                   height={420}
                   style={{ border: 0 }}

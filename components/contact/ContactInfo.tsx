@@ -1,7 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { businessInfo } from "@/data/home";
+import { useContent } from "@/components/SiteContentProvider";
+import {
+  contactCardHref,
+  contactCards,
+  fillBusinessTokens,
+} from "@/lib/site-content/blocks/contact";
+import { siteBusiness } from "@/lib/site-content/blocks/site";
 
 interface InfoCardProps {
   eyebrow: string;
@@ -57,43 +63,30 @@ const InfoCard = ({ eyebrow, title, value, href, icon }: InfoCardProps) => {
   );
 };
 
-export const ContactInfo = () => (
-  <motion.ul
-    initial="hidden"
-    whileInView="show"
-    viewport={{ once: true, margin: "-80px" }}
-    variants={{
-      hidden: {},
-      show: { transition: { staggerChildren: 0.08 } },
-    }}
-    className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
-  >
-    <InfoCard
-      eyebrow="Address"
-      title="地址"
-      value={businessInfo.address}
-      icon={<span className="text-xl">📍</span>}
-    />
-    <InfoCard
-      eyebrow="Phone"
-      title="電話"
-      value={businessInfo.phone}
-      href={`tel:${businessInfo.phone.replace(/[^0-9+]/g, "")}`}
-      icon={<span className="text-xl">📞</span>}
-    />
-    <InfoCard
-      eyebrow="Instagram"
-      title={businessInfo.instagram}
-      value="@happyonehouse"
-      href={businessInfo.socials.instagram}
-      icon={<span className="text-xl">📷</span>}
-    />
-    <InfoCard
-      eyebrow="LINE"
-      title="官方 LINE"
-      value={`ID：${businessInfo.lineId}（點擊加入）`}
-      href={businessInfo.socials.line}
-      icon={<span className="text-xl">💬</span>}
-    />
-  </motion.ul>
-);
+export const ContactInfo = () => {
+  const biz = useContent(siteBusiness);
+  const { items } = useContent(contactCards);
+  return (
+    <motion.ul
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, margin: "-80px" }}
+      variants={{
+        hidden: {},
+        show: { transition: { staggerChildren: 0.08 } },
+      }}
+      className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+    >
+      {items.map((item, i) => (
+        <InfoCard
+          key={`${i}-${item.eyebrow}`}
+          eyebrow={fillBusinessTokens(item.eyebrow, biz)}
+          title={fillBusinessTokens(item.title, biz)}
+          value={fillBusinessTokens(item.value, biz)}
+          href={contactCardHref(item.link, biz)}
+          icon={<span className="text-xl">{item.icon}</span>}
+        />
+      ))}
+    </motion.ul>
+  );
+};

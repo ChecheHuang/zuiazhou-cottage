@@ -15,7 +15,7 @@ export default function AdminLoginPage() {
         </p>
         <h1 className="mt-2 text-2xl font-semibold text-brand">後台登入</h1>
         <p className="mt-2 text-sm text-brand-ink/70">
-          輸入管理密碼以管理網站圖片。
+          輸入管理密碼以管理網站的圖片與文字。
         </p>
         <LoginForm />
       </div>

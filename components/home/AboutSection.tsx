@@ -5,6 +5,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useSlotImage } from "@/components/SiteImagesProvider";
 import { SectionHeading } from "@/components/SectionHeading";
+import { useContent } from "@/components/SiteContentProvider";
+import { homeAbout } from "@/lib/site-content/blocks/home";
 
 const PlayIcon = () => (
   <svg
@@ -19,6 +21,7 @@ const PlayIcon = () => (
 
 export const AboutSection = () => {
   const photo = useSlotImage("home.about");
+  const c = useContent(homeAbout);
   return (
     <section
       id="about"
@@ -43,7 +46,7 @@ export const AboutSection = () => {
       />
 
       <div className="relative mx-auto max-w-content px-6">
-        <SectionHeading watermark="About" title="關於我們" />
+        <SectionHeading watermark={c.watermark} title={c.title} />
 
         <div className="mx-auto mt-4 flex justify-center">
           <Image
@@ -66,7 +69,7 @@ export const AboutSection = () => {
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl shadow-[0_24px_56px_rgba(237,160,157,0.20)]">
               <Image
                 src={photo}
-                alt="抓周小屋的派對佈置與寶寶互動"
+                alt={c.photoAlt}
                 fill
                 sizes="(min-width: 768px) 58vw, 100vw"
                 className="object-cover"
@@ -93,31 +96,26 @@ export const AboutSection = () => {
           >
             <div className="rounded-3xl bg-white p-8 shadow-[0_24px_56px_rgba(237,160,157,0.18)] ring-1 ring-brand-soft/40 md:p-10">
               <p className="font-display text-sm uppercase tracking-[0.4em] text-brand-accent">
-                We are Happy Cottage
+                {c.eyebrow}
               </p>
               <h3
                 id="about-heading"
                 className="mt-3 text-2xl font-semibold leading-snug text-brand md:text-3xl"
               >
-                👶 Happy 抓周小屋｜寶寶的專屬派對
+                {c.heading}
               </h3>
               <div className="mt-6 space-y-4 leading-loose text-brand-ink">
-                <p>
-                  從性別揭曉、抓週活動，到寶寶的生日派對，我們提供溫馨、有儀式感、好拍照的一條龍服務，讓每位爸媽都能安心參與寶貝最珍貴的時刻。
-                </p>
-                <p>
-                  我們用心打造專屬的抓週儀式，結合溫馨佈置、專業主持、活動流程引導與攝影紀錄，讓每一場派對都是獨一無二的回憶。
-                </p>
-                <p>
-                  由「桃園抓周阿花」花花主持人帶領的團隊，從流程引導、互動遊戲、拍照帶位到現場氣氛通通顧好，阿公阿嬤、爸爸媽媽和親朋好友都能一起參與，現場笑聲不斷、回憶滿滿。歡迎一同走進
-                  Happy 抓周小屋的故事。
-                </p>
+                {c.paragraphs.map((p, i) => (
+                  <p key={i} className="whitespace-pre-line">
+                    {p}
+                  </p>
+                ))}
               </div>
               <Link
                 href="/baby-party"
                 className="mt-8 inline-flex items-center gap-2 rounded-full bg-brand px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-all duration-300 hover:scale-105 hover:bg-brand/90"
               >
-                瞭解詳情
+                {c.button}
                 <span aria-hidden>→</span>
               </Link>
             </div>
