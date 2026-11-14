@@ -7,6 +7,7 @@ import { isAllowedImageUrl } from "@/lib/site-images/urls";
 //   text   → string            （multiline: true 會顯示多行輸入框）
 //   image  → string            （圖片網址，後台可上傳）
 //   images → string[]          （一組圖片，後台可新增、移除、排序）
+//   toggle → boolean           （開關，例如選單項目要不要顯示）
 //   list   → string[]          （of: "text"，文字清單）
 //          → Record<string, …>[]（of: Field[]，每一項是一組欄位）
 
@@ -29,6 +30,10 @@ export interface ImagesField extends BaseField {
   type: "images";
 }
 
+export interface ToggleField extends BaseField {
+  type: "toggle";
+}
+
 export interface ListField extends BaseField {
   type: "list";
   of: "text" | Field[];
@@ -40,9 +45,19 @@ export interface ListField extends BaseField {
   titleKey?: string;
 }
 
-export type Field = TextField | ImageField | ImagesField | ListField;
+export type Field =
+  | TextField
+  | ImageField
+  | ImagesField
+  | ToggleField
+  | ListField;
 
-export type ContentValue = string | string[] | ContentRecord[] | ContentRecord;
+export type ContentValue =
+  | string
+  | boolean
+  | string[]
+  | ContentRecord[]
+  | ContentRecord;
 export type ContentRecord = { [key: string]: ContentValue };
 
 export interface ContentBlock<T extends ContentRecord = ContentRecord> {
@@ -101,6 +116,10 @@ const validateField = (
       if (typeof value !== "string" || !isAllowedImageUrl(value)) {
         return { ok: false, error: `${where}：請上傳圖片` };
       }
+      return { ok: true, value };
+    case "toggle":
+      if (typeof value !== "boolean")
+        return { ok: false, error: `${where}：必須是開或關` };
       return { ok: true, value };
     case "images":
       if (!Array.isArray(value) || value.length === 0) {
@@ -175,7 +194,11 @@ export const emptyRecord = (fields: Field[]): ContentRecord =>
   Object.fromEntries(
     fields.map((f) => [
       f.key,
-      f.type === "images" || f.type === "list" ? [] : "",
+      f.type === "images" || f.type === "list"
+        ? []
+        : f.type === "toggle"
+          ? false
+          : "",
     ]),
   );
 

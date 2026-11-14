@@ -378,6 +378,38 @@ const RecordListInput = ({
   </div>
 );
 
+const ToggleInput = ({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: boolean;
+  onChange: (v: boolean) => void;
+}) => (
+  <button
+    type="button"
+    role="switch"
+    aria-checked={value}
+    aria-label={label}
+    onClick={() => onChange(!value)}
+    className="inline-flex items-center gap-3 text-sm text-brand-ink"
+  >
+    <span
+      className={`relative h-6 w-11 rounded-full transition-colors ${
+        value ? "bg-brand" : "bg-brand-ink/20"
+      }`}
+    >
+      <span
+        className={`absolute top-0.5 size-5 rounded-full bg-white shadow transition-all ${
+          value ? "left-[22px]" : "left-0.5"
+        }`}
+      />
+    </span>
+    {value ? "顯示" : "隱藏"}
+  </button>
+);
+
 const FieldEditor = ({
   field,
   value,
@@ -416,6 +448,14 @@ const FieldEditor = ({
             value={Array.isArray(value) ? (value as string[]) : []}
             onChange={onChange}
             folder={folder}
+          />
+        );
+      case "toggle":
+        return (
+          <ToggleInput
+            label={field.label}
+            value={value === true}
+            onChange={onChange}
           />
         );
       case "list":

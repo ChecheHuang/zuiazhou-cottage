@@ -68,6 +68,11 @@ export const layoutHeader = defineBlock({
       key: "navBabyPartyGender",
       label: "寶寶派對下拉：性別揭曉派對",
     },
+    {
+      type: "text",
+      key: "navBabyPartyPlay",
+      label: "寶寶派對下拉：線上模擬抓周",
+    },
     { type: "text", key: "navPhoto", label: "選單：派對加購方案" },
     {
       type: "text",
@@ -105,6 +110,7 @@ export const layoutHeader = defineBlock({
     navBabyPartySaliva: "收涎派對",
     navBabyPartyBirthday: "生日派對",
     navBabyPartyGender: "性別揭曉派對",
+    navBabyPartyPlay: "線上模擬抓周",
     navPhoto: "派對加購方案",
     navPhotoPhotographer: "攝影師加購",
     navPhotoOther: "其他加購",
@@ -114,6 +120,56 @@ export const layoutHeader = defineBlock({
     navContact: "聯絡我們",
     themeRoseLabel: "目前粉色，點擊切換青綠",
     themeTealLabel: "目前青綠，點擊切換粉色",
+  },
+});
+
+// 選單每一項的顯示開關。key 與 layoutHeader 的文字欄位相同，
+// SiteHeader 用同一個 key 查文字與是否顯示。隱藏只是不出現在選單，頁面本身照常可以進入。
+const navToggle = (key: string, label: string) => ({
+  type: "toggle" as const,
+  key,
+  label,
+});
+
+export const layoutNavVisibility = defineBlock({
+  key: "layout.navVisibility",
+  page: "頁首頁尾",
+  label: "頁首選單顯示／隱藏",
+  description:
+    "控制最上方選單（電腦版與手機版）要顯示哪些項目。隱藏只是從選單拿掉，頁面本身與其他地方的連結仍然有效。主選單隱藏時，它的下拉項目也會一起隱藏。",
+  fields: [
+    navToggle("navHome", "首頁"),
+    navToggle("navAbout", "關於我們"),
+    navToggle("navBabyParty", "寶寶派對"),
+    navToggle("navBabyPartyZhuazhou", "寶寶派對下拉：抓周派對"),
+    navToggle("navBabyPartySaliva", "寶寶派對下拉：收涎派對"),
+    navToggle("navBabyPartyBirthday", "寶寶派對下拉：生日派對"),
+    navToggle("navBabyPartyGender", "寶寶派對下拉：性別揭曉派對"),
+    navToggle("navBabyPartyPlay", "寶寶派對下拉：線上模擬抓周"),
+    navToggle("navPhoto", "派對加購方案"),
+    navToggle("navPhotoPhotographer", "派對加購方案下拉：攝影師加購"),
+    navToggle("navPhotoOther", "派對加購方案下拉：其他加購"),
+    navToggle("navFood", "餐食加購"),
+    navToggle("navProducts", "商品專區"),
+    navToggle("navFaq", "常見問題"),
+    navToggle("navContact", "聯絡我們"),
+  ],
+  defaults: {
+    navHome: true,
+    navAbout: true,
+    navBabyParty: true,
+    navBabyPartyZhuazhou: true,
+    navBabyPartySaliva: true,
+    navBabyPartyBirthday: true,
+    navBabyPartyGender: true,
+    navBabyPartyPlay: true,
+    navPhoto: true,
+    navPhotoPhotographer: true,
+    navPhotoOther: true,
+    navFood: true,
+    navProducts: true,
+    navFaq: true,
+    navContact: true,
   },
 });
 

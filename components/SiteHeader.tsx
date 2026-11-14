@@ -6,7 +6,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContent } from "@/components/SiteContentProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { layoutHeader } from "@/lib/site-content/blocks/layout";
+import {
+  layoutHeader,
+  layoutNavVisibility,
+} from "@/lib/site-content/blocks/layout";
 import { siteBusiness } from "@/lib/site-content/blocks/site";
 import { cn } from "@/lib/cn";
 
@@ -35,6 +38,7 @@ const NAV_ITEMS: NavItem[] = [
       { href: "/baby-party#party", labelKey: "navBabyPartySaliva" },
       { href: "/baby-party#birthday", labelKey: "navBabyPartyBirthday" },
       { href: "/baby-party#gender", labelKey: "navBabyPartyGender" },
+      { href: "/play", labelKey: "navBabyPartyPlay" },
     ],
   },
   {
@@ -50,6 +54,18 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/faq", labelKey: "navFaq" },
   { href: "/contact", labelKey: "navContact" },
 ];
+
+type Visibility = typeof layoutNavVisibility.defaults;
+
+// 依後台開關過濾選單；沒有開關設定的項目一律顯示
+const visibleNavItems = (visibility: Visibility): NavItem[] => {
+  const shown = (key: LabelKey) =>
+    (visibility as Record<string, boolean | undefined>)[key] !== false;
+  return NAV_ITEMS.filter((item) => shown(item.labelKey)).map((item) => ({
+    ...item,
+    children: item.children?.filter((sub) => shown(sub.labelKey)),
+  }));
+};
 
 const isItemActive = (item: NavItem, pathname: string) => {
   if (item.href === "/") return pathname === "/";
@@ -75,6 +91,7 @@ export const SiteHeader = () => {
   const pathname = usePathname();
   const c = useContent(layoutHeader);
   const biz = useContent(siteBusiness);
+  const navItems = visibleNavItems(useContent(layoutNavVisibility));
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -156,7 +173,7 @@ export const SiteHeader = () => {
         </Link>
 
         <nav className="hidden items-center gap-7 lg:flex" aria-label="主選單">
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             const active = isItemActive(item, pathname);
             const hasChildren = !!item.children?.length;
 
@@ -288,11 +305,11 @@ export const SiteHeader = () => {
       <div
         className={cn(
           "overflow-hidden border-t border-brand-soft/40 bg-white/95 backdrop-blur-md transition-[max-height,opacity] duration-300 lg:hidden",
-          menuOpen ? "max-h-[640px] opacity-100" : "max-h-0 opacity-0",
+          menuOpen ? "max-h-[720px] opacity-100" : "max-h-0 opacity-0",
         )}
       >
         <nav className="flex flex-col px-6 py-4" aria-label="行動選單">
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             const active = isItemActive(item, pathname);
             return (
               <div
@@ -318,7 +335,7 @@ export const SiteHeader = () => {
                   />
                   {c[item.labelKey]}
                 </Link>
-                {item.children && (
+                {item.children?.length ? (
                   <ul className="mb-2 ml-7 flex flex-col gap-1">
                     {item.children.map((sub) => (
                       <li key={sub.href}>
@@ -331,7 +348,7 @@ export const SiteHeader = () => {
                       </li>
                     ))}
                   </ul>
-                )}
+                ) : null}
               </div>
             );
           })}
