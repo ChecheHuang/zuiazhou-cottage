@@ -56,19 +56,43 @@ export const GeminiKeyField = ({
 }) => {
   const c = useContent(aiSettings);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [revealed, setRevealed] = useState(false);
   return (
     <div className="rounded-2xl bg-white/85 p-4 text-left ring-1 ring-brand-soft/60">
       <label className="flex flex-col gap-1.5">
         <span className="text-sm font-medium text-brand">{c.keyLabel}</span>
-        <input
-          type="password"
-          autoComplete="off"
-          spellCheck={false}
-          value={gemini.rawKey}
-          onChange={(e) => gemini.setKey(e.target.value)}
-          placeholder={c.keyPlaceholder}
-          className="w-full rounded-full border border-brand-soft/70 bg-white px-4 py-2 font-mono text-sm text-brand-ink outline-none focus:border-brand focus:ring-4 focus:ring-brand-soft/40"
-        />
+        <span className="relative">
+          {/* 不用 type="password"：瀏覽器會把它當登入表單，每次送出都跳「要儲存密碼嗎？」。
+              改用一般文字欄位＋CSS 遮罩成圓點，並請密碼管理器忽略這個欄位。 */}
+          <input
+            type="text"
+            name="gemini-api-key"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            data-1p-ignore
+            data-lpignore="true"
+            data-bwignore
+            data-form-type="other"
+            value={gemini.rawKey}
+            onChange={(e) => gemini.setKey(e.target.value)}
+            placeholder={c.keyPlaceholder}
+            className={cn(
+              !revealed && "[-webkit-text-security:disc]",
+              "w-full rounded-full border border-brand-soft/70 bg-white py-2 pl-4 pr-11 font-mono text-sm text-brand-ink outline-none focus:border-brand focus:ring-4 focus:ring-brand-soft/40",
+            )}
+          />
+          <button
+            type="button"
+            onClick={() => setRevealed((v) => !v)}
+            aria-label={revealed ? "隱藏 key" : "顯示 key"}
+            aria-pressed={revealed}
+            className="absolute right-1.5 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-base hover:bg-brand-soft/30"
+          >
+            <span aria-hidden>{revealed ? "🙈" : "👁"}</span>
+          </button>
+        </span>
       </label>
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-brand-ink/70">
         <label className="inline-flex items-center gap-1.5">
@@ -76,7 +100,7 @@ export const GeminiKeyField = ({
             type="checkbox"
             checked={gemini.remember}
             onChange={(e) => gemini.setRemember(e.target.checked)}
-            className="accent-[var(--color-brand)]"
+            className="accent-brand"
           />
           {c.rememberLabel}
         </label>
