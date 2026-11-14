@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Noto_Sans_TC } from "next/font/google";
-import Script from "next/script";
 import { FloatingActions } from "@/components/FloatingActions";
 import { SiteContentProvider } from "@/components/SiteContentProvider";
 import { SiteImagesProvider } from "@/components/SiteImagesProvider";
@@ -46,6 +45,9 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+// 在 <head> 用一般的內嵌 script，讓瀏覽器解析 HTML 時就同步套用主題，第一次繪製就是正確顏色。
+// 不能用 next/script 的 beforeInteractive：App Router 會把它排進 Next.js 的佇列，
+// 等框架載入後才執行，畫面會先閃一下預設的粉色再換成青綠。
 const themeBootScript = `(function(){try{var t=localStorage.getItem('theme');if(t==='teal'){document.documentElement.setAttribute('data-theme','teal');}}catch(e){}})()`;
 
 export default async function RootLayout({
@@ -64,10 +66,10 @@ export default async function RootLayout({
       className={`${notoSansTC.variable} ${cormorant.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
+      </head>
       <body className="min-h-full flex flex-col bg-white text-brand-ink">
-        <Script id="theme-init" strategy="beforeInteractive">
-          {themeBootScript}
-        </Script>
         <SiteContentProvider overrides={contentOverrides}>
           <SiteImagesProvider overrides={imageOverrides}>
             {children}
