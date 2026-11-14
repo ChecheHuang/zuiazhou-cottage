@@ -6,7 +6,10 @@
     "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:push": "drizzle-kit push",
+    "db:push:prod": "node scripts/db-push-prod.mjs",
+    "db:reset-dev": "node scripts/db-reset-dev.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
