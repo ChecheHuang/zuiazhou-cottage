@@ -19,11 +19,18 @@ export const homeSeo = defineBlock({
   fields: [
     { type: "text", key: "title", label: "網頁標題" },
     { type: "text", key: "description", label: "網頁說明", multiline: true },
+    {
+      type: "image",
+      key: "image",
+      label: "分享預覽圖",
+      hint: "分享到 LINE、Facebook 時顯示的圖片，建議用 1200×630 的橫式照片",
+    },
   ],
   defaults: {
     title: "Happy 抓周小屋｜桃園平鎮抓週派對推薦",
     description:
       "桃園平鎮包場抓週派對、兒童生日派對、性別揭曉派對，從場佈、流程到攝影一站式包辦，給寶貝最美的人生第一場派對。",
+    image: "/og/home.jpg",
   },
 });
 

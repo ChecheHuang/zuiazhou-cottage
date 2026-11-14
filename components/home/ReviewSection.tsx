@@ -87,7 +87,7 @@ export const ReviewSection = () => {
           }}
           className="mt-8 grid grid-cols-4 gap-3 md:mt-10 md:grid-cols-8 md:gap-4"
         >
-          {photos.map((src) => (
+          {photos.map((src, i) => (
             <motion.div
               key={src}
               variants={{
@@ -99,7 +99,7 @@ export const ReviewSection = () => {
             >
               <Image
                 src={src}
-                alt=""
+                alt={`${c.title} 照片 ${i + 1}`}
                 fill
                 sizes="(min-width: 768px) 12vw, 25vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-110"

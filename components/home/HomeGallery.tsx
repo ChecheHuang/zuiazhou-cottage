@@ -57,7 +57,7 @@ export const HomeGallery = () => {
               >
                 <Image
                   src={src}
-                  alt=""
+                  alt={`${c.title} 第 ${i + 1} 張`}
                   fill
                   sizes="(min-width: 768px) 25vw, 50vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-110"

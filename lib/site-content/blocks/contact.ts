@@ -45,11 +45,18 @@ export const contactSeo = defineBlock({
   fields: [
     { type: "text", key: "title", label: "頁面標題" },
     { type: "text", key: "description", label: "頁面描述", multiline: true },
+    {
+      type: "image",
+      key: "image",
+      label: "分享預覽圖",
+      hint: "分享到 LINE、Facebook 時顯示的圖片，建議用 1200×630 的橫式照片",
+    },
   ],
   defaults: {
     title: "聯絡我們 - Happy 抓周小屋",
     description:
       "桃園平鎮 Happy 抓周小屋聯絡資訊、地圖與線上預約表單，歡迎留言或加 LINE 諮詢。",
+    image: "/og/contact.jpg",
   },
 });
 

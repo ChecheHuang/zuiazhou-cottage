@@ -68,7 +68,7 @@ export const AboutPhotoStrip = ({
               >
                 <Image
                   src={src}
-                  alt=""
+                  alt={`${title} 第 ${i + 1} 張`}
                   fill
                   sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 50vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"

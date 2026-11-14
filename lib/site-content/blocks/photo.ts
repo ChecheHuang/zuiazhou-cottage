@@ -11,11 +11,18 @@ export const photoSeo = defineBlock({
   fields: [
     { type: "text", key: "title", label: "分頁標題" },
     { type: "text", key: "description", label: "頁面說明", multiline: true },
+    {
+      type: "image",
+      key: "image",
+      label: "分享預覽圖",
+      hint: "分享到 LINE、Facebook 時顯示的圖片，建議用 1200×630 的橫式照片",
+    },
   ],
   defaults: {
     title: "派對加購方案 - Happy 抓周小屋",
     description:
       "攝影師加購、空飄氣球、客製立牌、寶寶猜測版等加購方案，自由搭配為派對升級。",
+    image: "/og/photo.jpg",
   },
 });
 

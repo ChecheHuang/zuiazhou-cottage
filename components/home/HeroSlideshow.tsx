@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { useSlotImages } from "@/components/SiteImagesProvider";
 import { useContent } from "@/components/SiteContentProvider";
@@ -25,7 +26,8 @@ export const HeroSlideshow = () => {
 
   return (
     <section className="relative h-[88vh] min-h-[600px] w-full overflow-hidden">
-      <AnimatePresence>
+      {/* initial={false}：第一張不做淡入，讓首屏大圖立刻出現（LCP） */}
+      <AnimatePresence initial={false}>
         <motion.div
           key={slides[active % count]}
           initial={{ opacity: 0, scale: 1 }}
@@ -35,10 +37,18 @@ export const HeroSlideshow = () => {
             opacity: { duration: 1.2, ease: "easeInOut" },
             scale: { duration: SLIDE_DURATION / 1000 + 1, ease: "linear" },
           }}
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${slides[active % count]})` }}
+          className="absolute inset-0"
           aria-hidden
-        />
+        >
+          <Image
+            src={slides[active % count]}
+            alt=""
+            fill
+            sizes="100vw"
+            priority={active === 0}
+            className="object-cover"
+          />
+        </motion.div>
       </AnimatePresence>
 
       <div

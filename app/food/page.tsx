@@ -5,10 +5,13 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { foodSeo } from "@/lib/site-content/blocks/food";
 import { getContent } from "@/lib/site-content/server";
+import { siteBusiness } from "@/lib/site-content/blocks/site";
+import { buildPageMetadata } from "@/lib/seo";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const seo = await getContent(foodSeo);
-  return { title: seo.title, description: seo.description };
+  const biz = await getContent(siteBusiness);
+  return buildPageMetadata(seo, "/food", biz.brand);
 };
 
 export default function FoodPage() {

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useSlotImages } from "@/components/SiteImagesProvider";
+import { optimizedBackground } from "@/lib/optimized-background";
 import { useContent } from "@/components/SiteContentProvider";
 import { partyMemories } from "@/lib/site-content/blocks/baby-party";
 
@@ -31,7 +32,7 @@ export const BackgroundSlideshow = ({
           aria-hidden
           className="absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out"
           style={{
-            backgroundImage: `url(${src})`,
+            backgroundImage: optimizedBackground(src),
             opacity: i === active % count ? 1 : 0,
             transform: i === active % count ? "scale(1.04)" : "scale(1)",
             transitionProperty: "opacity, transform",

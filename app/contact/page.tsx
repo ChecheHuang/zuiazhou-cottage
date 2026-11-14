@@ -12,10 +12,12 @@ import {
   fillBusinessTokens,
 } from "@/lib/site-content/blocks/contact";
 import { mapEmbedUrlFor, siteBusiness } from "@/lib/site-content/blocks/site";
+import { buildPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getContent(contactSeo);
-  return { title: seo.title, description: seo.description };
+  const biz = await getContent(siteBusiness);
+  return buildPageMetadata(seo, "/contact", biz.brand);
 }
 
 export default async function ContactPage() {
@@ -40,6 +42,7 @@ export default async function ContactPage() {
 
           <div className="relative mx-auto max-w-content px-6">
             <SectionHeading
+              as="h1"
               watermark={intro.watermark}
               title={intro.title}
               description={intro.description}

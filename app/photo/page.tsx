@@ -6,10 +6,13 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { photoSeo } from "@/lib/site-content/blocks/photo";
 import { getContent } from "@/lib/site-content/server";
+import { siteBusiness } from "@/lib/site-content/blocks/site";
+import { buildPageMetadata } from "@/lib/seo";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const seo = await getContent(photoSeo);
-  return { title: seo.title, description: seo.description };
+  const biz = await getContent(siteBusiness);
+  return buildPageMetadata(seo, "/photo", biz.brand);
 };
 
 export default function PhotoPage() {

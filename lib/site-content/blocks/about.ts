@@ -12,10 +12,17 @@ export const aboutSeo = defineBlock({
   fields: [
     { type: "text", key: "title", label: "分頁標題" },
     { type: "text", key: "description", label: "頁面說明", multiline: true },
+    {
+      type: "image",
+      key: "image",
+      label: "分享預覽圖",
+      hint: "分享到 LINE、Facebook 時顯示的圖片，建議用 1200×630 的橫式照片",
+    },
   ],
   defaults: {
     title: "關於我們 - Happy 抓周小屋",
     description: "Happy 抓周小屋主理人團隊的故事、合作餐點夥伴與場地環境照片。",
+    image: "/og/about.jpg",
   },
 });
 

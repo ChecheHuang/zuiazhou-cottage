@@ -9,6 +9,8 @@ interface SectionHeadingProps {
   description?: string;
   align?: "center" | "left";
   light?: boolean;
+  /** 頁面主標題用 h1（每頁一個），其他區塊維持 h2 */
+  as?: "h1" | "h2";
 }
 
 export const SectionHeading = ({
@@ -17,16 +19,14 @@ export const SectionHeading = ({
   description,
   align = "center",
   light = false,
+  as: Heading = "h2",
 }: SectionHeadingProps) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-80px" }}
     transition={{ duration: 0.7, ease: "easeOut" }}
-    className={cn(
-      "relative",
-      align === "center" ? "text-center" : "text-left",
-    )}
+    className={cn("relative", align === "center" ? "text-center" : "text-left")}
   >
     <span
       aria-hidden
@@ -38,14 +38,14 @@ export const SectionHeading = ({
     >
       {watermark}
     </span>
-    <h2
+    <Heading
       className={cn(
         "relative -mt-6 text-2xl font-semibold tracking-wide md:-mt-10 md:text-3xl",
         light ? "text-white" : "text-brand",
       )}
     >
       {title}
-    </h2>
+    </Heading>
     {description && (
       <p
         className={cn(

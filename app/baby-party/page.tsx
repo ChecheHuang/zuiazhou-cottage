@@ -16,10 +16,13 @@ import {
   partyTraditionalItems,
 } from "@/lib/site-content/blocks/baby-party";
 import { getContent } from "@/lib/site-content/server";
+import { siteBusiness } from "@/lib/site-content/blocks/site";
+import { buildPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getContent(partySeo);
-  return { title: seo.title, description: seo.description };
+  const biz = await getContent(siteBusiness);
+  return buildPageMetadata(seo, "/baby-party", biz.brand);
 }
 
 export default async function BabyPartyPage() {

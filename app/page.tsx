@@ -12,10 +12,13 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { homeSeo } from "@/lib/site-content/blocks/home";
 import { getContent } from "@/lib/site-content/server";
+import { siteBusiness } from "@/lib/site-content/blocks/site";
+import { buildPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getContent(homeSeo);
-  return { title: seo.title, description: seo.description };
+  const biz = await getContent(siteBusiness);
+  return buildPageMetadata(seo, "/", biz.brand);
 }
 
 export default function Home() {

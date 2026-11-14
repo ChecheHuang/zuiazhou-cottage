@@ -4,9 +4,12 @@ import Script from "next/script";
 import { FloatingActions } from "@/components/FloatingActions";
 import { SiteContentProvider } from "@/components/SiteContentProvider";
 import { SiteImagesProvider } from "@/components/SiteImagesProvider";
+import { LocalBusinessJsonLd } from "@/components/seo/LocalBusinessJsonLd";
 import { layoutSeo } from "@/lib/site-content/blocks/layout";
+import { siteBusiness } from "@/lib/site-content/blocks/site";
 import { getContent, getContentOverrides } from "@/lib/site-content/server";
 import { getSiteImageOverrides } from "@/lib/site-images/server";
+import { buildPageMetadata, siteUrl } from "@/lib/seo";
 import "./globals.css";
 
 const notoSansTC = Noto_Sans_TC({
@@ -23,8 +26,24 @@ const cormorant = Cormorant_Garamond({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await getContent(layoutSeo);
-  return { title: seo.title, description: seo.description };
+  const [seo, biz] = await Promise.all([
+    getContent(layoutSeo),
+    getContent(siteBusiness),
+  ]);
+  // 根 layout 不設 canonical，避免沒有自己 canonical 的頁面（例如 404）被指到首頁
+  const { title, description, openGraph, twitter } = buildPageMetadata(
+    seo,
+    "/",
+    biz.brand,
+  );
+  return {
+    title,
+    description,
+    openGraph,
+    twitter,
+    metadataBase: new URL(siteUrl()),
+    applicationName: biz.brand,
+  };
 }
 
 const themeBootScript = `(function(){try{var t=localStorage.getItem('theme');if(t==='teal'){document.documentElement.setAttribute('data-theme','teal');}}catch(e){}})()`;
@@ -55,6 +74,7 @@ export default async function RootLayout({
             <FloatingActions />
           </SiteImagesProvider>
         </SiteContentProvider>
+        <LocalBusinessJsonLd />
       </body>
     </html>
   );

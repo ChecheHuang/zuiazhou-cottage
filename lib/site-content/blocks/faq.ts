@@ -10,11 +10,18 @@ export const faqSeo = defineBlock({
   fields: [
     { type: "text", key: "title", label: "頁面標題" },
     { type: "text", key: "description", label: "頁面描述", multiline: true },
+    {
+      type: "image",
+      key: "image",
+      label: "分享預覽圖",
+      hint: "分享到 LINE、Facebook 時顯示的圖片，建議用 1200×630 的橫式照片",
+    },
   ],
   defaults: {
     title: "常見問題 - Happy 抓周小屋",
     description:
       "抓周流程、人數限制、攝影、寵物入場、雙寶加價等常見問題與貼心提醒。",
+    image: "/og/faq.jpg",
   },
 });
 

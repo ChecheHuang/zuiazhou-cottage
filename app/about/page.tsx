@@ -10,10 +10,13 @@ import {
   aboutSeo,
 } from "@/lib/site-content/blocks/about";
 import { getContent } from "@/lib/site-content/server";
+import { siteBusiness } from "@/lib/site-content/blocks/site";
+import { buildPageMetadata } from "@/lib/seo";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const seo = await getContent(aboutSeo);
-  return { title: seo.title, description: seo.description };
+  const biz = await getContent(siteBusiness);
+  return buildPageMetadata(seo, "/about", biz.brand);
 };
 
 export default async function AboutPage() {

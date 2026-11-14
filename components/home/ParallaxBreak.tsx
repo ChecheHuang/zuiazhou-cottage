@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useSlotImage } from "@/components/SiteImagesProvider";
+import { optimizedBackground } from "@/lib/optimized-background";
 import { useContent } from "@/components/SiteContentProvider";
 import { homeParallax } from "@/lib/site-content/blocks/home";
 
@@ -17,7 +18,7 @@ export const ParallaxBreak = () => {
       <div
         aria-hidden
         className="absolute inset-0 bg-fixed bg-cover bg-center"
-        style={{ backgroundImage: `url(${bg})` }}
+        style={{ backgroundImage: optimizedBackground(bg) }}
       />
       <div
         aria-hidden

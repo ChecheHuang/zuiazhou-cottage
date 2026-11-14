@@ -18,11 +18,18 @@ export const partySeo = defineBlock({
       label: "搜尋結果簡介",
       multiline: true,
     },
+    {
+      type: "image",
+      key: "image",
+      label: "分享預覽圖",
+      hint: "分享到 LINE、Facebook 時顯示的圖片，建議用 1200×630 的橫式照片",
+    },
   ],
   defaults: {
     title: "寶寶派對 - Happy 抓周小屋",
     description:
       "桃園平鎮包場寶寶抓週派對、兒童生日派對、性別揭曉派對推薦，從場佈、流程到攝影一站式包辦。",
+    image: "/og/party.jpg",
   },
 });
 

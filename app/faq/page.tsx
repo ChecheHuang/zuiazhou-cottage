@@ -5,22 +5,44 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getContent } from "@/lib/site-content/server";
 import type { Metadata } from "next";
-import { faqCta, faqIntro, faqSeo } from "@/lib/site-content/blocks/faq";
+import {
+  faqCta,
+  faqIntro,
+  faqList,
+  faqSeo,
+} from "@/lib/site-content/blocks/faq";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { siteBusiness } from "@/lib/site-content/blocks/site";
+import { buildPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getContent(faqSeo);
-  return { title: seo.title, description: seo.description };
+  const biz = await getContent(siteBusiness);
+  return buildPageMetadata(seo, "/faq", biz.brand);
 }
 
 export default async function FaqPage() {
-  const [biz, intro, cta] = await Promise.all([
+  const [biz, intro, cta, list] = await Promise.all([
     getContent(siteBusiness),
     getContent(faqIntro),
     getContent(faqCta),
+    getContent(faqList),
   ]);
+  // FAQPage 結構化資料：讓 Google／AI 搜尋讀懂問答內容
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: list.items
+      .filter((item) => item.q.trim() && item.a.trim())
+      .map((item) => ({
+        "@type": "Question",
+        name: item.q,
+        acceptedAnswer: { "@type": "Answer", text: item.a },
+      })),
+  };
   return (
     <>
+      <JsonLd data={faqJsonLd} />
       <SiteHeader />
       <main className="flex-1">
         <section className="relative overflow-hidden bg-brand-beige/55 py-20 md:py-28">
@@ -35,6 +57,7 @@ export default async function FaqPage() {
 
           <div className="relative mx-auto max-w-content px-6">
             <SectionHeading
+              as="h1"
               watermark={intro.watermark}
               title={intro.title}
               description={intro.description}

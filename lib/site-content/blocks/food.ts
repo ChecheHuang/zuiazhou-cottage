@@ -12,11 +12,18 @@ export const foodSeo = defineBlock({
   fields: [
     { type: "text", key: "title", label: "分頁標題" },
     { type: "text", key: "description", label: "頁面說明", multiline: true },
+    {
+      type: "image",
+      key: "image",
+      label: "分享預覽圖",
+      hint: "分享到 LINE、Facebook 時顯示的圖片，建議用 1200×630 的橫式照片",
+    },
   ],
   defaults: {
     title: "餐食加購 - Happy 抓周小屋",
     description:
       "Happy 抓周小屋專屬組合菜色、單點、合菜桌菜、下午茶點心，儀式結束後直接入座。",
+    image: "/og/food.jpg",
   },
 });
 
