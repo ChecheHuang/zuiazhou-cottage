@@ -6,10 +6,12 @@ const photo = (n: number) => {
 const range = (start: number, end: number) =>
   Array.from({ length: end - start + 1 }, (_, i) => photo(start + i));
 
-export const PARTY_PLAN_PHOTOS = {
-  basic: range(1, 5),
-  floral: range(6, 11),
-  deluxe: range(20, 24),
+// 依佈置風格對應四大主題場地（若與實際場地不符，調整這裡即可）
+export const THEME_ROOM_PHOTOS = {
+  galaxy: [photo(30), photo(35), photo(57), photo(31), photo(56)],
+  forest: [photo(17), photo(18)],
+  cream: [photo(1), photo(2), photo(3), photo(5), photo(45)],
+  fortune: [photo(20), photo(37), photo(29), photo(24)],
 };
 
 export const HOST_PHOTO = photo(40);

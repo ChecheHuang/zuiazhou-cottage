@@ -49,6 +49,8 @@ export default function ContactPage() {
               </h2>
               <p className="mt-4 leading-loose text-brand-ink/80">
                 地址：{businessInfo.address}
+                <br />
+                {businessInfo.landmark}
               </p>
               <div className="mt-8 overflow-hidden rounded-3xl shadow-[0_18px_40px_rgba(237,160,157,0.16)]">
                 <iframe

@@ -8,10 +8,10 @@ export const PartyPlansSection = () => (
         id="plans-heading"
         className="text-center text-3xl font-semibold tracking-wide text-brand md:text-4xl"
       >
-        派對方案
+        四大主題場地
       </h2>
       <p className="mx-auto mt-4 max-w-2xl text-center leading-loose text-brand-ink/80">
-        三種佈置風格自由挑選，從簡約清新到豪華背板，給寶寶最美的人生第一場派對。
+        四種不同風格的主題空間，不管是溫馨的小家庭聚會，還是熱鬧的大家族派對，都能找到最適合的場地！
       </p>
     </div>
 
@@ -19,6 +19,7 @@ export const PartyPlansSection = () => (
       <PartyPlan
         key={plan.key}
         title={plan.title}
+        price={plan.price}
         features={plan.features}
         images={plan.images}
         reverse={i % 2 === 1}

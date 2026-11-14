@@ -11,6 +11,7 @@ import "swiper/css/pagination";
 
 interface PartyPlanProps {
   title: string;
+  price?: string;
   features: string[];
   images: { src: string; alt: string }[];
   reverse?: boolean;
@@ -19,6 +20,7 @@ interface PartyPlanProps {
 
 export const PartyPlan = ({
   title,
+  price,
   features,
   images,
   reverse,
@@ -74,9 +76,15 @@ export const PartyPlan = ({
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
       >
-        <h3 className="mb-6 whitespace-pre-line text-2xl font-semibold leading-tight text-brand md:text-3xl">
+        <h3 className="whitespace-pre-line text-2xl font-semibold leading-tight text-brand md:text-3xl">
           {title}
         </h3>
+        {price && (
+          <p className="mt-3 text-2xl font-semibold tracking-wide text-brand-accent md:text-3xl">
+            {price}
+          </p>
+        )}
+        <div className="mb-6" />
         <ul className="space-y-3 text-brand-ink">
           {features.map((feature) => (
             <li key={feature} className="flex items-center gap-3">

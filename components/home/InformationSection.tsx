@@ -78,7 +78,12 @@ export const InformationSection = () => (
           transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
           className="flex flex-col gap-6 rounded-3xl bg-brand-beige/60 p-8 ring-1 ring-brand-soft/40 md:p-10"
         >
-          <InfoLine icon="📍" label="地址" value={businessInfo.address} />
+          <InfoLine
+            icon="📍"
+            label="地址"
+            value={`${businessInfo.address}（${businessInfo.landmark}）`}
+          />
+          <InfoLine icon="💬" label="官方 LINE" value={businessInfo.lineId} />
           <InfoLine
             icon="⏰"
             label="營業時間"

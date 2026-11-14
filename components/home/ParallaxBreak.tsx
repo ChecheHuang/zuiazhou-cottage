@@ -43,7 +43,7 @@ export const ParallaxBreak = () => (
           />
         </div>
         <p className="mx-auto mt-4 max-w-xl text-sm leading-loose text-white/90 drop-shadow md:text-base">
-          一片大草皮、一間木屋、一束自然光——所有讓你拍照不踩雷的元素，我們都準備好了。
+          四大主題空間、專業主持、滿滿的祝福儀式——所有讓你拍照不踩雷的元素，我們都準備好了。
         </p>
       </motion.div>
     </div>

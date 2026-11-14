@@ -29,7 +29,7 @@ export const RitualTimeline = () => (
           抓周派對流程
         </h2>
         <p className="mx-auto mt-4 max-w-2xl leading-loose text-brand-ink/80">
-          九個步驟、一段珍貴回憶，從穿虎衣到合影留念，由主持人陪伴全家完整走完。
+          十個步驟、一段珍貴回憶，從穿虎衣到合影留念，由主持人陪伴全家完整走完。
         </p>
       </motion.div>
 

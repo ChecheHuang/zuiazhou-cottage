@@ -30,7 +30,7 @@ export default function AboutPage() {
         <AboutPhotoStrip
           watermark="Environment"
           title="環境照片"
-          description="桃園平鎮 15 坪派對小屋，搭配溫柔色系的派對佈景。"
+          description="桃園平鎮四大主題場地，從溫馨小聚到大家族派對都適合。"
           images={aboutEnvironmentGallery}
           bg="beige"
         />

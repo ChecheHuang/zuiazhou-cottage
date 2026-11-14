@@ -91,7 +91,7 @@ export const ContactInfo = () => (
     <InfoCard
       eyebrow="LINE"
       title="官方 LINE"
-      value="點擊加入線上諮詢"
+      value={`ID：${businessInfo.lineId}（點擊加入）`}
       href={businessInfo.socials.line}
       icon={<span className="text-xl">💬</span>}
     />
