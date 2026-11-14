@@ -5,6 +5,10 @@ import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useContent } from "@/components/SiteContentProvider";
 import { RoomScene } from "@/components/play/RoomScene";
+import {
+  ROOM_THEME_IDS,
+  type RoomThemeId,
+} from "@/components/play/roomThemes";
 import { cn } from "@/lib/cn";
 import {
   MAT_SIZE,
@@ -67,6 +71,7 @@ export const ZhuazhouGame = ({
   const [copied, setCopied] = useState(false);
   const [mode, setMode] = useState<Mode>("room");
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [theme, setTheme] = useState<RoomThemeId>("galaxy");
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => () => clearTimeout(timer.current), []);
@@ -173,7 +178,7 @@ export const ZhuazhouGame = ({
   const highlight = phase.kind === "grabbing" ? phase.highlight : -1;
 
   return (
-    <div className="mx-auto mt-10 max-w-2xl">
+    <div className="mx-auto mt-6 max-w-2xl">
       <AnimatePresence mode="wait" initial={false}>
         {phase.kind === "result" ? (
           <motion.div
@@ -261,7 +266,7 @@ export const ZhuazhouGame = ({
                 e.preventDefault();
                 start();
               }}
-              className="flex flex-col gap-4"
+              className="flex flex-col gap-3"
             >
               <label className="flex flex-col gap-2 text-center">
                 <span className="text-sm font-medium tracking-wider text-brand">
@@ -283,6 +288,33 @@ export const ZhuazhouGame = ({
                 disabled={phase.kind === "grabbing"}
                 labels={{ room: c.modeRoom, quick: c.modeQuick }}
               />
+
+              {mode === "room" && (
+                <ThemePicker
+                  label={c.themeLabel}
+                  value={theme}
+                  onChange={setTheme}
+                  disabled={phase.kind === "grabbing"}
+                  names={{
+                    galaxy: c.themeGalaxy,
+                    forest: c.themeForest,
+                    cream: c.themeCream,
+                    fortune: c.themeFortune,
+                  }}
+                />
+              )}
+
+              {mode === "room" ? (
+                <RoomScene
+                  items={mat}
+                  theme={theme}
+                  target={phase.kind === "grabbing" ? phase.target : null}
+                  reduced={reduced}
+                  onDone={finishRoom}
+                />
+              ) : (
+                <Mat items={mat} highlight={highlight} reduced={reduced} />
+              )}
 
               <div className="flex flex-wrap justify-center gap-2">
                 <button
@@ -323,17 +355,6 @@ export const ZhuazhouGame = ({
                   />
                 )}
               </AnimatePresence>
-
-              {mode === "room" ? (
-                <RoomScene
-                  items={mat}
-                  target={phase.kind === "grabbing" ? phase.target : null}
-                  reduced={reduced}
-                  onDone={finishRoom}
-                />
-              ) : (
-                <Mat items={mat} highlight={highlight} reduced={reduced} />
-              )}
 
               <p
                 aria-live="polite"
@@ -434,6 +455,44 @@ const ItemPicker = ({
     </motion.div>
   );
 };
+
+const ThemePicker = ({
+  label,
+  value,
+  onChange,
+  disabled,
+  names,
+}: {
+  label: string;
+  value: RoomThemeId;
+  onChange: (theme: RoomThemeId) => void;
+  disabled: boolean;
+  names: Record<RoomThemeId, string>;
+}) => (
+  <div role="radiogroup" aria-label={label} className="flex flex-col gap-1.5">
+    <p className="text-center text-xs text-brand-ink/60">{label}</p>
+    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:justify-center sm:px-0 [&::-webkit-scrollbar]:hidden">
+      {ROOM_THEME_IDS.map((id) => (
+        <button
+          key={id}
+          type="button"
+          role="radio"
+          aria-checked={value === id}
+          disabled={disabled}
+          onClick={() => onChange(id)}
+          className={cn(
+            "shrink-0 whitespace-nowrap rounded-full px-3.5 py-1.5 text-sm transition-all disabled:cursor-not-allowed",
+            value === id
+              ? "bg-brand font-medium text-white shadow"
+              : "bg-white/80 text-brand-ink ring-1 ring-brand-soft/60 hover:bg-brand-soft/30",
+          )}
+        >
+          {names[id]}
+        </button>
+      ))}
+    </div>
+  </div>
+);
 
 const ModeSwitch = ({
   mode,

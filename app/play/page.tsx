@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { SectionHeading } from "@/components/SectionHeading";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ZhuazhouGame } from "@/components/play/ZhuazhouGame";
@@ -80,7 +79,7 @@ export default async function PlayPage({ searchParams }: Props) {
     <>
       <SiteHeader />
       <main className="flex-1">
-        <section className="relative overflow-hidden py-16 md:py-24">
+        <section className="relative overflow-hidden pb-16 pt-8 md:pb-24 md:pt-12">
           <span
             aria-hidden
             className="pointer-events-none absolute -left-10 top-10 hidden size-48 rounded-full bg-brand-soft/30 blur-3xl md:block"
@@ -90,12 +89,23 @@ export default async function PlayPage({ searchParams }: Props) {
             className="pointer-events-none absolute -right-10 bottom-10 hidden size-56 rounded-full bg-brand-accent/20 blur-3xl md:block"
           />
           <div className="relative mx-auto max-w-content px-4 sm:px-6">
-            <SectionHeading
-              as="h1"
-              watermark={game.watermark}
-              title={game.title}
-              description={game.description}
-            />
+            {/* 精簡標題：浮水印疊在標題後面，不另外佔高度，遊戲畫面才能早點出現 */}
+            <div className="relative text-center">
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 -top-3 font-display text-[56px] italic leading-none tracking-tight text-brand-cream md:-top-6 md:text-[88px]"
+              >
+                {game.watermark}
+              </span>
+              <h1 className="relative text-3xl font-semibold tracking-wide text-brand md:text-4xl">
+                {game.title}
+              </h1>
+              {game.description && (
+                <p className="relative mx-auto mt-3 max-w-2xl leading-relaxed text-brand-ink/80">
+                  {game.description}
+                </p>
+              )}
+            </div>
             <ZhuazhouGame
               items={items}
               initialMat={pickMatItems(items)}

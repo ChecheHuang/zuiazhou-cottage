@@ -3,6 +3,10 @@
 import { useEffect, useRef } from "react";
 import { motion, useAnimate } from "framer-motion";
 import { CrawlingBaby } from "@/components/play/CrawlingBaby";
+import {
+  ROOM_BACKGROUNDS,
+  type RoomThemeId,
+} from "@/components/play/roomThemes";
 import type { PlayItem } from "@/lib/play/items";
 
 // 房間模式：物品擺在地毯上，嬰兒從左邊爬進來，
@@ -52,13 +56,21 @@ const shuffle = <T,>(list: T[]) =>
 
 interface RoomSceneProps {
   items: PlayItem[];
+  theme: RoomThemeId;
   /** 有值時開始一輪：嬰兒最後會抓這個 index 的物品 */
   target: number | null;
   reduced: boolean;
   onDone: () => void;
 }
 
-export const RoomScene = ({ items, target, reduced, onDone }: RoomSceneProps) => {
+export const RoomScene = ({
+  items,
+  theme,
+  target,
+  reduced,
+  onDone,
+}: RoomSceneProps) => {
+  const Background = ROOM_BACKGROUNDS[theme];
   const [scope, animate] = useAnimate<HTMLDivElement>();
   const babyRef = useRef<HTMLDivElement>(null);
   const onDoneRef = useRef(onDone);
@@ -197,7 +209,7 @@ export const RoomScene = ({ items, target, reduced, onDone }: RoomSceneProps) =>
       ref={scope}
       className="@container relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] shadow-[0_18px_40px_rgba(237,160,157,0.18)] ring-1 ring-brand-soft/60"
     >
-      <RoomBackground />
+      <Background />
 
       {spotsFor(items.length).map((spot, i) => (
         <div
@@ -255,114 +267,3 @@ export const RoomScene = ({ items, target, reduced, onDone }: RoomSceneProps) =>
     </div>
   );
 };
-
-// ─── 房間背景（純 SVG，配色跟主題色走） ─────────────────────
-const brand = (v: string, opacity = 1) => ({
-  fill: `var(--color-${v})`,
-  opacity,
-});
-
-const FLAG_COLORS = ["brand", "brand-soft", "brand-accent", "white"] as const;
-
-// 牆上的三角旗：沿著二次貝茲曲線排
-const flags = Array.from({ length: 11 }, (_, i) => {
-  const t = (i + 0.5) / 11;
-  const x = 400 * t;
-  const y = (1 - t) ** 2 * 14 + 2 * (1 - t) * t * 58 + t ** 2 * 14;
-  return { x, y, color: FLAG_COLORS[i % FLAG_COLORS.length] };
-});
-
-const RoomBackground = () => (
-  <svg
-    viewBox="0 0 400 300"
-    preserveAspectRatio="none"
-    className="absolute inset-0 size-full"
-    aria-hidden
-  >
-    <defs>
-      <pattern id="room-dots" width="22" height="22" patternUnits="userSpaceOnUse">
-        <circle cx="5" cy="5" r="2" style={brand("brand-soft", 0.55)} />
-        <circle cx="16" cy="16" r="1.4" style={brand("brand-accent", 0.35)} />
-      </pattern>
-      <linearGradient id="room-floor" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stopColor="#e6c9a6" />
-        <stop offset="1" stopColor="#f1dcc2" />
-      </linearGradient>
-      <linearGradient id="room-sky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stopColor="#cfeaf6" />
-        <stop offset="1" stopColor="#eef8fc" />
-      </linearGradient>
-    </defs>
-
-    {/* 牆 */}
-    <rect width="400" height="152" style={brand("brand-beige")} />
-    <rect width="400" height="152" fill="url(#room-dots)" />
-
-    {/* 窗戶＋窗簾 */}
-    <rect x="270" y="34" width="92" height="80" rx="6" fill="url(#room-sky)" />
-    <ellipse cx="300" cy="62" rx="16" ry="7" fill="#fff" opacity="0.9" />
-    <ellipse cx="312" cy="58" rx="11" ry="6" fill="#fff" opacity="0.9" />
-    <rect
-      x="270"
-      y="34"
-      width="92"
-      height="80"
-      rx="6"
-      fill="none"
-      stroke="#fff"
-      strokeWidth="6"
-    />
-    <path d="M316 34 V114 M270 74 H362" stroke="#fff" strokeWidth="4" />
-    <path
-      d="M260 28 q14 40 4 92 h-10 q-6-50 -4-92z"
-      style={brand("brand-soft", 0.9)}
-    />
-    <path
-      d="M372 28 q-14 40 -4 92 h10 q6-50 4-92z"
-      style={brand("brand-soft", 0.9)}
-    />
-    <rect x="252" y="24" width="128" height="6" rx="3" fill="#c9a98f" />
-
-    {/* 三角旗 */}
-    <path d="M0 14 Q200 102 400 14" stroke="#c9a98f" strokeWidth="1.5" fill="none" />
-    {flags.map((f) => (
-      <path
-        key={f.x}
-        d={`M${f.x - 9} ${f.y - 1} L${f.x + 9} ${f.y - 1} L${f.x} ${f.y + 19}z`}
-        style={f.color === "white" ? { fill: "#fff" } : brand(f.color)}
-      />
-    ))}
-
-    {/* 氣球 */}
-    <path d="M72 108 q-6 18 2 40 M92 104 q4 22 -4 44" stroke="#bfa58f" strokeWidth="1" fill="none" />
-    <ellipse cx="72" cy="88" rx="15" ry="19" style={brand("brand")} />
-    <ellipse cx="94" cy="84" rx="14" ry="18" style={brand("brand-accent")} />
-    <ellipse cx="67" cy="81" rx="4" ry="6" fill="#fff" opacity="0.45" />
-    <ellipse cx="89" cy="77" rx="3.5" ry="5.5" fill="#fff" opacity="0.45" />
-
-    {/* 窗外的光灑在地上 */}
-    <path d="M276 152 L362 152 L330 230 L210 230z" fill="#fff" opacity="0.18" />
-
-    {/* 踢腳板＋木地板 */}
-    <rect y="146" width="400" height="8" fill="#fff" opacity="0.95" />
-    <rect y="154" width="400" height="146" fill="url(#room-floor)" />
-    {[172, 194, 222, 256, 296].map((y) => (
-      <line key={y} x1="0" x2="400" y1={y} y2={y} stroke="#d9bb98" strokeWidth="1" />
-    ))}
-
-    {/* 地毯 */}
-    <ellipse cx="200" cy="226" rx="188" ry="66" fill="#fff" opacity="0.6" />
-    <ellipse cx="200" cy="226" rx="176" ry="57" style={brand("brand-soft", 0.5)} />
-    <ellipse
-      cx="200"
-      cy="226"
-      rx="164"
-      ry="49"
-      fill="none"
-      stroke="#fff"
-      strokeWidth="2"
-      strokeDasharray="6 6"
-      opacity="0.9"
-    />
-  </svg>
-);
