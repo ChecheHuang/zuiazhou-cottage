@@ -11,15 +11,17 @@ const PROJECT_ID = "red-bonus-61061548";
 const DEV_BRANCH = "development";
 const isWindows = process.platform === "win32";
 
+// Windows 上 npx/vercel 是 .cmd，要透過 shell 執行；整串指令一起傳，避免 Node 的 DEP0190 警告
+const quote = (a) => (/[\s"]/.test(a) ? `"${a.replace(/"/g, '\\"')}"` : a);
+const spawn = (cmd, args, opts) =>
+  isWindows
+    ? spawnSync([cmd, ...args].map(quote).join(" "), { ...opts, shell: true })
+    : spawnSync(cmd, args, opts);
+
 const run = (args) =>
-  spawnSync(
-    "npx",
-    ["-y", "neonctl@latest", ...args, "--project-id", PROJECT_ID],
-    {
-      stdio: "inherit",
-      shell: isWindows,
-    },
-  );
+  spawn("npx", ["-y", "neonctl@latest", ...args, "--project-id", PROJECT_ID], {
+    stdio: "inherit",
+  });
 
 const rl = createInterface({ input: process.stdin, output: process.stdout });
 console.log(

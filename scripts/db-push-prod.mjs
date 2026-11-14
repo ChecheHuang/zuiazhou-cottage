@@ -11,10 +11,16 @@ import { join } from "node:path";
 import { createInterface } from "node:readline/promises";
 
 const isWindows = process.platform === "win32";
+
+// Windows 上 npx/vercel 是 .cmd，要透過 shell 執行；整串指令一起傳，避免 Node 的 DEP0190 警告
+const quote = (a) => (/[\s"]/.test(a) ? `"${a.replace(/"/g, '\\"')}"` : a);
+const spawn = (cmd, args, opts) =>
+  isWindows
+    ? spawnSync([cmd, ...args].map(quote).join(" "), { ...opts, shell: true })
+    : spawnSync(cmd, args, opts);
 const run = (cmd, args, env) =>
-  spawnSync(cmd, args, {
+  spawn(cmd, args, {
     stdio: "inherit",
-    shell: isWindows,
     env: { ...process.env, ...env },
   });
 
