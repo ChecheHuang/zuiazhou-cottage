@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { cn } from "@/lib/cn";
 
 type Theme = "rose" | "teal";
@@ -28,19 +28,30 @@ interface ThemeToggleProps {
   className?: string;
 }
 
-export const ThemeToggle = ({ className }: ThemeToggleProps) => {
-  const [theme, setTheme] = useState<Theme>("rose");
-  const [mounted, setMounted] = useState(false);
+// 主題存在 <html data-theme>，以 MutationObserver 訂閱其變化
+const subscribeTheme = (onChange: () => void) => {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
+  return () => observer.disconnect();
+};
 
-  useEffect(() => {
-    setTheme(readDomTheme());
-    setMounted(true);
-  }, []);
+const getServerTheme = (): Theme => "rose";
+
+const noopSubscribe = () => () => {};
+
+export const ThemeToggle = ({ className }: ThemeToggleProps) => {
+  const theme = useSyncExternalStore(subscribeTheme, readDomTheme, getServerTheme);
+  const mounted = useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
 
   const toggle = () => {
-    const next: Theme = theme === "rose" ? "teal" : "rose";
-    applyTheme(next);
-    setTheme(next);
+    applyTheme(theme === "rose" ? "teal" : "rose");
   };
 
   const label = theme === "rose" ? "目前粉色，點擊切換青綠" : "目前青綠，點擊切換粉色";

@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { businessInfo } from "@/data/home";
 import type { FoodPlan } from "@/data/food";

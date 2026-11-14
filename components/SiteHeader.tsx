@@ -69,7 +69,15 @@ export const SiteHeader = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [prevPathname, setPrevPathname] = useState(pathname);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // 換頁時關閉選單：render 階段比對 pathname，避免在 effect 裡 setState
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setMenuOpen(false);
+    setOpenDropdown(null);
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 32);
@@ -77,11 +85,6 @@ export const SiteHeader = () => {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => {
-    setMenuOpen(false);
-    setOpenDropdown(null);
-  }, [pathname]);
 
   useEffect(() => {
     return () => {
