@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { BackgroundSlideshow } from "@/components/BackgroundSlideshow";
 import { BirthdayPlan } from "@/components/BirthdayPlan";
 import { HeroIntro } from "@/components/HeroIntro";
@@ -12,6 +13,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { ZhuazhouGrid } from "@/components/ZhuazhouGrid";
 import {
   partyCareerItems,
+  partyPlayEntry,
   partySeo,
   partyTraditionalItems,
 } from "@/lib/site-content/blocks/baby-party";
@@ -26,9 +28,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function BabyPartyPage() {
-  const [career, traditional] = await Promise.all([
+  const [career, traditional, playEntry] = await Promise.all([
     getContent(partyCareerItems),
     getContent(partyTraditionalItems),
+    getContent(partyPlayEntry),
   ]);
   return (
     <>
@@ -54,6 +57,15 @@ export default async function BabyPartyPage() {
             items={traditional.items}
             density="compact"
           />
+          <div className="mx-auto -mt-4 mb-16 flex max-w-content flex-col items-center gap-3 px-6 text-center md:mb-20">
+            <p className="text-brand-ink/80">{playEntry.text}</p>
+            <Link
+              href="/play"
+              className="inline-flex items-center justify-center rounded-full bg-brand px-8 py-3 font-medium tracking-wider text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105"
+            >
+              {playEntry.button}
+            </Link>
+          </div>
         </section>
         <PhotoGallery />
         <BackgroundSlideshow />

@@ -6,6 +6,7 @@ import * as food from "./blocks/food";
 import * as home from "./blocks/home";
 import * as layout from "./blocks/layout";
 import * as photo from "./blocks/photo";
+import * as play from "./blocks/play";
 import * as productsBlocks from "./blocks/products";
 import * as site from "./blocks/site";
 import { getBlockOrder, isContentBlock, type ContentBlock } from "./schema";
@@ -16,6 +17,7 @@ const modules = [
   layout,
   home,
   babyParty,
+  play,
   about,
   photo,
   food,

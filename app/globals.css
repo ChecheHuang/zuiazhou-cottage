@@ -86,3 +86,127 @@ body {
   border-radius: 9999px;
   opacity: 1;
 }
+
+/* ─── 模擬抓周：嬰兒爬行動作（components/play/CrawlingBaby.tsx） ─── */
+/* 對側手腳同步：近側手＋遠側腳一組（a），遠側手＋近側腳一組（b） */
+.crawl-arm,
+.crawl-leg,
+.crawl-head,
+.crawl-body {
+  transform-box: fill-box;
+}
+.crawl-arm,
+.crawl-leg {
+  transform-origin: 50% 8%;
+}
+.crawl-head {
+  transform-origin: 20% 85%;
+}
+
+@keyframes crawl-arm-swing {
+  0%,
+  100% {
+    transform: rotate(24deg);
+  }
+  50% {
+    transform: rotate(-26deg);
+  }
+}
+@keyframes crawl-leg-swing {
+  0%,
+  100% {
+    transform: rotate(-16deg);
+  }
+  50% {
+    transform: rotate(14deg);
+  }
+}
+@keyframes crawl-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-2.5px) rotate(-1.5deg);
+  }
+}
+@keyframes crawl-head-bob {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+@keyframes crawl-breathe {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.025);
+  }
+}
+
+[data-crawling="true"] .crawl-arm.crawl-a {
+  animation: crawl-arm-swing 0.72s ease-in-out infinite;
+}
+[data-crawling="true"] .crawl-arm.crawl-b {
+  animation: crawl-arm-swing 0.72s ease-in-out -0.36s infinite;
+}
+[data-crawling="true"] .crawl-leg.crawl-a {
+  animation: crawl-leg-swing 0.72s ease-in-out infinite;
+}
+[data-crawling="true"] .crawl-leg.crawl-b {
+  animation: crawl-leg-swing 0.72s ease-in-out -0.36s infinite;
+}
+[data-crawling="true"] .crawl-body {
+  animation: crawl-bob 0.36s ease-in-out infinite;
+}
+[data-crawling="true"] .crawl-head {
+  animation: crawl-head-bob 0.72s ease-in-out infinite;
+}
+[data-crawling="false"] .crawl-body {
+  transform-origin: 50% 100%;
+  animation: crawl-breathe 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-crawling] .crawl-arm,
+  [data-crawling] .crawl-leg,
+  [data-crawling] .crawl-body,
+  [data-crawling] .crawl-head {
+    animation: none !important;
+  }
+}
+
+.crawl-look,
+.crawl-reach {
+  transform-box: fill-box;
+}
+.crawl-look {
+  transform-origin: 15% 90%;
+}
+.crawl-reach {
+  transform-origin: 50% 6%;
+  transition: transform 0.45s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+[data-reaching="true"] .crawl-reach {
+  transform: rotate(-78deg);
+}
+@keyframes baby-look {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(-14deg) translateY(-1px);
+  }
+  65% {
+    transform: rotate(9deg);
+  }
+}
+[data-looking="true"] .crawl-look {
+  animation: baby-look 1.2s ease-in-out;
+}
