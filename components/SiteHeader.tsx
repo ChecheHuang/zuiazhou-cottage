@@ -105,8 +105,12 @@ export const SiteHeader = () => {
     setOpenDropdown(null);
   }
 
+  // 緩衝區間：超過 48px 才縮小、回到 16px 以下才放大，門檻附近小幅滑動不會來回切換
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 32);
+    const onScroll = () =>
+      setScrolled((prev) =>
+        prev ? window.scrollY > 16 : window.scrollY > 48,
+      );
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -131,10 +135,15 @@ export const SiteHeader = () => {
     closeTimer.current = setTimeout(() => setOpenDropdown(null), 180);
   };
 
+  // header 用 fixed 固定在頂端，原位置放一塊固定高度的佔位。
+  // 若用 sticky，header 縮小會讓下面內容跟著移動，瀏覽器的捲動錨定會把捲動位置調回門檻以下，
+  // header 又放大……形成來回抖動。
   return (
+    <>
+    <div aria-hidden className="h-20 shrink-0 md:h-24" />
     <header
       className={cn(
-        "sticky top-0 z-40 w-full bg-white/85 backdrop-blur-md transition-all duration-300",
+        "fixed inset-x-0 top-0 z-40 w-full bg-white/85 backdrop-blur-md transition-all duration-300",
         scrolled
           ? "shadow-[0_2px_18px_rgba(237,160,157,0.15)] border-b border-brand-soft/40"
           : "shadow-none border-b border-transparent",
@@ -355,5 +364,6 @@ export const SiteHeader = () => {
         </nav>
       </div>
     </header>
+    </>
   );
 };
