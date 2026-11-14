@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/cn";
 import type { ZhuazhouItem } from "@/data/zhuazhou-items";
@@ -67,14 +66,13 @@ export const ZhuazhouGrid = ({
             className="group text-center"
           >
             <div className="relative aspect-square overflow-hidden rounded-2xl bg-brand-soft/30 ring-1 ring-brand-soft/40">
-              <Image
-                src={item.img}
-                alt={item.name}
-                fill
-                sizes="(min-width: 1024px) 14vw, (min-width: 768px) 20vw, 33vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-110"
-                unoptimized={item.img.startsWith("http")}
-              />
+              <span
+                role="img"
+                aria-label={item.name}
+                className="absolute inset-0 grid place-items-center text-5xl transition-transform duration-500 group-hover:scale-110 md:text-6xl"
+              >
+                {item.emoji}
+              </span>
               <div className="absolute inset-0 bg-brand/0 transition-colors duration-500 group-hover:bg-brand/15" />
             </div>
             <h3 className="mt-3 text-base font-medium text-brand">

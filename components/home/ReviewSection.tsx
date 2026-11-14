@@ -51,14 +51,12 @@ export const ReviewSection = () => (
             className="flex flex-col rounded-3xl bg-white p-7 shadow-[0_12px_32px_rgba(237,160,157,0.10)] ring-1 ring-brand-soft/40"
           >
             <div className="flex items-center gap-4">
-              <Image
-                src={r.avatar}
-                alt={r.name}
-                width={56}
-                height={56}
-                unoptimized
-                className="size-14 rounded-full object-cover ring-2 ring-brand-soft/40"
-              />
+              <span
+                aria-hidden
+                className="grid size-14 shrink-0 place-items-center rounded-full bg-brand-soft/40 text-xl font-semibold text-brand ring-2 ring-brand-soft/40"
+              >
+                {r.avatarText}
+              </span>
               <div>
                 <p className="font-semibold text-brand">{r.name}</p>
                 <p className="text-xs text-brand-ink/70">{r.relation}</p>

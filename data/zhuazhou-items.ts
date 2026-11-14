@@ -1,8 +1,43 @@
 export interface ZhuazhouItem {
   name: string;
   meaning?: string;
-  img: string;
+  emoji: string;
 }
+
+// 尚無道具實拍照，暫以 emoji 圖示代表
+const itemEmoji: Record<string, string> = {
+  飛機: "✈️",
+  算盤: "🧮",
+  相機: "📷",
+  攝影機: "🎥",
+  梳子: "🪮",
+  畫架: "🎨",
+  太空人: "🧑‍🚀",
+  槌子: "🔨",
+  汽車: "🚗",
+  聽診器: "🩺",
+  手槍: "🔫",
+  麥克風: "🎤",
+  電腦: "💻",
+  元寶: "🪙",
+  蒸籠: "🥟",
+  藤球: "⚽",
+  尺: "📏",
+  望遠鏡: "🔭",
+  鋼琴: "🎹",
+  放大鏡: "🔍",
+  毛筆: "🖌️",
+  籐籃: "🧺",
+  紅龜粿: "🐢",
+  蔥: "🌿",
+  雞腿: "🍗",
+  金元寶: "💰",
+  蒜: "🧄",
+  蘋果: "🍎",
+  芹菜: "🥬",
+  米香: "🍘",
+  花生: "🥜",
+};
 
 const careerNames = [
   "飛機",
@@ -78,16 +113,16 @@ const traditionalMeanings: Record<string, string> = {
   花生: "長生不老、福氣綿延",
 };
 
-export const careerItems: ZhuazhouItem[] = careerNames.map((name, i) => ({
+export const careerItems: ZhuazhouItem[] = careerNames.map((name) => ({
   name,
   meaning: careerMeanings[name],
-  img: `https://picsum.photos/seed/career-${i}/400/400`,
+  emoji: itemEmoji[name],
 }));
 
 export const traditionalItems: ZhuazhouItem[] = traditionalNames.map(
-  (name, i) => ({
+  (name) => ({
     name,
     meaning: traditionalMeanings[name],
-    img: `https://picsum.photos/seed/trad-${i}/400/400`,
+    emoji: itemEmoji[name],
   }),
 );
