@@ -3,26 +3,28 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { HERO_SLIDESHOW } from "@/data/photos";
+import { useSlotImages } from "@/components/SiteImagesProvider";
 
 const SLIDE_DURATION = 4500;
 
 export const HeroSlideshow = () => {
   const [active, setActive] = useState(0);
+  const slides = useSlotImages("home.hero");
+  const count = slides.length;
 
   useEffect(() => {
     const t = setInterval(
-      () => setActive((a) => (a + 1) % HERO_SLIDESHOW.length),
+      () => setActive((a) => (a + 1) % count),
       SLIDE_DURATION,
     );
     return () => clearInterval(t);
-  }, []);
+  }, [count]);
 
   return (
     <section className="relative h-[88vh] min-h-[600px] w-full overflow-hidden">
       <AnimatePresence>
         <motion.div
-          key={HERO_SLIDESHOW[active]}
+          key={slides[active % count]}
           initial={{ opacity: 0, scale: 1 }}
           animate={{ opacity: 1, scale: 1.12 }}
           exit={{ opacity: 0 }}
@@ -31,7 +33,7 @@ export const HeroSlideshow = () => {
             scale: { duration: SLIDE_DURATION / 1000 + 1, ease: "linear" },
           }}
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${HERO_SLIDESHOW[active]})` }}
+          style={{ backgroundImage: `url(${slides[active % count]})` }}
           aria-hidden
         />
       </AnimatePresence>
@@ -79,14 +81,14 @@ export const HeroSlideshow = () => {
       </div>
 
       <div className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 gap-2">
-        {HERO_SLIDESHOW.map((_, i) => (
+        {slides.map((_, i) => (
           <button
             key={i}
             type="button"
             aria-label={`第 ${i + 1} 張`}
             onClick={() => setActive(i)}
             className="h-1 rounded-full bg-white/40 transition-all duration-500 hover:bg-white/70"
-            style={{ width: i === active ? 32 : 12 }}
+            style={{ width: i === active % count ? 32 : 12 }}
           />
         ))}
       </div>

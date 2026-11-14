@@ -5,14 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Lightbox from "yet-another-react-lightbox";
-import { GALLERY_PHOTOS } from "@/data/photos";
+import { useSlotImages } from "@/components/SiteImagesProvider";
 import { SectionHeading } from "@/components/SectionHeading";
 
 import "yet-another-react-lightbox/styles.css";
 
 export const HomeGallery = () => {
   const [index, setIndex] = useState(-1);
-  const previewPhotos = GALLERY_PHOTOS.slice(0, 8);
+  const previewPhotos = useSlotImages("gallery").slice(0, 8);
 
   return (
     <section

@@ -3,15 +3,10 @@ import { AboutPhotoStrip } from "@/components/about/AboutPhotoStrip";
 import { AboutTeams } from "@/components/about/AboutTeams";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import {
-  aboutEnvironmentGallery,
-  aboutPhotoGallery,
-} from "@/data/about";
 
 export const metadata = {
   title: "關於我們 - Happy 抓周小屋",
-  description:
-    "Happy 抓周小屋主理人團隊的故事、合作餐點夥伴與場地環境照片。",
+  description: "Happy 抓周小屋主理人團隊的故事、合作餐點夥伴與場地環境照片。",
 };
 
 export default function AboutPage() {
@@ -25,13 +20,13 @@ export default function AboutPage() {
           watermark="Photos"
           title="攝影作品"
           description="從佈置到寶寶笑容，每一刻都值得珍藏。"
-          images={aboutPhotoGallery}
+          slot="about.photos"
         />
         <AboutPhotoStrip
           watermark="Environment"
           title="環境照片"
           description="桃園平鎮四大主題場地，從溫馨小聚到大家族派對都適合。"
-          images={aboutEnvironmentGallery}
+          slot="about.environment"
           bg="beige"
         />
       </main>

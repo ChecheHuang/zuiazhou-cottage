@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Noto_Sans_TC } from "next/font/google";
 import Script from "next/script";
 import { FloatingActions } from "@/components/FloatingActions";
+import { SiteImagesProvider } from "@/components/SiteImagesProvider";
+import { getSiteImageOverrides } from "@/lib/site-images/server";
 import "./globals.css";
 
 const notoSansTC = Noto_Sans_TC({
@@ -25,11 +27,13 @@ export const metadata: Metadata = {
 
 const themeBootScript = `(function(){try{var t=localStorage.getItem('theme');if(t==='teal'){document.documentElement.setAttribute('data-theme','teal');}}catch(e){}})()`;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const imageOverrides = await getSiteImageOverrides();
+
   return (
     <html
       lang="zh-Hant"
@@ -40,8 +44,10 @@ export default function RootLayout({
         <Script id="theme-init" strategy="beforeInteractive">
           {themeBootScript}
         </Script>
-        {children}
-        <FloatingActions />
+        <SiteImagesProvider overrides={imageOverrides}>
+          {children}
+          <FloatingActions />
+        </SiteImagesProvider>
       </body>
     </html>
   );

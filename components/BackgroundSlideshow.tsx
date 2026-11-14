@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { BACKGROUND_SLIDESHOW } from "@/data/photos";
+import { useSlotImages } from "@/components/SiteImagesProvider";
 
 interface BackgroundSlideshowProps {
   intervalMs?: number;
@@ -12,26 +12,25 @@ export const BackgroundSlideshow = ({
   intervalMs = 4500,
 }: BackgroundSlideshowProps) => {
   const [active, setActive] = useState(0);
+  const slides = useSlotImages("party.background");
+  const count = slides.length;
 
   useEffect(() => {
-    const t = setInterval(
-      () => setActive((a) => (a + 1) % BACKGROUND_SLIDESHOW.length),
-      intervalMs,
-    );
+    const t = setInterval(() => setActive((a) => (a + 1) % count), intervalMs);
     return () => clearInterval(t);
-  }, [intervalMs]);
+  }, [intervalMs, count]);
 
   return (
     <section className="relative overflow-hidden py-32 text-white md:py-40">
-      {BACKGROUND_SLIDESHOW.map((src, i) => (
+      {slides.map((src, i) => (
         <div
           key={src}
           aria-hidden
           className="absolute inset-0 bg-cover bg-center transition-opacity duration-[1500ms] ease-in-out"
           style={{
             backgroundImage: `url(${src})`,
-            opacity: i === active ? 1 : 0,
-            transform: i === active ? "scale(1.04)" : "scale(1)",
+            opacity: i === active % count ? 1 : 0,
+            transform: i === active % count ? "scale(1.04)" : "scale(1)",
             transitionProperty: "opacity, transform",
           }}
         />

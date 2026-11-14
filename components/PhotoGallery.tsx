@@ -4,12 +4,13 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Lightbox from "yet-another-react-lightbox";
-import { GALLERY_PHOTOS } from "@/data/photos";
+import { useSlotImages } from "@/components/SiteImagesProvider";
 
 import "yet-another-react-lightbox/styles.css";
 
 export const PhotoGallery = () => {
   const [index, setIndex] = useState(-1);
+  const photos = useSlotImages("gallery");
 
   return (
     <section
@@ -49,7 +50,7 @@ export const PhotoGallery = () => {
           }}
           className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-5"
         >
-          {GALLERY_PHOTOS.map((src, i) => (
+          {photos.map((src, i) => (
             <motion.li
               key={src}
               variants={{
@@ -81,7 +82,7 @@ export const PhotoGallery = () => {
         open={index >= 0}
         index={index}
         close={() => setIndex(-1)}
-        slides={GALLERY_PHOTOS.map((src) => ({ src }))}
+        slides={photos.map((src) => ({ src }))}
         controller={{ closeOnBackdropClick: true }}
       />
     </section>

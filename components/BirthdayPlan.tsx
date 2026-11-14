@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { BIRTHDAY_PHOTO } from "@/data/photos";
+import { useSlotImage } from "@/components/SiteImagesProvider";
 
 const features = [
   "場地包場 2.5 小時",
@@ -19,63 +19,66 @@ const notes = [
   "場地容納人數依主題場地而定：福氣滿滿屋推薦 10～15 人；森林童話屋、奶油寶貝屋推薦 15～25 人；星河派對屋推薦 25～100 人，最多可容納 150 人",
 ];
 
-export const BirthdayPlan = () => (
-  <section
-    id="birthday"
-    aria-labelledby="birthday-heading"
-    className="bg-gradient-to-b from-white to-brand-soft/15 py-20 md:py-28"
-  >
-    <div className="mx-auto grid max-w-content items-center gap-12 px-6 md:grid-cols-2 md:gap-16">
-      <motion.div
-        initial={{ opacity: 0, x: -30 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
-        className="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-[0_18px_48px_rgba(237,160,157,0.18)]"
-      >
-        <Image
-          src={BIRTHDAY_PHOTO}
-          alt="兒童生日派對佈置"
-          fill
-          sizes="(min-width: 768px) 50vw, 100vw"
-          className="object-cover"
-        />
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, x: 30 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
-      >
-        <p className="text-sm uppercase tracking-[0.4em] text-brand-accent">
-          Birthday Party
-        </p>
-        <h2
-          id="birthday-heading"
-          className="mt-3 text-3xl font-semibold tracking-wide text-brand md:text-4xl"
+export const BirthdayPlan = () => {
+  const photo = useSlotImage("party.birthday");
+  return (
+    <section
+      id="birthday"
+      aria-labelledby="birthday-heading"
+      className="bg-gradient-to-b from-white to-brand-soft/15 py-20 md:py-28"
+    >
+      <div className="mx-auto grid max-w-content items-center gap-12 px-6 md:grid-cols-2 md:gap-16">
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-[0_18px_48px_rgba(237,160,157,0.18)]"
         >
-          兒童生日派對
-        </h2>
-        <p className="mt-4 leading-loose text-brand-ink/80">
-          寶貝的每個生日都很重要，爸爸媽媽只想陪著你過每個美好瞬間！
-        </p>
+          <Image
+            src={photo}
+            alt="兒童生日派對佈置"
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover"
+          />
+        </motion.div>
 
-        <ul className="mt-8 space-y-3 text-brand-ink">
-          {features.map((f) => (
-            <li key={f} className="flex items-start gap-3">
-              <span className="mt-1 inline-block size-2 shrink-0 rounded-full bg-brand-soft" />
-              <span className="leading-relaxed">{f}</span>
-            </li>
-          ))}
-        </ul>
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+        >
+          <p className="text-sm uppercase tracking-[0.4em] text-brand-accent">
+            Birthday Party
+          </p>
+          <h2
+            id="birthday-heading"
+            className="mt-3 text-3xl font-semibold tracking-wide text-brand md:text-4xl"
+          >
+            兒童生日派對
+          </h2>
+          <p className="mt-4 leading-loose text-brand-ink/80">
+            寶貝的每個生日都很重要，爸爸媽媽只想陪著你過每個美好瞬間！
+          </p>
 
-        <div className="mt-8 space-y-2 border-t border-brand-soft/50 pt-6 text-sm leading-relaxed text-brand-ink/80">
-          {notes.map((n) => (
-            <p key={n}>・{n}</p>
-          ))}
-        </div>
-      </motion.div>
-    </div>
-  </section>
-);
+          <ul className="mt-8 space-y-3 text-brand-ink">
+            {features.map((f) => (
+              <li key={f} className="flex items-start gap-3">
+                <span className="mt-1 inline-block size-2 shrink-0 rounded-full bg-brand-soft" />
+                <span className="leading-relaxed">{f}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-8 space-y-2 border-t border-brand-soft/50 pt-6 text-sm leading-relaxed text-brand-ink/80">
+            {notes.map((n) => (
+              <p key={n}>・{n}</p>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};

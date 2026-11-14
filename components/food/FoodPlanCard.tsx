@@ -1,5 +1,7 @@
 "use client";
 
+import { useSlotImage } from "@/components/SiteImagesProvider";
+
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { businessInfo } from "@/data/home";
@@ -33,6 +35,7 @@ const DishGrid = ({ items }: { items: string[] }) => (
 );
 
 export const FoodPlanCard = ({ plan, index }: FoodPlanCardProps) => {
+  const photo = useSlotImage(`food.plan.${index}`);
   const reverse = index % 2 === 1;
 
   return (
@@ -50,7 +53,7 @@ export const FoodPlanCard = ({ plan, index }: FoodPlanCardProps) => {
         )}
       >
         <Image
-          src={plan.photo}
+          src={photo}
           alt={plan.title}
           fill
           sizes="(min-width: 1024px) 480px, 90vw"
@@ -143,9 +146,7 @@ export const FoodPlanCard = ({ plan, index }: FoodPlanCardProps) => {
               <PriceTag price={plan.price} />
             </div>
             <div className="mt-8">
-              <p className="text-sm font-semibold text-brand">
-                可選餐點種類
-              </p>
+              <p className="text-sm font-semibold text-brand">可選餐點種類</p>
               <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 md:grid-cols-3">
                 {plan.desserts.map((d) => (
                   <li

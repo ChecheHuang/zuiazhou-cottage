@@ -1,17 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { businessInfo } from "@/data/home";
 import { cn } from "@/lib/cn";
 
 const LineIcon = () => (
-  <svg
-    viewBox="0 0 32 32"
-    className="size-9"
-    aria-hidden
-    fill="currentColor"
-  >
+  <svg viewBox="0 0 32 32" className="size-9" aria-hidden fill="currentColor">
     <path d="M16 3.5C7.45 3.5.5 9.06.5 15.92c0 6.15 5.5 11.32 12.93 12.32.5.11 1.18.34 1.36.78.16.4.1 1.02.05 1.43l-.22 1.32c-.07.4-.32 1.5 1.32.82 1.62-.69 8.74-5.15 11.92-8.82 2.2-2.4 3.26-5.13 3.26-8.16 0-6.86-6.95-12.42-15.5-12.42z" />
   </svg>
 );
@@ -32,6 +28,7 @@ const ArrowUpIcon = () => (
 );
 
 export const FloatingActions = () => {
+  const pathname = usePathname();
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -41,8 +38,10 @@ export const FloatingActions = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const scrollToTop = () =>
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+  // 後台頁面不顯示 LINE 和回到頂端按鈕
+  if (pathname.startsWith("/admin")) return null;
 
   return (
     <>

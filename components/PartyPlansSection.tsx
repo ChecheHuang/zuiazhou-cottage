@@ -21,7 +21,7 @@ export const PartyPlansSection = () => (
         title={plan.title}
         price={plan.price}
         features={plan.features}
-        images={plan.images}
+        slot={`room.${plan.key}`}
         reverse={i % 2 === 1}
         autoplayDelay={3800 + i * 200}
       />

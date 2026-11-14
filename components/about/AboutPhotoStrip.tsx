@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import Lightbox from "yet-another-react-lightbox";
 import { SectionHeading } from "@/components/SectionHeading";
+import { useSlotImages } from "@/components/SiteImagesProvider";
 
 import "yet-another-react-lightbox/styles.css";
 
@@ -12,7 +13,7 @@ interface AboutPhotoStripProps {
   watermark: string;
   title: string;
   description?: string;
-  images: string[];
+  slot: string;
   bg?: "white" | "beige";
 }
 
@@ -20,10 +21,11 @@ export const AboutPhotoStrip = ({
   watermark,
   title,
   description,
-  images,
+  slot,
   bg = "white",
 }: AboutPhotoStripProps) => {
   const [index, setIndex] = useState(-1);
+  const images = useSlotImages(slot);
 
   return (
     <section
