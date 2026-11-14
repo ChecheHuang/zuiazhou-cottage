@@ -1,2 +1,4 @@
 allowBuilds:
   node-pty: false
+  # drizzle-kit 依賴 esbuild；它的 binary 由平台套件提供，不需要執行 postinstall
+  esbuild: false
