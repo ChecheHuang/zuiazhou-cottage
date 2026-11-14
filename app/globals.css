@@ -257,3 +257,53 @@ body {
 [data-looking="true"] .crawl-look {
   animation: baby-look 1.2s ease-in-out;
 }
+
+/* ─── 日期選擇器（react-day-picker，components/ui/DatePickerField.tsx） ─── */
+.brand-calendar .rdp-root {
+  --rdp-accent-color: var(--color-brand);
+  --rdp-accent-background-color: color-mix(in srgb, var(--color-brand-soft) 45%, #fff);
+  --rdp-today-color: var(--color-brand);
+  --rdp-day-height: 40px;
+  --rdp-day-width: 40px;
+  --rdp-selected-border: 2px solid var(--color-brand);
+  margin: 0 auto;
+  width: fit-content;
+  color: var(--color-brand-ink);
+  font-family: var(--font-sans);
+}
+.brand-calendar .rdp-caption_label,
+.brand-calendar .rdp-dropdowns {
+  color: var(--color-brand);
+  font-weight: 600;
+}
+.brand-calendar .rdp-weekday {
+  color: color-mix(in srgb, var(--color-brand-ink) 60%, transparent);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.brand-calendar .rdp-day_button {
+  border-radius: 9999px;
+  transition: background-color 0.15s;
+}
+.brand-calendar .rdp-day:not(.rdp-disabled):not(.rdp-selected) .rdp-day_button:hover {
+  background-color: var(--rdp-accent-background-color);
+}
+/* 選中：實心品牌色圓形；今天：品牌色粗體 */
+.brand-calendar .rdp-selected .rdp-day_button {
+  border: none;
+  background-color: var(--color-brand);
+  color: #fff;
+  font-weight: 600;
+}
+.brand-calendar .rdp-today:not(.rdp-selected) .rdp-day_button {
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1.5px var(--color-brand-soft);
+}
+.brand-calendar .rdp-chevron {
+  fill: var(--color-brand);
+}
+.brand-calendar .rdp-dropdown_root {
+  border-radius: 9999px;
+  padding: 2px 8px;
+  background: color-mix(in srgb, var(--color-brand-soft) 30%, #fff);
+}
