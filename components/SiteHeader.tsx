@@ -46,6 +46,7 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   { href: "/food", labelKey: "navFood" },
+  { href: "/products", labelKey: "navProducts" },
   { href: "/faq", labelKey: "navFaq" },
   { href: "/contact", labelKey: "navContact" },
 ];

@@ -140,7 +140,7 @@ const ImageInput = ({
   );
 };
 
-const ImagesInput = ({
+export const ImagesInput = ({
   value,
   onChange,
   folder,

@@ -80,6 +80,7 @@ export const layoutHeader = defineBlock({
       label: "派對加購方案下拉：其他加購",
     },
     { type: "text", key: "navFood", label: "選單：餐食加購" },
+    { type: "text", key: "navProducts", label: "選單：商品專區" },
     { type: "text", key: "navFaq", label: "選單：常見問題" },
     { type: "text", key: "navContact", label: "選單：聯絡我們" },
     {
@@ -108,6 +109,7 @@ export const layoutHeader = defineBlock({
     navPhotoPhotographer: "攝影師加購",
     navPhotoOther: "其他加購",
     navFood: "餐食加購",
+    navProducts: "商品專區",
     navFaq: "常見問題",
     navContact: "聯絡我們",
     themeRoseLabel: "目前粉色，點擊切換青綠",

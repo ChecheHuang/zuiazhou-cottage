@@ -7,6 +7,7 @@ import { cn } from "@/lib/cn";
 const TABS = [
   { href: "/admin", label: "圖片" },
   { href: "/admin/content", label: "文字" },
+  { href: "/admin/products", label: "商品" },
 ];
 
 export const AdminNav = () => {
@@ -19,7 +20,8 @@ export const AdminNav = () => {
           href={tab.href}
           className={cn(
             "rounded-full px-4 py-2",
-            pathname === tab.href
+            pathname === tab.href ||
+              (tab.href !== "/admin" && pathname.startsWith(`${tab.href}/`))
               ? "bg-brand/10 font-medium text-brand"
               : "text-brand-ink hover:bg-brand-soft/30",
           )}
