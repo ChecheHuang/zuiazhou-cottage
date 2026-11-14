@@ -28,6 +28,14 @@ html {
   color-scheme: light;
 }
 
+/* 左右滑入的動畫（framer-motion initial x: ±30）在進場前會超出畫面寬度，
+ * 手機上會出現左右捲動。用 clip 裁掉水平溢出；不用 hidden，
+ * 因為 hidden 會讓 sticky 的頁首失效。 */
+html,
+body {
+  overflow-x: clip;
+}
+
 html,
 body {
   transition: color 0.4s ease;
