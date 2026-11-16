@@ -10,6 +10,7 @@ export default async function AdminProductsPage() {
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
+          <p className="mb-1 text-xs text-brand-ink/50">商品專區 ›</p>
           <h1 className="text-2xl font-semibold text-brand">商品管理</h1>
           <p className="mt-2 text-sm text-brand-ink/70">
             共 {items.length} 個商品，{live}{" "}

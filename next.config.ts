@@ -19,6 +19,13 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    // 看過的動態頁面（後台、/play）在瀏覽器暫存 30 秒，切回去不用重新跟伺服器要。
+    // 後台存檔的 Server Action 會呼叫 revalidatePath，暫存會一併清掉，不會看到舊資料。
+    staleTimes: {
+      dynamic: 30,
+    },
+  },
   turbopack: {},
   webpack: (config, { dev }) => {
     if (dev) {
