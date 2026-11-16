@@ -48,6 +48,9 @@ export const AiModeSwitch = ({
   );
 };
 
+// 只露出末四碼，例如 ••••••••a1b2
+const maskKey = (key: string) => `${"•".repeat(8)}${key.trim().slice(-4)}`;
+
 // 輸入訪客自己的 Gemini API key（只存在瀏覽器）
 export const GeminiKeyField = ({
   gemini,
@@ -57,13 +60,18 @@ export const GeminiKeyField = ({
   const c = useContent(aiSettings);
   const [helpOpen, setHelpOpen] = useState(false);
   const [revealed, setRevealed] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const hasKey = gemini.rawKey.trim() !== "";
+  // 沒有 key 或按了「修改」才顯示輸入框；其他時候只顯示遮罩後的純文字
+  const showInput = !hasKey || editing;
   return (
     <div className="rounded-2xl bg-white/85 p-4 text-left ring-1 ring-brand-soft/60">
+      {/* 不做成密碼欄位（type="password" 或 CSS -webkit-text-security 遮罩都不行）：
+          Chrome 會把它當成登入表單，之後每次換頁都跳「要儲存密碼嗎？」。
+          輸入時是一般文字欄位，存好後只顯示「••••末四碼」的文字。 */}
       <label className="flex flex-col gap-1.5">
         <span className="text-sm font-medium text-brand">{c.keyLabel}</span>
-        <span className="relative">
-          {/* 不用 type="password"：瀏覽器會把它當登入表單，每次送出都跳「要儲存密碼嗎？」。
-              改用一般文字欄位＋CSS 遮罩成圓點，並請密碼管理器忽略這個欄位。 */}
+        {showInput ? (
           <input
             type="text"
             name="gemini-api-key"
@@ -71,28 +79,46 @@ export const GeminiKeyField = ({
             autoCorrect="off"
             autoCapitalize="off"
             spellCheck={false}
+            autoFocus={editing}
             data-1p-ignore
             data-lpignore="true"
             data-bwignore
             data-form-type="other"
             value={gemini.rawKey}
             onChange={(e) => gemini.setKey(e.target.value)}
+            onBlur={() => setEditing(false)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                setEditing(false);
+              }
+            }}
             placeholder={c.keyPlaceholder}
-            className={cn(
-              !revealed && "[-webkit-text-security:disc]",
-              "w-full rounded-full border border-brand-soft/70 bg-white py-2 pl-4 pr-11 font-mono text-sm text-brand-ink outline-none focus:border-brand focus:ring-4 focus:ring-brand-soft/40",
-            )}
+            className="w-full rounded-full border border-brand-soft/70 bg-white px-4 py-2 font-mono text-sm text-brand-ink outline-none focus:border-brand focus:ring-4 focus:ring-brand-soft/40"
           />
-          <button
-            type="button"
-            onClick={() => setRevealed((v) => !v)}
-            aria-label={revealed ? "隱藏 key" : "顯示 key"}
-            aria-pressed={revealed}
-            className="absolute right-1.5 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-base hover:bg-brand-soft/30"
-          >
-            <span aria-hidden>{revealed ? "🙈" : "👁"}</span>
-          </button>
-        </span>
+        ) : (
+          <span className="flex items-center gap-1 rounded-full border border-brand-soft/70 bg-white py-1 pl-4 pr-1">
+            <span className="min-w-0 flex-1 truncate font-mono text-sm text-brand-ink">
+              {revealed ? gemini.rawKey : maskKey(gemini.rawKey)}
+            </span>
+            <button
+              type="button"
+              onClick={() => setRevealed((v) => !v)}
+              aria-label={revealed ? "隱藏 key" : "顯示 key"}
+              aria-pressed={revealed}
+              className="grid size-8 shrink-0 place-items-center rounded-full text-base hover:bg-brand-soft/30"
+            >
+              <span aria-hidden>{revealed ? "🙈" : "👁"}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setEditing(true)}
+              className="shrink-0 rounded-full px-3 py-1.5 text-xs text-brand hover:bg-brand-soft/30"
+            >
+              修改
+            </button>
+          </span>
+        )}
       </label>
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-brand-ink/70">
         <label className="inline-flex items-center gap-1.5">
