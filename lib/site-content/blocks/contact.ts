@@ -205,20 +205,19 @@ export const contactForm = defineBlock({
       multiline: true,
     },
     { type: "text", key: "submit", label: "送出按鈕文字" },
-    { type: "text", key: "submitting", label: "送出中按鈕文字" },
     {
       type: "text",
       key: "success",
-      label: "送出成功訊息",
+      label: "開啟 LINE 後的提示訊息",
       multiline: true,
-      hint: "按下送出後出現在表單下方的綠色訊息",
+      hint: "按下按鈕、開啟 LINE 後出現在表單下方的綠色訊息。客人要在 LINE 裡按傳送才算送出，請不要寫成「已送出」",
     },
   ],
   defaults: {
     eyebrow: "Message us",
-    title: "填寫表單，我們將盡快回覆",
+    title: "填寫表單，用 LINE 傳給我們",
     description:
-      "想預約派對或了解詳細方案？留下聯絡資訊，我們會在 1-2 個工作天內回覆。",
+      "想預約派對或了解詳細方案？填好下面的資料按「用 LINE 傳送」，會打開官方 LINE 並幫您帶入訊息。",
     nameLabel: "姓名",
     namePlaceholder: "您的稱呼",
     phoneLabel: "電話",
@@ -227,9 +226,9 @@ export const contactForm = defineBlock({
     emailPlaceholder: "hello@example.com",
     messageLabel: "留言訊息",
     messagePlaceholder: "想了解的派對方案、預計日期、寶寶月齡、預估人數…",
-    note: "送出後我們會以 LINE 或電話與您聯繫，請留意通知。",
-    submit: "確認送出",
-    submitting: "送出中…",
-    success: "✅ 表單已送出！我們收到您的訊息了，將盡快與您聯絡。",
+    note: "訊息也會同時複製，若 LINE 沒有自動帶入，直接貼上即可。",
+    submit: "用 LINE 傳送",
+    success:
+      "已開啟 LINE 並帶入訊息（也已複製）。請記得在 LINE 裡按「傳送」，我們才會收到喔！",
   },
 });

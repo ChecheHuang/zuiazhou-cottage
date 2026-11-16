@@ -93,7 +93,7 @@ export const SiteFooter = async () => {
         </p>
 
         <ul className="flex items-center gap-4" aria-label="社群連結">
-          {SOCIAL_LINKS.map((s) => (
+          {SOCIAL_LINKS.filter((s) => biz[s.field].trim()).map((s) => (
             <li key={s.label}>
               <a
                 href={biz[s.field]}

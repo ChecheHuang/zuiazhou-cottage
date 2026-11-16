@@ -4,9 +4,10 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useContent } from "@/components/SiteContentProvider";
 import { contactForm } from "@/lib/site-content/blocks/contact";
+import { siteBusiness } from "@/lib/site-content/blocks/site";
 import { cn } from "@/lib/cn";
 
-type FormState = "idle" | "submitting" | "success" | "error";
+type FormState = "idle" | "success";
 
 interface FormFields {
   name: string;
@@ -24,19 +25,36 @@ const initialFields: FormFields = {
 
 export const ContactForm = () => {
   const c = useContent(contactForm);
+  const biz = useContent(siteBusiness);
   const [fields, setFields] = useState<FormFields>(initialFields);
   const [state, setState] = useState<FormState>("idle");
 
   const update = <K extends keyof FormFields>(key: K, value: FormFields[K]) =>
     setFields((prev) => ({ ...prev, [key]: value }));
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  // 網站沒有後端收表單：把內容組成訊息，開官方 LINE 並帶入（oaMessage），同時複製一份備用。
+  // 客人要在 LINE 裡按傳送才算送出，所以欄位不清空，方便重試。
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (state === "submitting") return;
-    setState("submitting");
-    await new Promise((r) => setTimeout(r, 800));
+    const text = [
+      "您好，我想詢問：",
+      `${c.nameLabel}：${fields.name.trim()}`,
+      `${c.phoneLabel}：${fields.phone.trim()}`,
+      fields.email.trim() ? `${c.emailLabel}：${fields.email.trim()}` : null,
+      "",
+      fields.message.trim(),
+    ]
+      .filter((line) => line !== null)
+      .join("\n");
+
+    const lineId = biz.lineId.trim();
+    const url = lineId
+      ? `https://line.me/R/oaMessage/${encodeURIComponent(lineId)}/?${encodeURIComponent(text)}`
+      : biz.lineUrl;
+    // 要在點擊的同步流程裡開視窗，避免被擋彈出視窗
+    window.open(url, "_blank", "noopener");
+    navigator.clipboard?.writeText(text).catch(() => {});
     setState("success");
-    setFields(initialFields);
   };
 
   const inputBase =
@@ -92,11 +110,10 @@ export const ContactForm = () => {
 
         <label className="flex flex-col gap-2 md:col-span-2">
           <span className="text-sm font-medium text-brand-ink">
-            {c.emailLabel} <span className="text-brand">*</span>
+            {c.emailLabel}
           </span>
           <input
             type="email"
-            required
             placeholder={c.emailPlaceholder}
             value={fields.email}
             onChange={(e) => update("email", e.target.value)}
@@ -125,15 +142,9 @@ export const ContactForm = () => {
         </p>
         <button
           type="submit"
-          disabled={state === "submitting"}
-          className={cn(
-            "inline-flex items-center justify-center gap-2 rounded-full px-9 py-3.5 text-sm font-medium text-white shadow-lg transition-all duration-300",
-            state === "submitting"
-              ? "cursor-wait bg-brand/70 shadow-brand/20"
-              : "bg-brand shadow-brand/30 hover:scale-105 hover:bg-brand/90",
-          )}
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-9 py-3.5 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-all duration-300 hover:scale-105 hover:bg-brand/90"
         >
-          {state === "submitting" ? c.submitting : c.submit}
+          {c.submit}
           <span aria-hidden>→</span>
         </button>
       </div>

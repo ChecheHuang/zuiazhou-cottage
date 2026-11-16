@@ -26,6 +26,8 @@
 
 html {
   color-scheme: light;
+  /* 頁首是 fixed，跳到錨點（#plans、#birthday…）時讓區塊停在頁首下方，不被蓋住 */
+  scroll-padding-top: 5rem;
 }
 
 /* 左右滑入的動畫（framer-motion initial x: ±30）在進場前會超出畫面寬度，
@@ -223,8 +225,13 @@ body {
   [data-crawling] .crawl-arm,
   [data-crawling] .crawl-leg,
   [data-crawling] .crawl-body,
-  [data-crawling] .crawl-head {
+  [data-crawling] .crawl-head,
+  [data-looking="true"] .crawl-look {
     animation: none !important;
+  }
+  /* 這段寫在下面 .crawl-reach 規則之前，要加 !important 才蓋得過 */
+  .crawl-reach {
+    transition: none !important;
   }
 }
 

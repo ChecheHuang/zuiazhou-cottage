@@ -6,8 +6,16 @@ import { products, siteContent, siteImages } from "@/lib/db/schema";
 import { isBlobUrl } from "@/lib/site-images/urls";
 
 // 刪掉已經沒有任何地方在用的 Blob 檔案（圖片位置、文字區塊、商品照片都會檢查）。
-// 失敗只記 log，不影響存檔。
+// 失敗只記 log，不影響存檔：呼叫時資料庫已經寫入，這裡丟錯會讓後台誤報「儲存失敗」、前台快取也不會更新。
 export const cleanupBlobs = async (candidates: string[]) => {
+  try {
+    await removeUnusedBlobs(candidates);
+  } catch (error) {
+    console.error("[admin] 清理 Blob 檔案失敗", error);
+  }
+};
+
+const removeUnusedBlobs = async (candidates: string[]) => {
   const blobUrls = [...new Set(candidates.filter(isBlobUrl))];
   if (blobUrls.length === 0) return;
 
@@ -37,9 +45,5 @@ export const cleanupBlobs = async (candidates: string[]) => {
 
   const orphans = blobUrls.filter((u) => !used.has(u));
   if (orphans.length === 0) return;
-  try {
-    await del(orphans);
-  } catch (error) {
-    console.error("[admin] 刪除 Blob 檔案失敗", orphans, error);
-  }
+  await del(orphans);
 };

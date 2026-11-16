@@ -35,9 +35,10 @@ const NAV_ITEMS: NavItem[] = [
     labelKey: "navBabyParty",
     children: [
       { href: "/baby-party", labelKey: "navBabyPartyZhuazhou" },
-      { href: "/baby-party#party", labelKey: "navBabyPartySaliva" },
+      // 收涎、性別揭曉還沒有獨立區塊，先連到包場方案
+      { href: "/baby-party#plans", labelKey: "navBabyPartySaliva" },
       { href: "/baby-party#birthday", labelKey: "navBabyPartyBirthday" },
-      { href: "/baby-party#gender", labelKey: "navBabyPartyGender" },
+      { href: "/baby-party#plans", labelKey: "navBabyPartyGender" },
       { href: "/play", labelKey: "navBabyPartyPlay" },
       { href: "/invite", labelKey: "navBabyPartyInvite" },
     ],
@@ -122,6 +123,24 @@ export const SiteHeader = () => {
       if (closeTimer.current) clearTimeout(closeTimer.current);
     };
   }, []);
+
+  // 行動選單打開時鎖住背景捲動，避免在選單上滑動時捲到下方頁面
+  useEffect(() => {
+    if (!menuOpen) return;
+    const root = document.documentElement;
+    const prevOverflow = root.style.overflow;
+    root.style.overflow = "hidden";
+    // 平板轉橫向進到 lg 寬度時漢堡按鈕會被隱藏，要自動關選單，否則頁面會一直鎖住
+    const lg = window.matchMedia("(min-width: 1024px)");
+    const onChange = (e: MediaQueryListEvent) => {
+      if (e.matches) setMenuOpen(false);
+    };
+    lg.addEventListener("change", onChange);
+    return () => {
+      root.style.overflow = prevOverflow;
+      lg.removeEventListener("change", onChange);
+    };
+  }, [menuOpen]);
 
   const openMenu = (href: string) => {
     if (closeTimer.current) {
@@ -234,7 +253,7 @@ export const SiteHeader = () => {
                     >
                       {item.children?.map((sub) => (
                         <Link
-                          key={sub.href}
+                          key={sub.labelKey}
                           href={sub.href}
                           role="menuitem"
                           className="block rounded-xl px-4 py-2.5 text-sm text-brand-ink transition-colors duration-200 hover:bg-brand-soft/30 hover:text-brand"
@@ -314,11 +333,26 @@ export const SiteHeader = () => {
 
       <div
         className={cn(
-          "overflow-hidden border-t border-brand-soft/40 bg-white/95 backdrop-blur-md transition-[max-height,opacity] duration-300 lg:hidden",
-          menuOpen ? "max-h-[760px] opacity-100" : "max-h-0 opacity-0",
+          "border-t border-brand-soft/40 bg-white/95 backdrop-blur-md transition-[max-height,opacity] duration-300 lg:hidden",
+          // 選單高度不超過畫面（扣掉 header 高度），超出時在選單內部捲動
+          menuOpen
+            ? cn(
+                "overflow-y-auto overscroll-contain opacity-100",
+                scrolled
+                  ? "max-h-[calc(100dvh-4rem)]"
+                  : "max-h-[calc(100dvh-5rem)] md:max-h-[calc(100dvh-6rem)]",
+              )
+            : "max-h-0 overflow-hidden opacity-0",
         )}
       >
-        <nav className="flex flex-col px-6 py-4" aria-label="行動選單">
+        <nav
+          className="flex flex-col px-6 py-4"
+          aria-label="行動選單"
+          // 點同頁錨點（如 /baby-party#plans）pathname 不變，要手動關選單
+          onClick={(e) => {
+            if ((e.target as HTMLElement).closest("a")) setMenuOpen(false);
+          }}
+        >
           {navItems.map((item) => {
             const active = isItemActive(item, pathname);
             return (
@@ -348,7 +382,7 @@ export const SiteHeader = () => {
                 {item.children?.length ? (
                   <ul className="mb-2 ml-7 flex flex-col gap-1">
                     {item.children.map((sub) => (
-                      <li key={sub.href}>
+                      <li key={sub.labelKey}>
                         <Link
                           href={sub.href}
                           className="block py-1.5 text-sm text-brand-ink/80 transition-colors hover:text-brand"

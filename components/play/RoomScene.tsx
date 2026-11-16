@@ -163,13 +163,15 @@ export const RoomScene = ({
       await Promise.all([
         animate(
           `[data-item="${index}"] [data-item-icon]`,
-          { y: "-70%", scale: 1.45, rotate: [0, -8, 6, 0] },
-          { duration: 0.6, ease: "backOut" },
+          reduced
+            ? { y: "-70%", scale: 1.45 }
+            : { y: "-70%", scale: 1.45, rotate: [0, -8, 6, 0] },
+          { duration: reduced ? 0 : 0.6, ease: "backOut" },
         ),
         animate(
           `[data-item="${index}"] [data-item-halo]`,
           { opacity: [0, 1], scale: [0.4, 1.3] },
-          { duration: 0.6 },
+          { duration: reduced ? 0 : 0.6 },
         ),
       ]);
     };
@@ -185,6 +187,7 @@ export const RoomScene = ({
           await crawlTo(d);
           if (cancelled) return;
           await sleep(250);
+          if (cancelled) return;
           await (Math.random() < 0.6 ? touch(d) : lookAround());
           await sleep(300);
         }
@@ -193,12 +196,19 @@ export const RoomScene = ({
       await crawlTo(target);
       if (cancelled) return;
       if (!reduced) await lookAround();
+      if (cancelled) return;
       await grab(target);
       await sleep(reduced ? 300 : 900);
       if (!cancelled) onDoneRef.current();
     };
 
-    run();
+    // 卸載後還在跑的動畫找不到元素會丟錯，直接忽略；
+    // 沒卸載卻失敗時還是要結束流程，不然按鈕會一直停在不能按
+    run().catch((error) => {
+      if (cancelled) return;
+      console.error("[play] 爬行動畫失敗", error);
+      onDoneRef.current();
+    });
     return () => {
       cancelled = true;
     };

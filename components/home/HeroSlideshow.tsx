@@ -16,13 +16,14 @@ export const HeroSlideshow = () => {
   const c = useContent(homeHero);
   const count = slides.length;
 
+  // 依賴 active：點圓點換張後重新計時，不會馬上又自動跳下一張
   useEffect(() => {
-    const t = setInterval(
+    const t = setTimeout(
       () => setActive((a) => (a + 1) % count),
       SLIDE_DURATION,
     );
-    return () => clearInterval(t);
-  }, [count]);
+    return () => clearTimeout(t);
+  }, [active, count]);
 
   return (
     <section className="relative h-[88vh] min-h-[600px] w-full overflow-hidden">

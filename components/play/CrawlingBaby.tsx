@@ -53,7 +53,7 @@ export const CrawlingBaby = () => (
     {/* 身體＋頭：一起起伏 */}
     <g className="crawl-body">
       {/* 屁股（包著尿布的圓） */}
-      <circle cx="33" cy="45" r="20" style={onesie} />
+      <circle cx="36" cy="47" r="15" style={onesie} />
       {/* 軀幹 */}
       <ellipse
         cx="66"
@@ -73,7 +73,7 @@ export const CrawlingBaby = () => (
       />
       {/* 尿布從腿洞露出來一點 */}
       <path
-        d="M20 56 q10 8 24 4"
+        d="M25 57 q9 6 20 3"
         stroke="#fff"
         strokeWidth="4"
         strokeLinecap="round"

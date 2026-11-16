@@ -82,14 +82,19 @@ export const ProductForm = ({ productId, initial }: ProductFormProps) => {
     const result = isNew
       ? await createProduct(draft)
       : await updateProduct(productId, draft);
-    setBusy(false);
     if (!result.ok) {
+      setBusy(false);
       setMessage({ ok: false, text: result.error });
       return;
     }
     setSaved(draft);
     setMessage({ ok: true, text: "已儲存，網站已更新" });
-    if (isNew && result.id) router.replace(`/admin/products/${result.id}`);
+    if (isNew && result.id) {
+      // 新商品建立後保持 busy 直到換頁，避免在導頁空檔再按一次建立出重複商品
+      router.replace(`/admin/products/${result.id}`);
+      return;
+    }
+    setBusy(false);
   };
 
   const onDelete = async () => {
@@ -179,7 +184,7 @@ export const ProductForm = ({ productId, initial }: ProductFormProps) => {
           <ImagesInput
             label={draft.name || "商品照片"}
             value={draft.images}
-            onChange={(v) => set("images", v)}
+            onChange={(fn) => setDraft((d) => ({ ...d, images: fn(d.images) }))}
             folder="products"
           />
         </div>

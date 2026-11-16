@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Noto_Sans_TC } from "next/font/google";
 import { FloatingActions } from "@/components/FloatingActions";
+import { MotionProvider } from "@/components/MotionProvider";
 import { SiteContentProvider } from "@/components/SiteContentProvider";
 import { SiteImagesProvider } from "@/components/SiteImagesProvider";
 import { LocalBusinessJsonLd } from "@/components/seo/LocalBusinessJsonLd";
@@ -72,8 +73,10 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col bg-white text-brand-ink">
         <SiteContentProvider overrides={contentOverrides}>
           <SiteImagesProvider overrides={imageOverrides}>
-            {children}
-            <FloatingActions />
+            <MotionProvider>
+              {children}
+              <FloatingActions />
+            </MotionProvider>
           </SiteImagesProvider>
         </SiteContentProvider>
         <LocalBusinessJsonLd />

@@ -24,6 +24,10 @@ const inputClass =
 const smallBtn =
   "rounded-md px-2 py-1 text-sm text-brand-ink/70 hover:bg-brand-ink/5 disabled:opacity-30";
 
+// 欄位變更一律用「更新函式」往上傳，最上層才套到 setDraft(prev => ...)。
+// 圖片上傳要等好幾秒，若直接傳整份新值，會用上傳開始時的舊內容蓋掉這段時間的其他修改。
+type Update<T> = (fn: (prev: T) => T) => void;
+
 const move = <T,>(list: T[], index: number, delta: -1 | 1): T[] => {
   const target = index + delta;
   if (target < 0 || target >= list.length) return list;
@@ -147,7 +151,7 @@ export const ImagesInput = ({
   label,
 }: {
   value: string[];
-  onChange: (v: string[]) => void;
+  onChange: Update<string[]>;
   folder: string;
   label: string;
 }) => {
@@ -165,7 +169,7 @@ export const ImagesInput = ({
                   type="button"
                   aria-label="往前移"
                   disabled={i === 0}
-                  onClick={() => onChange(move(value, i, -1))}
+                  onClick={() => onChange((prev) => move(prev, i, -1))}
                   className={smallBtn}
                 >
                   ←
@@ -174,7 +178,7 @@ export const ImagesInput = ({
                   type="button"
                   aria-label="往後移"
                   disabled={i === value.length - 1}
-                  onClick={() => onChange(move(value, i, 1))}
+                  onClick={() => onChange((prev) => move(prev, i, 1))}
                   className={smallBtn}
                 >
                   →
@@ -183,7 +187,9 @@ export const ImagesInput = ({
               <button
                 type="button"
                 aria-label="移除"
-                onClick={() => onChange(value.filter((_, j) => j !== i))}
+                onClick={() =>
+                  onChange((prev) => prev.filter((_, j) => j !== i))
+                }
                 className={cn(smallBtn, "text-red-600")}
               >
                 ✕
@@ -212,7 +218,7 @@ export const ImagesInput = ({
           e.target.value = "";
           if (files.length === 0) return;
           const urls = await run(files);
-          if (urls.length) onChange([...value, ...urls]);
+          if (urls.length) onChange((prev) => [...prev, ...urls]);
         }}
       />
     </div>
@@ -303,7 +309,7 @@ const RecordListInput = ({
   field: ListField;
   fields: Field[];
   value: ContentRecord[];
-  onChange: (v: ContentRecord[]) => void;
+  onChange: Update<ContentRecord[]>;
   folder: string;
 }) => (
   <div className="space-y-2">
@@ -325,7 +331,7 @@ const RecordListInput = ({
             disabled={i === 0}
             onClick={(e) => {
               e.preventDefault();
-              onChange(move(value, i, -1));
+              onChange((prev) => move(prev, i, -1));
             }}
             className={smallBtn}
           >
@@ -337,7 +343,7 @@ const RecordListInput = ({
             disabled={i === value.length - 1}
             onClick={(e) => {
               e.preventDefault();
-              onChange(move(value, i, 1));
+              onChange((prev) => move(prev, i, 1));
             }}
             className={smallBtn}
           >
@@ -348,7 +354,7 @@ const RecordListInput = ({
             onClick={(e) => {
               e.preventDefault();
               if (window.confirm(`確定要刪除第 ${i + 1} 項嗎？`)) {
-                onChange(value.filter((_, j) => j !== i));
+                onChange((prev) => prev.filter((_, j) => j !== i));
               }
             }}
             className={cn(smallBtn, "text-red-600")}
@@ -360,8 +366,8 @@ const RecordListInput = ({
           <FieldsEditor
             fields={fields}
             value={item}
-            onChange={(next) =>
-              onChange(value.map((x, j) => (j === i ? next : x)))
+            onChange={(fn) =>
+              onChange((prev) => prev.map((x, j) => (j === i ? fn(x) : x)))
             }
             folder={folder}
           />
@@ -370,7 +376,7 @@ const RecordListInput = ({
     ))}
     <button
       type="button"
-      onClick={() => onChange([...value, emptyRecord(fields)])}
+      onClick={() => onChange((prev) => [...prev, emptyRecord(fields)])}
       className="rounded-full border border-dashed border-brand-soft px-3 py-1 text-sm text-brand-ink/80 hover:bg-brand-soft/20"
     >
       ＋ 新增{field.itemLabel ?? "一項"}
@@ -418,9 +424,15 @@ const FieldEditor = ({
 }: {
   field: Field;
   value: ContentValue | undefined;
-  onChange: (v: ContentValue) => void;
+  onChange: Update<ContentValue | undefined>;
   folder: string;
 }) => {
+  const set = (v: ContentValue) => onChange(() => v);
+  // 陣列欄位：把子元件的更新函式套在「最新的值」上
+  const updateArray =
+    <T,>() =>
+    (fn: (prev: T[]) => T[]) =>
+      onChange((prev) => fn(Array.isArray(prev) ? (prev as T[]) : []) as ContentValue);
   const body = (() => {
     switch (field.type) {
       case "text":
@@ -429,7 +441,7 @@ const FieldEditor = ({
             label={field.label}
             value={typeof value === "string" ? value : ""}
             multiline={field.multiline}
-            onChange={onChange}
+            onChange={set}
           />
         );
       case "image":
@@ -437,7 +449,7 @@ const FieldEditor = ({
           <ImageInput
             label={field.label}
             value={typeof value === "string" ? value : ""}
-            onChange={onChange}
+            onChange={set}
             folder={folder}
           />
         );
@@ -446,7 +458,7 @@ const FieldEditor = ({
           <ImagesInput
             label={field.label}
             value={Array.isArray(value) ? (value as string[]) : []}
-            onChange={onChange}
+            onChange={updateArray<string>()}
             folder={folder}
           />
         );
@@ -455,7 +467,7 @@ const FieldEditor = ({
           <ToggleInput
             label={field.label}
             value={value === true}
-            onChange={onChange}
+            onChange={set}
           />
         );
       case "list":
@@ -463,14 +475,14 @@ const FieldEditor = ({
           <TextListInput
             field={field}
             value={Array.isArray(value) ? (value as string[]) : []}
-            onChange={onChange}
+            onChange={set}
           />
         ) : (
           <RecordListInput
             field={field}
             fields={field.of}
             value={Array.isArray(value) ? (value as ContentRecord[]) : []}
-            onChange={onChange}
+            onChange={updateArray<ContentRecord>()}
             folder={folder}
           />
         );
@@ -496,7 +508,7 @@ const FieldsEditor = ({
 }: {
   fields: Field[];
   value: ContentRecord;
-  onChange: (v: ContentRecord) => void;
+  onChange: Update<ContentRecord>;
   folder: string;
 }) => (
   <>
@@ -505,7 +517,12 @@ const FieldsEditor = ({
         key={field.key}
         field={field}
         value={value[field.key]}
-        onChange={(v) => onChange({ ...value, [field.key]: v })}
+        onChange={(fn) =>
+          onChange((prev) => {
+            const next = fn(prev[field.key]);
+            return next === undefined ? prev : { ...prev, [field.key]: next };
+          })
+        }
         folder={folder}
       />
     ))}

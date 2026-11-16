@@ -17,7 +17,7 @@ export const ParallaxBreak = () => {
     >
       <div
         aria-hidden
-        className="absolute inset-0 bg-fixed bg-cover bg-center"
+        className="absolute inset-0 bg-cover bg-center pointer-fine:bg-fixed"
         style={{ backgroundImage: optimizedBackground(bg) }}
       />
       <div
