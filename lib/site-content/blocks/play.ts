@@ -191,7 +191,7 @@ export const playGame = defineBlock({
     themeForest: "🌲 森林童話屋",
     themeCream: "🐻 奶油寶貝屋",
     themeFortune: "🧧 福氣滿滿屋",
-    tapHint: "點地上的物品，可以拿掉或換一個",
+    tapHint: "點地上的物品可以拿掉或換一個，按住拖曳可以換位置",
     removeButton: "🗑 拿掉",
     replaceButton: "🔄 換一個",
     removeMinHint: "地上至少要留 {min} 樣",

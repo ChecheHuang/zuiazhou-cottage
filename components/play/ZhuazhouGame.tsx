@@ -7,6 +7,27 @@ import { useContent } from "@/components/SiteContentProvider";
 import { FortunePanel } from "@/components/play/FortunePanel";
 import { ItemMenu, type MenuAlign } from "@/components/play/ItemMenu";
 import { ItemPickerDialog } from "@/components/play/ItemPickerDialog";
+import { createPortal } from "react-dom";
+import {
+  DndContext,
+  DragOverlay,
+  closestCenter,
+  type DragEndEvent,
+  type DragStartEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import {
+  itemAnnouncements,
+  itemScreenReaderInstructions,
+  useIsClient,
+  useItemSensors,
+  useSuppressClickAfterDrag,
+} from "@/components/play/itemDnd";
 import { RoomScene } from "@/components/play/RoomScene";
 import {
   ROOM_THEME_IDS,
@@ -113,6 +134,18 @@ export const ZhuazhouGame = ({
     if (phase.kind === "grabbing") return;
     setPicker(null);
     setEditing((current) => (current === index ? null : index));
+  };
+
+  // 房間模式拖曳排序：套用每個物品新的擺放點
+  const setSlots = (next: number[]) =>
+    setBoard((current) =>
+      current.map((b, i) => ({ ...b, slot: next[i] ?? b.slot })),
+    );
+
+  // 快速模式拖曳排序：把物品移到另一格，中間的往前／往後挪
+  const reorderItems = (from: number, to: number) => {
+    if (from === to) return;
+    setBoard((current) => arrayMove(current, from, to));
   };
 
   const removeAt = (index: number) => {
@@ -400,6 +433,8 @@ export const ZhuazhouGame = ({
                   onItemClick={onItemClick}
                   activeIndex={activeIndex}
                   renderMenu={editing === null ? undefined : menuFor}
+                  onDragStart={closeEditors}
+                  onSlotsChange={setSlots}
                 />
               ) : (
                 <Mat
@@ -410,6 +445,8 @@ export const ZhuazhouGame = ({
                   onItemClick={onItemClick}
                   activeIndex={activeIndex}
                   renderMenu={editing === null ? undefined : menuFor}
+                  onDragStart={closeEditors}
+                  onReorder={reorderItems}
                 />
               )}
 
@@ -596,6 +633,8 @@ const Mat = ({
   onItemClick,
   activeIndex,
   renderMenu,
+  onDragStart,
+  onReorder,
 }: {
   items: PlayItem[];
   highlight: number;
@@ -604,60 +643,191 @@ const Mat = ({
   onItemClick: (index: number) => void;
   activeIndex: number | null;
   renderMenu?: (index: number, align: MenuAlign) => React.ReactNode;
-}) => (
-  <div className="rounded-[2rem] bg-brand-soft/40 p-3 ring-1 ring-brand-soft/60 sm:p-5">
-    <ul className="grid grid-cols-4 gap-2 rounded-[1.5rem] border-2 border-dashed border-white/80 bg-white/40 p-3 sm:gap-4 sm:p-5">
-      {items.map((item, i) => {
-        const active = i === highlight;
-        const selected = i === activeIndex;
-        return (
-          <li
-            key={`${i}-${item.name}`}
-            className={cn("relative text-center", selected && "z-30")}
-          >
-            {selected && renderMenu?.(i, matAlign(i))}
-            {active && (
-              <motion.span
-                aria-hidden
-                layoutId={reduced ? undefined : "baby-hand"}
-                className="absolute -top-4 left-1/2 z-10 -translate-x-1/2 text-2xl sm:text-3xl"
-              >
-                👶
-              </motion.span>
-            )}
-            <button
-              type="button"
-              data-item-button
-              disabled={!interactive}
-              onClick={() => onItemClick(i)}
-              aria-label={item.name}
-              className="block w-full disabled:cursor-default"
-            >
-              <div
-                className={cn(
-                  "grid aspect-square place-items-center rounded-2xl bg-white text-3xl shadow-sm transition-all duration-150 sm:text-5xl",
-                  active && "scale-110 bg-brand-beige ring-4 ring-brand",
-                  selected && "ring-4 ring-brand",
-                  interactive && !selected && "hover:scale-105",
-                )}
-              >
-                <span aria-hidden>{item.emoji}</span>
-              </div>
-              <p
-                className={cn(
-                  "mt-1.5 truncate text-xs text-brand-ink/80 sm:text-sm",
-                  (active || selected) && "font-semibold text-brand",
-                )}
-              >
-                {item.name}
-              </p>
-            </button>
-          </li>
-        );
-      })}
-    </ul>
-  </div>
-);
+  onDragStart: () => void;
+  onReorder: (from: number, to: number) => void;
+}) => {
+  const sensors = useItemSensors();
+  const suppress = useSuppressClickAfterDrag();
+  const isClient = useIsClient();
+  const [dragging, setDragging] = useState<{
+    index: number;
+    width: number;
+  } | null>(null);
+  // 物品名稱不重複，當作排序用的 id（index 在排序後會變）
+  const ids = items.map((item) => item.name);
+
+  const handleDragStart = ({ active }: DragStartEvent) => {
+    suppress.markStart();
+    setDragging({
+      index: ids.indexOf(String(active.id)),
+      width: active.rect.current.initial?.width ?? 0,
+    });
+    onDragStart();
+  };
+
+  const handleDragEnd = ({ active, over }: DragEndEvent) => {
+    setDragging(null);
+    suppress.markDragged();
+    if (!over) return;
+    onReorder(ids.indexOf(String(active.id)), ids.indexOf(String(over.id)));
+  };
+
+  return (
+    <div className="rounded-[2rem] bg-brand-soft/40 p-3 ring-1 ring-brand-soft/60 sm:p-5">
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragCancel={() => {
+          suppress.markDragged();
+          setDragging(null);
+        }}
+        accessibility={{
+          announcements: itemAnnouncements((id) => String(id)),
+          screenReaderInstructions: itemScreenReaderInstructions,
+        }}
+      >
+        <SortableContext items={ids} strategy={rectSortingStrategy}>
+          <ul className="grid grid-cols-4 gap-2 rounded-[1.5rem] border-2 border-dashed border-white/80 bg-white/40 p-3 sm:gap-4 sm:p-5">
+            {items.map((item, i) => (
+              <MatCell
+                key={item.name}
+                index={i}
+                item={item}
+                active={i === highlight}
+                selected={i === activeIndex}
+                reduced={reduced}
+                interactive={interactive}
+                menu={i === activeIndex ? renderMenu?.(i, matAlign(i)) : null}
+                onClick={() => {
+                  if (dragging === null) onItemClick(i);
+                }}
+                onClickCapture={suppress.onClickCapture}
+              />
+            ))}
+          </ul>
+        </SortableContext>
+
+        {isClient &&
+          createPortal(
+            <DragOverlay dropAnimation={null}>
+              {dragging && items[dragging.index] ? (
+                <div
+                  style={{ width: dragging.width }}
+                  className="cursor-grabbing"
+                >
+                  <div className="grid aspect-square scale-110 place-items-center rounded-2xl bg-white text-3xl shadow-xl ring-4 ring-brand sm:text-5xl">
+                    <span aria-hidden>{items[dragging.index].emoji}</span>
+                  </div>
+                </div>
+              ) : null}
+            </DragOverlay>,
+            document.body,
+          )}
+      </DndContext>
+    </div>
+  );
+};
+
+// 快速模式的一格：拖曳經過時，其他格子即時往旁邊挪（sortable）
+const MatCell = ({
+  index,
+  item,
+  active,
+  selected,
+  reduced,
+  interactive,
+  menu,
+  onClick,
+  onClickCapture,
+}: {
+  index: number;
+  item: PlayItem;
+  active: boolean;
+  selected: boolean;
+  reduced: boolean;
+  interactive: boolean;
+  menu: React.ReactNode;
+  onClick: () => void;
+  onClickCapture: (e: React.MouseEvent) => void;
+}) => {
+  const {
+    setNodeRef,
+    setActivatorNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: item.name,
+    data: { index },
+    disabled: !interactive,
+  });
+  return (
+    <li
+      ref={setNodeRef}
+      className={cn("relative text-center", selected && "z-30")}
+      style={{
+        transform: transform
+          ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+          : undefined,
+        transition: reduced ? undefined : transition,
+      }}
+    >
+      {menu}
+      {active && (
+        <motion.span
+          aria-hidden
+          layoutId={reduced ? undefined : "baby-hand"}
+          className="absolute -top-4 left-1/2 z-10 -translate-x-1/2 text-2xl sm:text-3xl"
+        >
+          👶
+        </motion.span>
+      )}
+      <button
+        ref={setActivatorNodeRef}
+        type="button"
+        data-item-button
+        disabled={!interactive}
+        {...attributes}
+        {...listeners}
+        aria-label={item.name}
+        onClick={onClick}
+        onClickCapture={onClickCapture}
+        className={cn(
+          "block w-full select-none disabled:cursor-default",
+          interactive && "cursor-grab",
+        )}
+      >
+        <div
+          className={cn(
+            "grid aspect-square place-items-center rounded-2xl bg-white text-3xl shadow-sm transition-all duration-150 sm:text-5xl",
+            active && "scale-110 bg-brand-beige ring-4 ring-brand",
+            selected && "ring-4 ring-brand",
+            interactive && !selected && "hover:scale-105",
+            // 拖曳中原位顯示成虛線空格，表示放開會落在這裡
+            isDragging &&
+              "bg-brand-beige/60 opacity-60 outline-2 outline-offset-2 outline-dashed outline-brand/50",
+          )}
+        >
+          <span aria-hidden className={cn(isDragging && "opacity-30")}>
+            {item.emoji}
+          </span>
+        </div>
+        <p
+          className={cn(
+            "mt-1.5 truncate text-xs text-brand-ink/80 sm:text-sm",
+            (active || selected) && "font-semibold text-brand",
+          )}
+        >
+          {item.name}
+        </p>
+      </button>
+    </li>
+  );
+};
 
 const ResultCard = ({
   title,
