@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useContent } from "@/components/SiteContentProvider";
 import { FortunePanel } from "@/components/play/FortunePanel";
+import { ItemMenu, type MenuAlign } from "@/components/play/ItemMenu";
+import { ItemPickerDialog } from "@/components/play/ItemPickerDialog";
 import { RoomScene } from "@/components/play/RoomScene";
 import {
   ROOM_THEME_IDS,
@@ -35,6 +37,26 @@ type Phase =
 
 type Mode = "room" | "quick";
 
+// 物品格子：加物品，或替換地上第 index 個物品
+type Picker = { kind: "add" } | { kind: "replace"; index: number };
+
+// 地上的物品＋各自在房間裡的位置（第幾個擺放點）。
+// 位置跟著物品走：拿掉一樣時其他物品不會跟著換位置，空位留給之後加的物品。
+interface BoardEntry {
+  item: PlayItem;
+  slot: number;
+}
+
+const toBoard = (list: PlayItem[]): BoardEntry[] =>
+  list.map((item, slot) => ({ item, slot }));
+
+const freeSlot = (board: BoardEntry[]) => {
+  const used = new Set(board.map((b) => b.slot));
+  let slot = 0;
+  while (used.has(slot)) slot += 1;
+  return slot;
+};
+
 interface ZhuazhouGameProps {
   items: PlayItem[];
   initialMat: PlayItem[];
@@ -64,33 +86,85 @@ export const ZhuazhouGame = ({
 }: ZhuazhouGameProps) => {
   const c = useContent(playGame);
   const reduced = useReducedMotion() ?? false;
-  const [mat, setMat] = useState(initialMat);
+  const [board, setBoard] = useState(() => toBoard(initialMat));
+  const mat = useMemo(() => board.map((b) => b.item), [board]);
+  const slots = useMemo(() => board.map((b) => b.slot), [board]);
+  const setMat = (list: PlayItem[]) => setBoard(toBoard(list));
   const [nameInput, setNameInput] = useState("");
   const [phase, setPhase] = useState<Phase>(
     shared ? { kind: "result", result: shared, shared: true } : { kind: "idle" },
   );
   const [copied, setCopied] = useState(false);
   const [mode, setMode] = useState<Mode>("room");
-  const [pickerOpen, setPickerOpen] = useState(false);
+  // 點了地上哪個物品（顯示「拿掉／換一個」選單）
+  const [editing, setEditing] = useState<number | null>(null);
+  const [picker, setPicker] = useState<Picker | null>(null);
   const [theme, setTheme] = useState<RoomThemeId>("galaxy");
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => () => clearTimeout(timer.current), []);
 
-  const toggleItem = (item: PlayItem) =>
-    setMat((current) => {
-      const picked = current.some((m) => m.name === item.name);
-      if (picked) {
-        return current.length > MIN_MAT_SIZE
-          ? current.filter((m) => m.name !== item.name)
-          : current;
-      }
-      return current.length < MAT_SIZE ? [...current, item] : current;
-    });
+  const closeEditors = () => {
+    setEditing(null);
+    setPicker(null);
+  };
+
+  const onItemClick = (index: number) => {
+    if (phase.kind === "grabbing") return;
+    setPicker(null);
+    setEditing((current) => (current === index ? null : index));
+  };
+
+  const removeAt = (index: number) => {
+    setBoard((current) =>
+      current.length > MIN_MAT_SIZE
+        ? current.filter((_, i) => i !== index)
+        : current,
+    );
+    closeEditors();
+  };
+
+  const pickItem = (item: PlayItem) => {
+    if (!picker) return;
+    if (picker.kind === "replace") {
+      const { index } = picker;
+      setBoard((current) =>
+        current.some((b) => b.item.name === item.name)
+          ? current
+          : current.map((b, i) => (i === index ? { ...b, item } : b)),
+      );
+      closeEditors();
+      return;
+    }
+    // 加物品：面板保持打開，可以連續加
+    setBoard((current) =>
+      current.length < MAT_SIZE &&
+      !current.some((b) => b.item.name === item.name)
+        ? [...current, { item, slot: freeSlot(current) }]
+        : current,
+    );
+  };
+
+  const menuFor = (index: number, align: MenuAlign) => (
+    <ItemMenu
+      key={index}
+      align={align}
+      canRemove={mat.length > MIN_MAT_SIZE}
+      removeLabel={c.removeButton}
+      replaceLabel={c.replaceButton}
+      minHint={c.removeMinHint.replaceAll("{min}", String(MIN_MAT_SIZE))}
+      onRemove={() => removeAt(index)}
+      onReplace={() => {
+        setEditing(null);
+        setPicker({ kind: "replace", index });
+      }}
+      onClose={() => setEditing(null)}
+    />
+  );
 
   const start = () => {
     if (phase.kind === "grabbing" || mat.length === 0) return;
-    setPickerOpen(false);
+    closeEditors();
     const babyName = cleanBabyName(nameInput);
     const target = Math.floor(Math.random() * mat.length);
     setCopied(false);
@@ -177,6 +251,7 @@ export const ZhuazhouGame = ({
   };
 
   const highlight = phase.kind === "grabbing" ? phase.highlight : -1;
+  const activeIndex = picker?.kind === "replace" ? picker.index : editing;
 
   return (
     <div className="mx-auto mt-6 max-w-2xl">
@@ -317,33 +392,61 @@ export const ZhuazhouGame = ({
               {mode === "room" ? (
                 <RoomScene
                   items={mat}
+                  slots={slots}
                   theme={theme}
                   target={phase.kind === "grabbing" ? phase.target : null}
                   reduced={reduced}
                   onDone={finishRoom}
+                  onItemClick={onItemClick}
+                  activeIndex={activeIndex}
+                  renderMenu={editing === null ? undefined : menuFor}
                 />
               ) : (
-                <Mat items={mat} highlight={highlight} reduced={reduced} />
+                <Mat
+                  items={mat}
+                  highlight={highlight}
+                  reduced={reduced}
+                  interactive={phase.kind !== "grabbing"}
+                  onItemClick={onItemClick}
+                  activeIndex={activeIndex}
+                  renderMenu={editing === null ? undefined : menuFor}
+                />
+              )}
+
+              {c.tapHint && phase.kind !== "grabbing" && (
+                <p className="-mt-1 text-center text-xs text-brand-ink/60">
+                  👆 {c.tapHint}
+                </p>
               )}
 
               <div className="flex flex-wrap justify-center gap-2">
                 <button
                   type="button"
-                  onClick={() => setPickerOpen((v) => !v)}
-                  disabled={phase.kind === "grabbing"}
-                  aria-expanded={pickerOpen}
+                  onClick={() => {
+                    setEditing(null);
+                    setPicker((p) =>
+                      p?.kind === "add" ? null : { kind: "add" },
+                    );
+                  }}
+                  disabled={
+                    phase.kind === "grabbing" || mat.length >= MAT_SIZE
+                  }
+                  aria-expanded={picker?.kind === "add"}
                   className={cn(
                     "rounded-full border px-4 py-1.5 text-sm transition-colors disabled:opacity-50",
-                    pickerOpen
+                    picker?.kind === "add"
                       ? "border-brand bg-brand-soft/40 text-brand"
                       : "border-brand-soft/70 bg-white text-brand hover:bg-brand-soft/30",
                   )}
                 >
-                  🧸 {c.pickerButton}（{mat.length}）
+                  ＋ {c.pickerButton}（{mat.length}/{MAT_SIZE}）
                 </button>
                 <button
                   type="button"
-                  onClick={() => setMat(pickMatItems(items))}
+                  onClick={() => {
+                    closeEditors();
+                    setMat(pickMatItems(items));
+                  }}
                   disabled={phase.kind === "grabbing"}
                   className="rounded-full border border-brand-soft/70 bg-white px-4 py-1.5 text-sm text-brand transition-colors hover:bg-brand-soft/30 disabled:opacity-50"
                 >
@@ -351,16 +454,29 @@ export const ZhuazhouGame = ({
                 </button>
               </div>
 
-              <AnimatePresence initial={false}>
-                {pickerOpen && (
-                  <ItemPicker
+              <AnimatePresence>
+                {picker && (
+                  <ItemPickerDialog
+                    key={
+                      picker.kind === "add" ? "add" : `replace-${picker.index}`
+                    }
                     items={items}
                     selected={mat}
-                    onToggle={toggleItem}
-                    onClose={() => setPickerOpen(false)}
-                    hint={c.pickerHint
-                      .replaceAll("{min}", String(MIN_MAT_SIZE))
-                      .replaceAll("{max}", String(MAT_SIZE))}
+                    replacing={
+                      picker.kind === "replace" ? mat[picker.index] : undefined
+                    }
+                    onPick={pickItem}
+                    onClose={() => setPicker(null)}
+                    title={
+                      picker.kind === "replace"
+                        ? c.replaceHint.replaceAll(
+                            "{item}",
+                            mat[picker.index]?.name ?? "",
+                          )
+                        : `${c.pickerHint
+                            .replaceAll("{min}", String(MIN_MAT_SIZE))
+                            .replaceAll("{max}", String(MAT_SIZE))}（${mat.length}/${MAT_SIZE}）`
+                    }
                     doneLabel={c.pickerDone}
                   />
                 )}
@@ -391,78 +507,6 @@ export const ZhuazhouGame = ({
         </p>
       )}
     </div>
-  );
-};
-
-const ItemPicker = ({
-  items,
-  selected,
-  onToggle,
-  onClose,
-  hint,
-  doneLabel,
-}: {
-  items: PlayItem[];
-  selected: PlayItem[];
-  onToggle: (item: PlayItem) => void;
-  onClose: () => void;
-  hint: string;
-  doneLabel: string;
-}) => {
-  const picked = new Set(selected.map((m) => m.name));
-  const full = selected.length >= MAT_SIZE;
-  const minimum = selected.length <= MIN_MAT_SIZE;
-  return (
-    <motion.div
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: "auto" }}
-      exit={{ opacity: 0, height: 0 }}
-      transition={{ duration: 0.25 }}
-      className="overflow-hidden"
-    >
-      <div className="rounded-3xl bg-white/85 p-4 ring-1 ring-brand-soft/60">
-        <p className="mb-3 text-center text-sm text-brand-ink/70">
-          {hint}（{selected.length}/{MAT_SIZE}）
-        </p>
-        <ul className="grid grid-cols-4 gap-2 sm:grid-cols-6">
-          {items.map((item) => {
-            const on = picked.has(item.name);
-            const locked = on ? minimum : full;
-            return (
-              <li key={item.name}>
-                <button
-                  type="button"
-                  aria-pressed={on}
-                  disabled={locked}
-                  onClick={() => onToggle(item)}
-                  className={cn(
-                    "flex w-full flex-col items-center gap-0.5 rounded-2xl px-1 py-2 text-xs transition-all",
-                    on
-                      ? "bg-brand-soft/50 text-brand ring-2 ring-brand"
-                      : "bg-brand-beige/60 text-brand-ink/80 hover:bg-brand-soft/30",
-                    locked && !on && "opacity-40",
-                  )}
-                >
-                  <span className="text-2xl leading-none" aria-hidden>
-                    {item.emoji}
-                  </span>
-                  <span className="w-full truncate">{item.name}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-        <div className="mt-3 text-center">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-full bg-brand px-6 py-2 text-sm font-medium text-white"
-          >
-            {doneLabel}
-          </button>
-        </div>
-      </div>
-    </motion.div>
   );
 };
 
@@ -540,21 +584,38 @@ const ModeSwitch = ({
   </div>
 );
 
+// 4 欄格子：最左、最右欄的選單往內對齊，避免超出畫面
+const matAlign = (index: number): MenuAlign =>
+  index % 4 === 0 ? "start" : index % 4 === 3 ? "end" : "center";
+
 const Mat = ({
   items,
   highlight,
   reduced,
+  interactive,
+  onItemClick,
+  activeIndex,
+  renderMenu,
 }: {
   items: PlayItem[];
   highlight: number;
   reduced: boolean;
+  interactive: boolean;
+  onItemClick: (index: number) => void;
+  activeIndex: number | null;
+  renderMenu?: (index: number, align: MenuAlign) => React.ReactNode;
 }) => (
   <div className="rounded-[2rem] bg-brand-soft/40 p-3 ring-1 ring-brand-soft/60 sm:p-5">
     <ul className="grid grid-cols-4 gap-2 rounded-[1.5rem] border-2 border-dashed border-white/80 bg-white/40 p-3 sm:gap-4 sm:p-5">
       {items.map((item, i) => {
         const active = i === highlight;
+        const selected = i === activeIndex;
         return (
-          <li key={`${i}-${item.name}`} className="relative text-center">
+          <li
+            key={`${i}-${item.name}`}
+            className={cn("relative text-center", selected && "z-30")}
+          >
+            {selected && renderMenu?.(i, matAlign(i))}
             {active && (
               <motion.span
                 aria-hidden
@@ -564,24 +625,33 @@ const Mat = ({
                 👶
               </motion.span>
             )}
-            <div
-              className={cn(
-                "grid aspect-square place-items-center rounded-2xl bg-white text-3xl shadow-sm transition-all duration-150 sm:text-5xl",
-                active && "scale-110 bg-brand-beige ring-4 ring-brand",
-              )}
+            <button
+              type="button"
+              data-item-button
+              disabled={!interactive}
+              onClick={() => onItemClick(i)}
+              aria-label={item.name}
+              className="block w-full disabled:cursor-default"
             >
-              <span role="img" aria-label={item.name}>
-                {item.emoji}
-              </span>
-            </div>
-            <p
-              className={cn(
-                "mt-1.5 truncate text-xs text-brand-ink/80 sm:text-sm",
-                active && "font-semibold text-brand",
-              )}
-            >
-              {item.name}
-            </p>
+              <div
+                className={cn(
+                  "grid aspect-square place-items-center rounded-2xl bg-white text-3xl shadow-sm transition-all duration-150 sm:text-5xl",
+                  active && "scale-110 bg-brand-beige ring-4 ring-brand",
+                  selected && "ring-4 ring-brand",
+                  interactive && !selected && "hover:scale-105",
+                )}
+              >
+                <span aria-hidden>{item.emoji}</span>
+              </div>
+              <p
+                className={cn(
+                  "mt-1.5 truncate text-xs text-brand-ink/80 sm:text-sm",
+                  (active || selected) && "font-semibold text-brand",
+                )}
+              >
+                {item.name}
+              </p>
+            </button>
           </li>
         );
       })}

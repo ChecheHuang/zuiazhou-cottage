@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { motion, useAnimate } from "framer-motion";
 import { CrawlingBaby } from "@/components/play/CrawlingBaby";
 import {
   ROOM_BACKGROUNDS,
   type RoomThemeId,
 } from "@/components/play/roomThemes";
+import type { MenuAlign } from "@/components/play/ItemMenu";
+import { cn } from "@/lib/cn";
 import type { PlayItem } from "@/lib/play/items";
 
 // 房間模式：物品擺在地毯上，嬰兒從左邊爬進來，
@@ -34,8 +36,12 @@ const SPOTS: Point[] = [
 // 起點：從左下角探出半個身體，等著開始
 // 物品少於 8 樣時，先用中間的位置，看起來才不會擠在一邊
 const SPOT_ORDER = [5, 6, 1, 2, 4, 7, 0, 3];
-const spotsFor = (count: number) =>
-  SPOT_ORDER.slice(0, Math.min(count, SPOTS.length)).map((i) => SPOTS[i]);
+// slot 是「第幾個擺放點」（照 SPOT_ORDER 的順序）；沒指定時依物品順序排
+const spotsFor = (count: number, slots?: number[]) =>
+  Array.from(
+    { length: Math.min(count, SPOTS.length) },
+    (_, i) => SPOTS[SPOT_ORDER[slots?.[i] ?? i] ?? SPOT_ORDER[i]],
+  );
 
 const START: Point = { x: -4, y: 97 };
 /** 嬰兒寬度（容器寬度的百分比，scale = 1 時） */
@@ -56,20 +62,37 @@ const shuffle = <T,>(list: T[]) =>
 
 interface RoomSceneProps {
   items: PlayItem[];
+  /** 每個物品的擺放點；拿掉物品時其他物品才不會跟著換位置 */
+  slots?: number[];
   theme: RoomThemeId;
   /** 有值時開始一輪：嬰兒最後會抓這個 index 的物品 */
   target: number | null;
   reduced: boolean;
   onDone: () => void;
+  /** 點地上的物品（抓周進行中不會觸發） */
+  onItemClick?: (index: number) => void;
+  /** 被點選、要標示出來的物品 */
+  activeIndex?: number | null;
+  /** 浮在 activeIndex 物品上方的選單 */
+  renderMenu?: (index: number, align: MenuAlign) => ReactNode;
 }
+
+// 靠左右邊的物品，選單改成往內對齊，避免被場景邊緣裁掉
+const alignFor = (x: number): MenuAlign =>
+  x < 30 ? "start" : x > 70 ? "end" : "center";
 
 export const RoomScene = ({
   items,
+  slots,
   theme,
   target,
   reduced,
   onDone,
+  onItemClick,
+  activeIndex = null,
+  renderMenu,
 }: RoomSceneProps) => {
+  const interactive = target === null && !!onItemClick;
   const Background = ROOM_BACKGROUNDS[theme];
   const [scope, animate] = useAnimate<HTMLDivElement>();
   const babyRef = useRef<HTMLDivElement>(null);
@@ -99,7 +122,7 @@ export const RoomScene = ({
       );
     };
 
-    const spots = spotsFor(items.length);
+    const spots = spotsFor(items.length, slots);
 
     const crawlTo = async (index: number) => {
       const spot = spots[index];
@@ -212,7 +235,7 @@ export const RoomScene = ({
     return () => {
       cancelled = true;
     };
-  }, [target, items, reduced, animate]);
+  }, [target, items, slots, reduced, animate]);
 
   return (
     <div
@@ -221,31 +244,56 @@ export const RoomScene = ({
     >
       <Background />
 
-      {spotsFor(items.length).map((spot, i) => (
+      {spotsFor(items.length, slots).map((spot, i) => (
         <div
-          key={`${i}-${items[i].name}`}
+          key={items[i].name}
           data-item={i}
-          className="absolute flex -translate-x-1/2 -translate-y-full flex-col items-center"
+          className={cn(
+            "absolute flex -translate-x-1/2 -translate-y-full flex-col items-center",
+            // translate 會讓每個物品自成一層，被點的要整個拉到最上面，選單才不會被其他物品蓋住
+            activeIndex === i && "z-30",
+          )}
           style={{ left: `${spot.x}%`, top: `${spot.y}%` }}
         >
-          <span className="relative">
-            <span
-              data-item-halo
-              aria-hidden
-              className="absolute inset-[-35%] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.95)_0%,rgba(255,236,170,0.6)_45%,transparent_70%)] opacity-0"
-            />
-            <span
-              data-item-icon
-              role="img"
-              aria-label={items[i].name}
-              className="relative block text-[8.5cqw] leading-none drop-shadow-[0_3px_2px_rgba(0,0,0,0.18)]"
-            >
-              {items[i].emoji}
+          {activeIndex === i && renderMenu?.(i, alignFor(spot.x))}
+          <button
+            type="button"
+            data-item-button
+            disabled={!interactive}
+            aria-label={items[i].name}
+            onClick={() => onItemClick?.(i)}
+            className={cn(
+              "flex flex-col items-center rounded-2xl transition-transform disabled:cursor-default",
+              interactive && "cursor-pointer hover:scale-105",
+              activeIndex === i && "scale-105",
+            )}
+          >
+            <span className="relative">
+              <span
+                data-item-halo
+                aria-hidden
+                className="absolute inset-[-35%] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.95)_0%,rgba(255,236,170,0.6)_45%,transparent_70%)] opacity-0"
+              />
+              <span
+                data-item-icon
+                role="img"
+                aria-label={items[i].name}
+                className="relative block text-[8.5cqw] leading-none drop-shadow-[0_3px_2px_rgba(0,0,0,0.18)]"
+              >
+                {items[i].emoji}
+              </span>
             </span>
-          </span>
-          <span className="mt-[0.6cqw] whitespace-nowrap rounded-full bg-white/85 px-[1.6cqw] py-[0.3cqw] text-[2.6cqw] leading-tight text-brand-ink shadow-sm">
-            {items[i].name}
-          </span>
+            <span
+              className={cn(
+                "mt-[0.6cqw] whitespace-nowrap rounded-full px-[1.6cqw] py-[0.3cqw] text-[2.6cqw] leading-tight shadow-sm",
+                activeIndex === i
+                  ? "bg-brand text-white"
+                  : "bg-white/85 text-brand-ink",
+              )}
+            >
+              {items[i].name}
+            </span>
+          </button>
         </div>
       ))}
 

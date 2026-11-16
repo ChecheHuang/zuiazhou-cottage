@@ -28,6 +28,9 @@ html {
   color-scheme: light;
   /* 頁首是 fixed，跳到錨點（#plans、#birthday…）時讓區塊停在頁首下方，不被蓋住 */
   scroll-padding-top: 5rem;
+  /* 一直保留捲軸的寬度：對話框、手機選單鎖住捲動（overflow: hidden）時捲軸會消失，
+   * 不保留的話整頁會左右跳一下 */
+  scrollbar-gutter: stable;
 }
 
 /* 左右滑入的動畫（framer-motion initial x: ±30）在進場前會超出畫面寬度，
