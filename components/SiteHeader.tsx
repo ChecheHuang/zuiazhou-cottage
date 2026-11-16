@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -69,9 +69,60 @@ const visibleNavItems = (visibility: Visibility): NavItem[] => {
   }));
 };
 
+// 目前網址的 #hash。Next 的 Link 換錨點用 pushState，不會觸發 hashchange，
+// 所以點子選單時另外送一個事件通知更新。
+const HASH_EVENT = "site-header:hash";
+const subscribeHash = (onChange: () => void) => {
+  window.addEventListener("hashchange", onChange);
+  window.addEventListener("popstate", onChange);
+  window.addEventListener(HASH_EVENT, onChange);
+  return () => {
+    window.removeEventListener("hashchange", onChange);
+    window.removeEventListener("popstate", onChange);
+    window.removeEventListener(HASH_EVENT, onChange);
+  };
+};
+const useLocationHash = () =>
+  useSyncExternalStore(
+    subscribeHash,
+    () => window.location.hash,
+    () => "",
+  );
+const notifyHashChange = () =>
+  setTimeout(() => window.dispatchEvent(new Event(HASH_EVENT)), 0);
+
+const splitHref = (href: string) => {
+  const [path, hash = ""] = href.split("#");
+  return { path, hash: hash ? `#${hash}` : "" };
+};
+
+// 子選單項目：路徑相同，且錨點也對得上才算目前頁面。
+// 沒有錨點的項目（例如「抓周派對」→ /baby-party）在網址沒有對應到其他子項目的錨點時亮起。
+const isSubActive = (
+  sub: SubLink,
+  siblings: SubLink[],
+  pathname: string,
+  hash: string,
+) => {
+  const target = splitHref(sub.href);
+  if (target.path !== pathname) return false;
+  if (target.hash) return target.hash === hash;
+  return !siblings.some((s) => {
+    const other = splitHref(s.href);
+    return other.path === pathname && other.hash !== "" && other.hash === hash;
+  });
+};
+
+// 主選單項目：自己的頁面（含子路徑），或任何一個子選單項目是目前頁面時都算
 const isItemActive = (item: NavItem, pathname: string) => {
-  if (item.href === "/") return pathname === "/";
-  return pathname === item.href || pathname.startsWith(`${item.href}/`);
+  const self =
+    item.href === "/"
+      ? pathname === "/"
+      : pathname === item.href || pathname.startsWith(`${item.href}/`);
+  return (
+    self ||
+    (item.children ?? []).some((sub) => splitHref(sub.href).path === pathname)
+  );
 };
 
 const ChevronIcon = () => (
@@ -91,6 +142,7 @@ const ChevronIcon = () => (
 
 export const SiteHeader = () => {
   const pathname = usePathname();
+  const hash = useLocationHash();
   const c = useContent(layoutHeader);
   const biz = useContent(siteBusiness);
   const navItems = visibleNavItems(useContent(layoutNavVisibility));
@@ -251,16 +303,31 @@ export const SiteHeader = () => {
                       role="menu"
                       className="min-w-[200px] rounded-2xl border border-brand-soft/50 bg-white p-2 shadow-xl shadow-brand/10"
                     >
-                      {item.children?.map((sub) => (
-                        <Link
-                          key={sub.labelKey}
-                          href={sub.href}
-                          role="menuitem"
-                          className="block rounded-xl px-4 py-2.5 text-sm text-brand-ink transition-colors duration-200 hover:bg-brand-soft/30 hover:text-brand"
-                        >
-                          {c[sub.labelKey]}
-                        </Link>
-                      ))}
+                      {item.children?.map((sub, _, siblings) => {
+                        const subActive = isSubActive(
+                          sub,
+                          siblings,
+                          pathname,
+                          hash,
+                        );
+                        return (
+                          <Link
+                            key={sub.labelKey}
+                            href={sub.href}
+                            role="menuitem"
+                            aria-current={subActive ? "page" : undefined}
+                            onClick={notifyHashChange}
+                            className={cn(
+                              "block rounded-xl px-4 py-2.5 text-sm transition-colors duration-200 hover:bg-brand-soft/30 hover:text-brand",
+                              subActive
+                                ? "bg-brand-soft/30 font-semibold text-brand"
+                                : "text-brand-ink",
+                            )}
+                          >
+                            {c[sub.labelKey]}
+                          </Link>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -381,16 +448,31 @@ export const SiteHeader = () => {
                 </Link>
                 {item.children?.length ? (
                   <ul className="mb-2 ml-7 flex flex-col gap-1">
-                    {item.children.map((sub) => (
-                      <li key={sub.labelKey}>
-                        <Link
-                          href={sub.href}
-                          className="block py-1.5 text-sm text-brand-ink/80 transition-colors hover:text-brand"
-                        >
-                          · {c[sub.labelKey]}
-                        </Link>
-                      </li>
-                    ))}
+                    {item.children.map((sub, _, siblings) => {
+                      const subActive = isSubActive(
+                        sub,
+                        siblings,
+                        pathname,
+                        hash,
+                      );
+                      return (
+                        <li key={sub.labelKey}>
+                          <Link
+                            href={sub.href}
+                            aria-current={subActive ? "page" : undefined}
+                            onClick={notifyHashChange}
+                            className={cn(
+                              "block py-1.5 text-sm transition-colors hover:text-brand",
+                              subActive
+                                ? "font-semibold text-brand"
+                                : "text-brand-ink/80",
+                            )}
+                          >
+                            · {c[sub.labelKey]}
+                          </Link>
+                        </li>
+                      );
+                    })}
                   </ul>
                 ) : null}
               </div>
