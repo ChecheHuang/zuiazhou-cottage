@@ -202,10 +202,27 @@ export const SiteHeader = () => {
     setOpenDropdown(href);
   };
 
+  // 留一點緩衝，滑鼠稍微滑出去（例如斜斜移向子選單）不會馬上收起
   const scheduleClose = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
-    closeTimer.current = setTimeout(() => setOpenDropdown(null), 180);
+    closeTimer.current = setTimeout(() => setOpenDropdown(null), 350);
   };
+
+  // 觸控螢幕沒有「滑鼠移入」：第一下點父項目先打開子選單，再點一次才換頁
+  // 記在「按下」那一刻：觸控時瀏覽器會在 click 前補發 mouseenter，到 click 時選單已經開了
+  const tapToOpen = useRef(false);
+
+  // 用觸控打開的子選單，點選單外面就關掉
+  useEffect(() => {
+    if (!openDropdown) return;
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType === "mouse") return;
+      const nav = document.querySelector('nav[aria-label="主選單"]');
+      if (!nav?.contains(e.target as Node)) setOpenDropdown(null);
+    };
+    document.addEventListener("pointerdown", onDown);
+    return () => document.removeEventListener("pointerdown", onDown);
+  }, [openDropdown]);
 
   // header 用 fixed 固定在頂端，原位置放一塊固定高度的佔位。
   // 若用 sticky，header 縮小會讓下面內容跟著移動，瀏覽器的捲動錨定會把捲動位置調回門檻以下，
@@ -271,6 +288,21 @@ export const SiteHeader = () => {
                     aria-current={active ? "page" : undefined}
                     aria-haspopup="menu"
                     aria-expanded={openDropdown === item.href}
+                    // 點了父項目換頁後選單會關掉；滑鼠還停在上面時，一動就重新打開
+                    onMouseMove={() => {
+                      if (openDropdown !== item.href) openMenu(item.href);
+                    }}
+                    onPointerDown={(e) => {
+                      tapToOpen.current =
+                        e.pointerType !== "mouse" &&
+                        openDropdown !== item.href;
+                    }}
+                    onClick={(e) => {
+                      if (!tapToOpen.current) return;
+                      tapToOpen.current = false;
+                      e.preventDefault();
+                      openMenu(item.href);
+                    }}
                     className={cn(
                       "group relative flex items-center gap-1 py-1 text-sm transition-colors duration-300",
                       active
