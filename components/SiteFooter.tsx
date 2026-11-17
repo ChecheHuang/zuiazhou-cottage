@@ -67,8 +67,9 @@ export const SiteFooter = async () => {
   const copyright = c.copyright
     .replaceAll("{年份}", String(new Date().getFullYear()))
     .replaceAll("{店名}", biz.brand);
+  // 手機上底部多留空間（pb-32），最後一行不會被右下角的浮動按鈕擋住
   return (
-    <footer id="contact" className="relative bg-white pt-16 pb-10">
+    <footer id="contact" className="relative bg-white pt-16 pb-32 md:pb-10">
       <div className="mx-auto flex max-w-content flex-col items-center gap-6 px-6 text-center">
         <Link
           href="/"
