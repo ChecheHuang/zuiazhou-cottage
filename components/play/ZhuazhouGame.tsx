@@ -444,7 +444,13 @@ export const ZhuazhouGame = ({
               outfit={phase.result.outfit}
             />
 
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+            {/* 手機上自己的結果有四顆按鈕，排成 2×2 比較不會拉得太長 */}
+            <div
+              className={cn(
+                "mt-6 gap-3 sm:flex sm:flex-row sm:justify-center",
+                phase.shared ? "flex flex-col" : "grid grid-cols-2",
+              )}
+            >
               {phase.shared ? (
                 <button
                   type="button"
@@ -585,7 +591,7 @@ export const ZhuazhouGame = ({
                 }}
               />
               {outfitHints[outfit] && (
-                <p className="-mt-1 text-center text-xs text-brand-ink/65">
+                <p className="-mt-1 text-balance text-center text-xs text-brand-ink/65">
                   {outfitHints[outfit]}
                 </p>
               )}

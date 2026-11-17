@@ -127,7 +127,7 @@ export const FortunePanel = ({
         🔮 {title}
       </h3>
       {c.intro && (
-        <p className="mt-1.5 text-center text-sm text-brand-ink/70">{c.intro}</p>
+        <p className="mt-1.5 text-balance text-center text-sm text-brand-ink/70">{c.intro}</p>
       )}
 
       <form
@@ -247,15 +247,16 @@ export const FortunePanel = ({
                 )}
               >
                 <div className="min-w-0 flex-1">
-                  <p className="font-medium text-brand-ink">
-                    {day.label}
+                  {/* 標籤不拆字：放不下就整個換到下一行 */}
+                  <p className="flex flex-wrap items-center gap-x-2 gap-y-1 font-medium text-brand-ink">
+                    <span className="whitespace-nowrap">{day.label}</span>
                     {day.isBirthday && (
-                      <span className="ml-2 rounded-full bg-brand px-2 py-0.5 text-xs text-white">
+                      <span className="whitespace-nowrap rounded-full bg-brand px-2 py-0.5 text-xs text-white">
                         {c.birthdayTag}
                       </span>
                     )}
                     {day.good && (
-                      <span className="ml-2 rounded-full bg-white px-2 py-0.5 text-xs text-brand">
+                      <span className="whitespace-nowrap rounded-full bg-white px-2 py-0.5 text-xs text-brand">
                         {c.goodDayTag}
                       </span>
                     )}
