@@ -33,6 +33,16 @@ const parseEnv = (text) =>
       .map((m) => [m[1], m[2]]),
   );
 
+// 要能打字回答確認問題；在不能互動的地方（例如 Claude Code 的 ! 指令）執行會讀不到輸入，
+// 程序直接結束、finally 來不及刪掉暫存的正式環境變數，所以在下載前就先擋下
+if (!process.stdin.isTTY) {
+  console.error(
+    "✗ 這個指令需要互動式終端機（要輸入 yes 確認）。\n" +
+      "  請在自己的終端機（PowerShell 或 VS Code 終端機）進到專案資料夾後執行 pnpm db:push:prod",
+  );
+  process.exit(1);
+}
+
 const dir = mkdtempSync(join(tmpdir(), "zhuazhou-prod-env-"));
 const envFile = join(dir, ".env.production");
 
