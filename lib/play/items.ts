@@ -1,5 +1,7 @@
 // 模擬抓周用的物品工具（前後台共用，不可 import server-only 模組）
 
+import { DEFAULT_OUTFIT } from "./outfits";
+
 export interface PlayItem {
   emoji: string;
   /** 後台上傳的圖片，有的話取代 emoji 顯示；"" 或沒有就用 emoji */
@@ -52,8 +54,10 @@ export const fillTemplate = (
   values: { name: string; item: string },
 ) => template.replaceAll("{name}", values.name).replaceAll("{item}", values.item);
 
-export const resultPath = (item: string, babyName: string) => {
+export const resultPath = (item: string, babyName: string, outfit?: string) => {
   const params = new URLSearchParams({ item });
   if (babyName) params.set("name", babyName);
+  // 預設的虎衣不寫進網址，網址短一點
+  if (outfit && outfit !== DEFAULT_OUTFIT) params.set("outfit", outfit);
   return `/play?${params.toString()}`;
 };

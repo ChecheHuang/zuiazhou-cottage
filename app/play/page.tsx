@@ -10,6 +10,7 @@ import {
   resultPath,
 } from "@/lib/play/items";
 import { getPlayItems } from "@/lib/play/server";
+import { parseOutfit } from "@/lib/play/outfits";
 import { buildPageMetadata } from "@/lib/seo";
 import { playGame, playSeo } from "@/lib/site-content/blocks/play";
 import { siteBusiness } from "@/lib/site-content/blocks/site";
@@ -24,13 +25,18 @@ const readResult = async (searchParams: Props["searchParams"]) => {
   const params = await searchParams;
   const items = await getPlayItems();
   const item = findPlayItem(items, params.item);
-  return { items, item, babyName: cleanBabyName(params.name) };
+  return {
+    items,
+    item,
+    babyName: cleanBabyName(params.name),
+    outfit: parseOutfit(params.outfit),
+  };
 };
 
 export async function generateMetadata({
   searchParams,
 }: Props): Promise<Metadata> {
-  const [seo, game, biz, { item, babyName }] = await Promise.all([
+  const [seo, game, biz, { item, babyName, outfit }] = await Promise.all([
     getContent(playSeo),
     getContent(playGame),
     getContent(siteBusiness),
@@ -59,7 +65,7 @@ export async function generateMetadata({
     // og:url 要是這次結果的網址，否則 Facebook 會改抓 /play 的預覽圖
     openGraph: {
       ...base.openGraph,
-      url: resultPath(item.name, babyName),
+      url: resultPath(item.name, babyName, outfit),
       title,
       description,
       images: [image],
@@ -69,7 +75,7 @@ export async function generateMetadata({
 }
 
 export default async function PlayPage({ searchParams }: Props) {
-  const [game, biz, { items, item, babyName }] = await Promise.all([
+  const [game, biz, { items, item, babyName, outfit }] = await Promise.all([
     getContent(playGame),
     getContent(siteBusiness),
     readResult(searchParams),
@@ -109,7 +115,7 @@ export default async function PlayPage({ searchParams }: Props) {
             <ZhuazhouGame
               items={items}
               initialMat={pickMatItems(items)}
-              shared={item ? { item, babyName } : null}
+              shared={item ? { item, babyName, outfit } : null}
               lineUrl={biz.lineUrl}
             />
           </div>

@@ -14,8 +14,7 @@ const SKIN_SHADE = "#efc2a3";
 const SKIN_CREASE = "#e3a988";
 const HAIR = "#9a6a50";
 
-export const OUTFIT_IDS = ["tiger", "onesie", "overalls", "tutu"] as const;
-export type OutfitId = (typeof OUTFIT_IDS)[number];
+import type { OutfitId } from "@/lib/play/outfits";
 
 const TIGER = "#f6a640";
 const TIGER_STRIPE = "#6b4226";

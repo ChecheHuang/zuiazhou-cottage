@@ -29,11 +29,8 @@ import {
   useSuppressClickAfterDrag,
 } from "@/components/play/itemDnd";
 import { RoomScene } from "@/components/play/RoomScene";
-import {
-  CrawlingBaby,
-  OUTFIT_IDS,
-  type OutfitId,
-} from "@/components/play/CrawlingBaby";
+import { CrawlingBaby } from "@/components/play/CrawlingBaby";
+import { OUTFIT_IDS, DEFAULT_OUTFIT, type OutfitId } from "@/lib/play/outfits";
 import {
   ROOM_THEME_IDS,
   type RoomThemeId,
@@ -65,6 +62,8 @@ import { ZhuazhouItemIcon } from "@/components/ZhuazhouItemIcon";
 interface Result {
   item: PlayItem;
   babyName: string;
+  /** 抓周時寶寶穿的衣服（分享網址也會帶） */
+  outfit: OutfitId;
 }
 
 type Phase =
@@ -139,8 +138,10 @@ export const ZhuazhouGame = ({
   const [editing, setEditing] = useState<number | null>(null);
   const [picker, setPicker] = useState<Picker | null>(null);
   const [theme, setTheme] = useState<RoomThemeId>("galaxy");
-  // 主打虎衣：抓周儀式本來就要穿虎衣，店裡方案也有附
-  const [outfit, setOutfit] = useState<OutfitId>("tiger");
+  // 從分享連結進來時沿用朋友選的衣服，否則預設虎衣
+  const [outfit, setOutfit] = useState<OutfitId>(
+    shared?.outfit ?? DEFAULT_OUTFIT,
+  );
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => () => clearTimeout(timer.current), []);
@@ -285,7 +286,7 @@ export const ZhuazhouGame = ({
           () =>
             setPhase({
               kind: "result",
-              result: { item: mat[target], babyName },
+              result: { item: mat[target], babyName, outfit },
               shared: false,
             }),
           reduced ? 0 : 600,
@@ -309,7 +310,7 @@ export const ZhuazhouGame = ({
       p.kind === "grabbing"
         ? {
             kind: "result",
-            result: { item: mat[p.target], babyName: p.babyName },
+            result: { item: mat[p.target], babyName: p.babyName, outfit },
             shared: false,
           }
         : p,
@@ -326,7 +327,7 @@ export const ZhuazhouGame = ({
   };
 
   const shareUrl = (r: Result) =>
-    `${window.location.origin}${resultPath(r.item.name, r.babyName)}`;
+    `${window.location.origin}${resultPath(r.item.name, r.babyName, r.outfit)}`;
 
   const titleFor = (r: Result) =>
     fillTemplate(c.resultTitle, {
@@ -415,6 +416,12 @@ export const ZhuazhouGame = ({
   };
 
   const highlight = phase.kind === "grabbing" ? phase.highlight : -1;
+  const outfitHints: Record<OutfitId, string> = {
+    tiger: c.outfitTigerHint,
+    onesie: c.outfitOnesieHint,
+    overalls: c.outfitOverallsHint,
+    tutu: c.outfitTutuHint,
+  };
   const activeIndex = picker?.kind === "replace" ? picker.index : editing;
 
   return (
@@ -434,7 +441,7 @@ export const ZhuazhouGame = ({
               blessing={c.blessing}
               intro={phase.shared ? c.sharedIntro : ""}
               statsLine={statsLine(phase.result)}
-              outfit={outfit}
+              outfit={phase.result.outfit}
             />
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
@@ -577,9 +584,9 @@ export const ZhuazhouGame = ({
                   tutu: c.outfitTutu,
                 }}
               />
-              {outfit === "tiger" && c.outfitTigerHint && (
+              {outfitHints[outfit] && (
                 <p className="-mt-1 text-center text-xs text-brand-ink/65">
-                  {c.outfitTigerHint}
+                  {outfitHints[outfit]}
                 </p>
               )}
 
@@ -601,6 +608,7 @@ export const ZhuazhouGame = ({
               ) : (
                 <Mat
                   items={mat}
+                  outfit={outfit}
                   highlight={highlight}
                   reduced={reduced}
                   interactive={phase.kind !== "grabbing"}
@@ -800,6 +808,7 @@ const matAlign = (index: number): MenuAlign =>
 
 const Mat = ({
   items,
+  outfit,
   highlight,
   reduced,
   interactive,
@@ -810,6 +819,7 @@ const Mat = ({
   onReorder,
 }: {
   items: PlayItem[];
+  outfit: OutfitId;
   highlight: number;
   reduced: boolean;
   interactive: boolean;
@@ -868,6 +878,7 @@ const Mat = ({
                 key={item.name}
                 index={i}
                 item={item}
+                outfit={outfit}
                 active={i === highlight}
                 selected={i === activeIndex}
                 reduced={reduced}
@@ -909,6 +920,7 @@ const Mat = ({
 const MatCell = ({
   index,
   item,
+  outfit,
   active,
   selected,
   reduced,
@@ -919,6 +931,7 @@ const MatCell = ({
 }: {
   index: number;
   item: PlayItem;
+  outfit: OutfitId;
   active: boolean;
   selected: boolean;
   reduced: boolean;
@@ -953,12 +966,13 @@ const MatCell = ({
     >
       {menu}
       {active && (
+        // 穿著選好衣服的小寶寶跳到這一格上方
         <motion.span
           aria-hidden
           layoutId={reduced ? undefined : "baby-hand"}
-          className="absolute -top-4 left-1/2 z-10 -translate-x-1/2 text-2xl sm:text-3xl"
+          className="absolute -top-7 left-1/2 z-10 block w-14 -translate-x-1/2 sm:-top-9 sm:w-[4.5rem]"
         >
-          👶
+          <CrawlingBaby outfit={outfit} />
         </motion.span>
       )}
       <button

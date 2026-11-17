@@ -13,7 +13,8 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { motion, useAnimate } from "framer-motion";
-import { CrawlingBaby, type OutfitId } from "@/components/play/CrawlingBaby";
+import { CrawlingBaby } from "@/components/play/CrawlingBaby";
+import type { OutfitId } from "@/lib/play/outfits";
 import {
   ROOM_BACKGROUNDS,
   type RoomThemeId,
