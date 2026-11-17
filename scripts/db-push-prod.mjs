@@ -73,6 +73,11 @@ try {
   );
   const answer = (await rl.question("確定要繼續請輸入 yes：")).trim();
   rl.close();
+  // 把鍵盤輸入完全交還給 drizzle-kit：不釋放的話，Windows 上方向鍵會被這支程式吃掉，
+  // drizzle-kit 的「Yes / No」選單就移不動
+  if (process.stdin.isTTY) process.stdin.setRawMode(false);
+  process.stdin.pause();
+  process.stdin.destroy();
   if (answer !== "yes") {
     console.log("已取消，沒有做任何變更。");
   } else {
