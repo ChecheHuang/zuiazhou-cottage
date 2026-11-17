@@ -15,7 +15,7 @@ export interface FortuneSections {
 const ZODIAC = ["鼠", "牛", "虎", "兔", "龍", "蛇", "馬", "羊", "猴", "雞", "狗", "豬"] as const;
 export type Zodiac = (typeof ZODIAC)[number];
 
-// 各年農曆新年（國曆月/日）；表外的年份以 2/4（立春）近似
+// 各年農曆新年（國曆月/日），瀏覽器不支援 Intl 農曆時的備案；表外的年份以 2/4（立春）近似
 const LUNAR_NEW_YEAR: Record<number, [number, number]> = {
   2014: [1, 31],
   2015: [2, 19],
@@ -38,7 +38,28 @@ const LUNAR_NEW_YEAR: Record<number, [number, number]> = {
   2032: [2, 11],
 };
 
+// 瀏覽器內建的農曆換算（任何年份都準），取得該日所屬的農曆年
+const chineseYearOf = (year: number, month: number, day: number) => {
+  try {
+    const parts = new Intl.DateTimeFormat("en-u-ca-chinese", {
+      year: "numeric",
+      timeZone: "UTC",
+    }).formatToParts(new Date(Date.UTC(year, month - 1, day)));
+    // relatedYear 是較新的標準，TypeScript 的型別還沒收錄
+    const related = Number(
+      parts.find((p) => (p.type as string) === "relatedYear")?.value,
+    );
+    // 結果應該是當年或前一年，不合理就當作不支援
+    return related === year || related === year - 1 ? related : null;
+  } catch {
+    return null;
+  }
+};
+
 export const zodiacOf = (year: number, month: number, day: number): Zodiac => {
+  const fromIntl = chineseYearOf(year, month, day);
+  if (fromIntl !== null) return ZODIAC[(((fromIntl - 4) % 12) + 12) % 12];
+  // 不支援 Intl 農曆的環境才用下面的表
   const [m, d] = LUNAR_NEW_YEAR[year] ?? [2, 4];
   const beforeNewYear = month < m || (month === m && day < d);
   const lunarYear = beforeNewYear ? year - 1 : year;

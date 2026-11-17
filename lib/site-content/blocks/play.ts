@@ -33,10 +33,15 @@ export const playFortune = defineBlock({
   page: PAGE,
   label: "抓周命盤",
   description:
-    "抓周結果下方的「抓周命盤」：選填寶寶生日後，依生肖、星座與抓到的物品產生個性、天賦與祝福。{name} 會換成寶寶的小名。",
+    "抓周結果下方直接展開的「抓周命盤」：選寶寶生日後，依生肖、星座與抓到的物品產生個性、天賦與祝福（一般版選完生日就出結果）。{name} 會換成寶寶的小名。",
   fields: [
-    { type: "text", key: "button", label: "開啟命盤的按鈕" },
     { type: "text", key: "title", label: "命盤標題" },
+    {
+      type: "text",
+      key: "intro",
+      label: "標題下方的引導文字",
+      hint: "吸引客人選生日，留空就不顯示",
+    },
     { type: "text", key: "birthdayLabel", label: "生日輸入框標題" },
     { type: "text", key: "generateButton", label: "產生命盤按鈕" },
     { type: "text", key: "personality", label: "段落標題：個性" },
@@ -47,10 +52,10 @@ export const playFortune = defineBlock({
     { type: "text", key: "disclaimer", label: "命盤下方的小字" },
   ],
   defaults: {
-    button: "🔮 看寶寶的抓周命盤",
     title: "{name}的抓周命盤",
-    birthdayLabel: "寶寶生日（只在你的手機上計算生肖與星座）",
-    generateButton: "產生命盤",
+    intro: "選個生日，馬上看看個性、天賦與祝福（大人也能玩喔！）",
+    birthdayLabel: "生日（只在你的手機上計算生肖與星座）",
+    generateButton: "✨ 用 AI 產生命盤",
     personality: "🌟 個性",
     talent: "🎁 天賦",
     blessing: "💝 祝福",

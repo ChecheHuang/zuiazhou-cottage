@@ -3,7 +3,6 @@
 import { useState } from "react";
 import {
   AiModeSwitch,
-  GeminiKeyField,
   useAiGenerate,
   type AiMode,
 } from "@/components/ai/AiControls";
@@ -88,6 +87,7 @@ export const InviteGenerator = () => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [mode, setMode] = useState<AiMode>("normal");
+  const [keyOpen, setKeyOpen] = useState(false);
   /** 產生出來、還沒填入名字日期的訊息（填入在顯示時做，改欄位不用重新產生） */
   const [draft, setDraft] = useState("");
   const [copied, setCopied] = useState(false);
@@ -101,6 +101,10 @@ export const InviteGenerator = () => {
     const input = { partyType, venue: venueText, tone };
     if (!useAi) {
       setDraft(templateInvite(input));
+      return;
+    }
+    if (!gemini.key) {
+      setKeyOpen(true);
       return;
     }
     const fromAi = await ai.run({
@@ -170,8 +174,14 @@ export const InviteGenerator = () => {
           onChange={setTime}
         />
 
-        <AiModeSwitch mode={mode} onChange={setMode} disabled={ai.busy} />
-        {useAi && <GeminiKeyField gemini={gemini} />}
+        <AiModeSwitch
+          mode={mode}
+          onChange={setMode}
+          disabled={ai.busy}
+          gemini={gemini}
+          keyOpen={keyOpen}
+          onKeyOpenChange={setKeyOpen}
+        />
 
         <button
           type="submit"

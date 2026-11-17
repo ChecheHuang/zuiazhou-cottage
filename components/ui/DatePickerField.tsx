@@ -30,13 +30,15 @@ const startOfToday = () => {
   return d;
 };
 
+const BIRTHDAY_FIRST_YEAR = 1920;
+
 const addMonths = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth() + n, 1);
 
 interface DatePickerFieldProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
-  /** birthday：只能選今天以前，可下拉選年月；event：只能選今天以後 */
+  /** birthday：1920 年到今天，可下拉選年月；event：只能選今天以後 */
   kind: Kind;
   placeholder?: string;
   disabled?: boolean;
@@ -74,7 +76,8 @@ export const DatePickerField = ({
   const range =
     kind === "birthday"
       ? {
-          startMonth: new Date(today.getFullYear() - 12, 0, 1),
+          // 大人也可能想玩，年份往前開放到 1920 年
+          startMonth: new Date(BIRTHDAY_FIRST_YEAR, 0, 1),
           endMonth: today,
           disabled: { after: today },
           captionLayout: "dropdown" as const,

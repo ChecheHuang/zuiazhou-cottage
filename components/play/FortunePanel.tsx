@@ -4,7 +4,6 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AiModeSwitch,
-  GeminiKeyField,
   useAiGenerate,
   type AiMode,
 } from "@/components/ai/AiControls";
@@ -32,7 +31,9 @@ interface Fortune {
   sections: FortuneSections;
 }
 
-// 抓周結果下方的命盤小卡。生日只在瀏覽器裡換算成生肖與星座，不會送出。
+// 抓周結果下方的命盤小卡（直接展開，不用先點按鈕）。
+// 一般版選完生日就出結果；AI 版要按按鈕才送出，避免一選日期就用掉訪客的 key 額度。
+// 生日只在瀏覽器裡換算成生肖與星座，不會送出。
 export const FortunePanel = ({
   item,
   babyName,
@@ -43,9 +44,9 @@ export const FortunePanel = ({
   const c = useContent(playFortune);
   const gemini = useGeminiKey();
   const ai = useAiGenerate();
-  const [open, setOpen] = useState(false);
   const [birthday, setBirthday] = useState("");
   const [mode, setMode] = useState<AiMode>("normal");
+  const [keyOpen, setKeyOpen] = useState(false);
   const [fortune, setFortune] = useState<Fortune | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -53,12 +54,17 @@ export const FortunePanel = ({
   const date = parseBirthday(birthday);
   const title = c.title.replaceAll("{name}", babyName);
 
-  const generate = async () => {
-    if (!date) return;
-    const zodiac = zodiacOf(date.year, date.month, date.day);
-    const sign = signOf(date.month, date.day);
+  const generate = async (value: string, withAi: boolean) => {
+    const d = parseBirthday(value);
+    if (!d) return;
+    if (withAi && !gemini.key) {
+      setKeyOpen(true);
+      return;
+    }
+    const zodiac = zodiacOf(d.year, d.month, d.day);
+    const sign = signOf(d.month, d.day);
     setCopied(false);
-    const fromAi = useAi
+    const fromAi = withAi
       ? await ai.run({
           apiKey: gemini.key,
           prompt: fortunePrompt(zodiac, sign, item),
@@ -67,7 +73,6 @@ export const FortunePanel = ({
         })
       : null;
     // AI 失敗（或沒選 AI）就用一般版，畫面不會空白
-    if (useAi && !fromAi && !gemini.key) return;
     const sections = fromAi ?? templateFortune(zodiac, sign, item);
     setFortune({ zodiac, sign, sections: fillName(sections, babyName) });
   };
@@ -88,20 +93,6 @@ export const FortunePanel = ({
     }
   };
 
-  if (!open) {
-    return (
-      <div className="mt-4 text-center">
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="rounded-full border-2 border-dashed border-brand-soft bg-white/80 px-6 py-2.5 font-medium text-brand transition-colors hover:bg-brand-soft/30"
-        >
-          {c.button}
-        </button>
-      </div>
-    );
-  }
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -111,11 +102,14 @@ export const FortunePanel = ({
       <h3 className="text-center text-xl font-semibold tracking-wide text-brand">
         🔮 {title}
       </h3>
+      {c.intro && (
+        <p className="mt-1.5 text-center text-sm text-brand-ink/70">{c.intro}</p>
+      )}
 
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          generate();
+          generate(birthday, useAi);
         }}
         className="mt-4 flex flex-col gap-3"
       >
@@ -124,21 +118,37 @@ export const FortunePanel = ({
             kind="birthday"
             label={c.birthdayLabel}
             value={birthday}
-            onChange={setBirthday}
+            onChange={(value) => {
+              setBirthday(value);
+              // 一般版選完就出結果
+              if (!useAi) generate(value, false);
+            }}
             disabled={ai.busy}
           />
         </div>
 
-        <AiModeSwitch mode={mode} onChange={setMode} disabled={ai.busy} />
-        {useAi && <GeminiKeyField gemini={gemini} />}
+        <AiModeSwitch
+          mode={mode}
+          onChange={(m) => {
+            setMode(m);
+            // 從 AI 版切回一般版時，已選好生日就直接出結果
+            if (m === "normal" && !fortune) generate(birthday, false);
+          }}
+          disabled={ai.busy}
+          gemini={gemini}
+          keyOpen={keyOpen}
+          onKeyOpenChange={setKeyOpen}
+        />
 
-        <button
-          type="submit"
-          disabled={!date || ai.busy}
-          className="mx-auto rounded-full bg-brand px-8 py-2.5 font-medium text-white shadow-lg shadow-brand/30 transition-transform hover:scale-105 disabled:scale-100 disabled:opacity-50"
-        >
-          {ai.busy ? ai.generatingText : c.generateButton}
-        </button>
+        {useAi && (
+          <button
+            type="submit"
+            disabled={!date || ai.busy}
+            className="mx-auto rounded-full bg-brand px-8 py-2.5 font-medium text-white shadow-lg shadow-brand/30 transition-transform hover:scale-105 disabled:scale-100 disabled:opacity-50"
+          >
+            {ai.busy ? ai.generatingText : c.generateButton}
+          </button>
+        )}
         {ai.error && (
           <p role="alert" className="text-center text-sm text-red-500">
             {ai.error}
