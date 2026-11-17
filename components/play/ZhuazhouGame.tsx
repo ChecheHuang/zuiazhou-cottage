@@ -45,6 +45,16 @@ import {
   type PlayItem,
 } from "@/lib/play/items";
 import { playGame } from "@/lib/site-content/blocks/play";
+import { siteBusiness } from "@/lib/site-content/blocks/site";
+import confetti from "canvas-confetti";
+import { drawResultCard } from "@/lib/play/result-card";
+import {
+  MIN_STATS_TOTAL,
+  formatPercent,
+  formatTotal,
+  type GrabStats,
+} from "@/lib/play/stats";
+import { useSfx } from "@/lib/play/use-sfx";
 import { ZhuazhouItemIcon } from "@/components/ZhuazhouItemIcon";
 
 interface Result {
@@ -107,7 +117,9 @@ export const ZhuazhouGame = ({
   lineUrl,
 }: ZhuazhouGameProps) => {
   const c = useContent(playGame);
+  const biz = useContent(siteBusiness);
   const reduced = useReducedMotion() ?? false;
+  const sfx = useSfx();
   const [board, setBoard] = useState(() => toBoard(initialMat));
   const mat = useMemo(() => board.map((b) => b.item), [board]);
   const slots = useMemo(() => board.map((b) => b.slot), [board]);
@@ -125,6 +137,53 @@ export const ZhuazhouGame = ({
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => () => clearTimeout(timer.current), []);
+
+  // 抓周統計：記在「哪個物品」底下，換結果時舊的數字自然不會顯示
+  const [stats, setStats] = useState<{ item: string; value: GrabStats } | null>(
+    null,
+  );
+  const [savingImage, setSavingImage] = useState(false);
+  // 同一個結果只記一次（開發模式的 StrictMode 會把 effect 跑兩次）
+  const recorded = useRef<Result | null>(null);
+
+  // 出結果時：自己玩的 → 撒彩帶＋音效＋統計 +1；別人分享的 → 只讀統計
+  useEffect(() => {
+    if (phase.kind !== "result" || recorded.current === phase.result) return;
+    const { result, shared: fromLink } = phase;
+    recorded.current = result;
+    const item = result.item.name;
+
+    if (!fromLink) {
+      sfx.fanfare();
+      const brand = getComputedStyle(document.documentElement)
+        .getPropertyValue("--color-brand")
+        .trim();
+      void confetti({
+        particleCount: 120,
+        spread: 80,
+        startVelocity: 45,
+        origin: { y: 0.35 },
+        colors: [brand || "#eda09d", "#ffd36e", "#ffffff", "#8fd3c2"],
+        disableForReducedMotion: true,
+      });
+    }
+
+    const request = fromLink
+      ? fetch(`/api/play/stats?item=${encodeURIComponent(item)}`)
+      : fetch("/api/play/stats", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ item }),
+        });
+    request
+      .then((res) => (res.ok ? (res.json() as Promise<GrabStats | null>) : null))
+      .then((value) => {
+        if (value) setStats({ item, value });
+      })
+      .catch(() => undefined);
+    // sfx 每次 render 都是新物件，只在結果改變時跑
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
 
   const closeEditors = () => {
     setEditing(null);
@@ -202,6 +261,8 @@ export const ZhuazhouGame = ({
     const babyName = cleanBabyName(nameInput);
     const target = Math.floor(Math.random() * mat.length);
     setCopied(false);
+    // iOS 要在點擊當下啟用音效
+    sfx.unlock();
 
     // 房間模式：交給 RoomScene 演完再呼叫 finishRoom
     if (mode === "room") {
@@ -230,6 +291,7 @@ export const ZhuazhouGame = ({
         target,
         babyName,
       });
+      sfx.tick();
       timer.current = setTimeout(() => run(i + 1), steps[i].delay);
     };
     run(0);
@@ -284,6 +346,54 @@ export const ZhuazhouGame = ({
     }
   };
 
+  const statsLine = (r: Result) => {
+    if (!c.statsText || stats?.item !== r.item.name) return "";
+    const { value } = stats;
+    if (value.total < MIN_STATS_TOTAL) return "";
+    return c.statsText
+      .replaceAll("{total}", formatTotal(value.total))
+      .replaceAll("{percent}", formatPercent(value))
+      .replaceAll("{name}", r.babyName || c.defaultName)
+      .replaceAll("{item}", r.item.name);
+  };
+
+  // 存成直式圖片：手機能分享檔案就叫出分享面板（可存到相簿、傳 LINE、IG），不行就直接下載
+  const saveImage = async (r: Result) => {
+    setSavingImage(true);
+    try {
+      const blob = await drawResultCard({
+        title: titleFor(r),
+        item: r.item,
+        blessing: c.blessing,
+        statsLine: statsLine(r),
+        brand: biz.brand,
+        cta: c.cardCta,
+        link: `${window.location.host}/play`,
+      });
+      const file = new File([blob], `抓周-${r.item.name}.png`, {
+        type: "image/png",
+      });
+      if (navigator.canShare?.({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title: titleFor(r) });
+          return;
+        } catch (error) {
+          if (error instanceof DOMException && error.name === "AbortError") return;
+        }
+      }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = file.name;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 10_000);
+    } catch (error) {
+      console.error("[play] 存成圖片失敗", error);
+    } finally {
+      setSavingImage(false);
+    }
+  };
+
   const highlight = phase.kind === "grabbing" ? phase.highlight : -1;
   const activeIndex = picker?.kind === "replace" ? picker.index : editing;
 
@@ -303,6 +413,7 @@ export const ZhuazhouGame = ({
               item={phase.result.item}
               blessing={c.blessing}
               intro={phase.shared ? c.sharedIntro : ""}
+              statsLine={statsLine(phase.result)}
             />
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
@@ -335,6 +446,14 @@ export const ZhuazhouGame = ({
                     className="inline-flex items-center justify-center rounded-full bg-[#06c755] px-7 py-3 font-medium text-white shadow-lg shadow-[#06c755]/30 transition-transform duration-300 hover:scale-105"
                   >
                     {c.lineShareButton}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={savingImage}
+                    onClick={() => saveImage(phase.result)}
+                    className="inline-flex items-center justify-center rounded-full border border-brand-soft/60 bg-white px-7 py-3 font-medium text-brand transition-all duration-300 hover:scale-105 hover:bg-brand-soft/30 disabled:opacity-60"
+                  >
+                    {savingImage ? c.savingImage : c.saveImageButton}
                   </button>
                   <button
                     type="button"
@@ -533,6 +652,14 @@ export const ZhuazhouGame = ({
                 className="mx-auto inline-flex min-w-48 items-center justify-center rounded-full bg-brand px-10 py-3.5 text-lg font-medium tracking-wider text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105 disabled:scale-100 disabled:opacity-60"
               >
                 {c.startButton}
+              </button>
+              <button
+                type="button"
+                onClick={sfx.toggle}
+                aria-pressed={sfx.enabled}
+                className="mx-auto -mt-1 rounded-full px-3 py-1 text-xs text-brand-ink/60 hover:bg-brand-soft/30 hover:text-brand"
+              >
+                {sfx.enabled ? c.soundOn : c.soundOff}
               </button>
             </form>
           </motion.div>
@@ -837,11 +964,13 @@ const ResultCard = ({
   item,
   blessing,
   intro,
+  statsLine,
 }: {
   title: string;
   item: PlayItem;
   blessing: string;
   intro: string;
+  statsLine: string;
 }) => (
   <div className="relative overflow-hidden rounded-[2rem] border border-brand-soft/50 bg-white px-6 py-10 text-center shadow-[0_18px_40px_rgba(237,160,157,0.15)] sm:px-10">
     <span
@@ -861,6 +990,15 @@ const ResultCard = ({
     </h2>
     {item.meaning && (
       <p className="mt-3 text-lg text-brand-ink">{item.meaning}</p>
+    )}
+    {statsLine && (
+      <motion.p
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mx-auto mt-3 inline-block rounded-full bg-brand-beige px-4 py-1.5 text-sm text-brand-ink/75"
+      >
+        📊 {statsLine}
+      </motion.p>
     )}
     {blessing && (
       <p className="mx-auto mt-4 max-w-md whitespace-pre-line leading-loose text-brand-ink/70">

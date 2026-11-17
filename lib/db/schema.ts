@@ -63,3 +63,13 @@ export const siteImages = pgTable(
   },
   (t) => [index("site_images_slot_idx").on(t.slot, t.sortOrder)],
 );
+
+// 線上模擬抓周：每個物品累計被抓到幾次（「有 N% 的寶寶跟你一樣抓到…」）。
+// 只存物品名稱與次數，不存寶寶小名或任何個人資料。
+export const playGrabStats = pgTable("play_grab_stats", {
+  item: text("item").primaryKey(),
+  count: integer("count").notNull().default(0),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
