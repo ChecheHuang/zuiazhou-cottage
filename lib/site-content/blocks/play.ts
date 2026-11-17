@@ -50,6 +50,26 @@ export const playFortune = defineBlock({
     { type: "text", key: "copyButton", label: "複製命盤按鈕" },
     { type: "text", key: "copied", label: "已複製的提示" },
     { type: "text", key: "disclaimer", label: "命盤下方的小字" },
+    { type: "text", key: "lunarLabel", label: "農曆生日標題" },
+    { type: "text", key: "goodDaysTitle", label: "抓周吉日標題" },
+    {
+      type: "text",
+      key: "goodDaysIntro",
+      label: "抓周吉日說明",
+      hint: "寶寶還沒滿週歲（或剛滿兩個月內）才會顯示吉日；{zodiac} 會換成寶寶的生肖",
+      multiline: true,
+    },
+    { type: "text", key: "birthdayTag", label: "標籤：滿週歲當天" },
+    { type: "text", key: "goodDayTag", label: "標籤：黃道吉日" },
+    { type: "text", key: "bookButton", label: "預約按鈕" },
+    {
+      type: "text",
+      key: "bookMessage",
+      label: "預約時帶入 LINE 的訊息",
+      hint: "客人按預約後，LINE 對話框會先填好這段文字；{date} 會換成日期",
+      multiline: true,
+    },
+    { type: "text", key: "goodDaysNote", label: "抓周吉日下方的小字" },
   ],
   defaults: {
     title: "{name}的抓周命盤",
@@ -62,6 +82,15 @@ export const playFortune = defineBlock({
     copyButton: "複製命盤文字",
     copied: "已複製！",
     disclaimer: "命盤內容僅供娛樂，每個寶貝都是獨一無二的。",
+    lunarLabel: "🏮 農曆生日",
+    goodDaysTitle: "🎉 抓周吉日推薦",
+    goodDaysIntro:
+      "依{name}滿週歲前後挑出的黃道吉日，並避開和屬{zodiac}寶寶相沖的日子。",
+    birthdayTag: "滿週歲",
+    goodDayTag: "黃道吉日",
+    bookButton: "LINE 詢問這天",
+    bookMessage: "您好，我想詢問 {date} 的抓周派對檔期 🙏",
+    goodDaysNote: "吉日僅供參考，實際檔期請以 LINE 詢問為準。",
   },
 });
 

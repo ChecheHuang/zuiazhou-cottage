@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { cn } from "@/lib/cn";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AiModeSwitch,
@@ -24,12 +25,26 @@ import {
 import type { PlayItem } from "@/lib/play/items";
 import { playFortune } from "@/lib/site-content/blocks/play";
 import { ZhuazhouItemIcon } from "@/components/ZhuazhouItemIcon";
+import { loadLunarTools, type LunarInfo } from "@/lib/play/good-days";
+import { siteBusiness } from "@/lib/site-content/blocks/site";
 
 interface Fortune {
   zodiac: string;
   sign: string;
   sections: FortuneSections;
+  /** 農曆生日與抓周吉日（農曆套件載入失敗時沒有） */
+  lunar: LunarInfo | null;
 }
+
+// LINE 官方帳號「預先填好訊息」的連結；拿不到 LINE ID 就退回加好友連結
+const lineMessageUrl = (lineId: string, lineUrl: string, text: string) => {
+  const id = lineId.trim() || /@[\w.-]+/.exec(lineUrl)?.[0] || "";
+  return id
+    ? `https://line.me/R/oaMessage/${encodeURIComponent(id)}/?${encodeURIComponent(text)}`
+    : lineUrl;
+};
+
+const formatDate = (value: string) => value.replaceAll("-", "/");
 
 // 抓周結果下方的命盤小卡（直接展開，不用先點按鈕）。
 // 一般版選完生日就出結果；AI 版要按按鈕才送出，避免一選日期就用掉訪客的 key 額度。
@@ -42,6 +57,7 @@ export const FortunePanel = ({
   babyName: string;
 }) => {
   const c = useContent(playFortune);
+  const biz = useContent(siteBusiness);
   const gemini = useGeminiKey();
   const ai = useAiGenerate();
   const [birthday, setBirthday] = useState("");
@@ -74,13 +90,21 @@ export const FortunePanel = ({
       : null;
     // AI 失敗（或沒選 AI）就用一般版，畫面不會空白
     const sections = fromAi ?? templateFortune(zodiac, sign, item);
-    setFortune({ zodiac, sign, sections: fillName(sections, babyName) });
+    // 農曆套件較大，第一次產生命盤時才下載；失敗就不顯示農曆與吉日
+    const lunar = await loadLunarTools()
+      .then((compute) => compute(d))
+      .catch((error) => {
+        console.error("[fortune] 農曆計算失敗", error);
+        return null;
+      });
+    setFortune({ zodiac, sign, sections: fillName(sections, babyName), lunar });
   };
 
   const copy = async () => {
     if (!fortune) return;
     const text = [
       `${title}（屬${fortune.zodiac}・${fortune.sign}・抓到${item.name}${item.emoji}）`,
+      ...(fortune.lunar ? [`${c.lunarLabel}：${fortune.lunar.lunarBirthday}`] : []),
       `${c.personality}：${fortune.sections.personality}`,
       `${c.talent}：${fortune.sections.talent}`,
       `${c.blessing}：${fortune.sections.blessing}`,
@@ -169,6 +193,11 @@ export const FortunePanel = ({
               屬{fortune.zodiac} ・ {fortune.sign} ・ 抓到{item.name}
               <ZhuazhouItemIcon item={item} className="ml-0.5" />
             </p>
+            {fortune.lunar && (
+              <p className="mt-1 text-center text-sm text-brand-ink/70">
+                {c.lunarLabel}：{fortune.lunar.lunarBirthday}
+              </p>
+            )}
             {(
               [
                 [c.personality, fortune.sections.personality],
@@ -193,6 +222,69 @@ export const FortunePanel = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {fortune?.lunar?.goodDays && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-4 rounded-3xl bg-white p-5 shadow-[0_12px_30px_rgba(237,160,157,0.15)]"
+        >
+          <p className="text-center font-medium text-brand">{c.goodDaysTitle}</p>
+          {c.goodDaysIntro && (
+            <p className="mt-1 text-center text-xs leading-relaxed text-brand-ink/65">
+              {c.goodDaysIntro
+                .replaceAll("{name}", babyName)
+                .replaceAll("{zodiac}", fortune.zodiac)}
+            </p>
+          )}
+          <ul className="mt-4 flex flex-col gap-2">
+            {fortune.lunar.goodDays.map((day) => (
+              <li
+                key={day.value}
+                className={cn(
+                  "flex items-center gap-3 rounded-2xl px-4 py-2.5",
+                  day.isBirthday ? "bg-brand-soft/30" : "bg-brand-beige/60",
+                )}
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-brand-ink">
+                    {day.label}
+                    {day.isBirthday && (
+                      <span className="ml-2 rounded-full bg-brand px-2 py-0.5 text-xs text-white">
+                        {c.birthdayTag}
+                      </span>
+                    )}
+                    {day.good && (
+                      <span className="ml-2 rounded-full bg-white px-2 py-0.5 text-xs text-brand">
+                        {c.goodDayTag}
+                      </span>
+                    )}
+                  </p>
+                  <p className="text-xs text-brand-ink/60">{day.lunar}</p>
+                </div>
+                <a
+                  href={lineMessageUrl(
+                    biz.lineId,
+                    biz.lineUrl,
+                    c.bookMessage.replaceAll(
+                      "{date}",
+                      `${formatDate(day.value)}（${day.label.split("（")[1]}`,
+                    ),
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 rounded-full bg-[#06c755] px-3.5 py-1.5 text-xs font-medium text-white shadow-sm transition-transform hover:scale-105"
+                >
+                  {c.bookButton}
+                </a>
+              </li>
+            ))}
+          </ul>
+          {c.goodDaysNote && (
+            <p className="mt-3 text-center text-xs text-brand-ink/50">{c.goodDaysNote}</p>
+          )}
+        </motion.div>
+      )}
       <p className="mt-4 text-center text-xs text-brand-ink/50">{c.disclaimer}</p>
     </motion.div>
   );
