@@ -2,6 +2,8 @@
 
 export interface PlayItem {
   emoji: string;
+  /** 後台上傳的圖片，有的話取代 emoji 顯示；"" 或沒有就用 emoji */
+  image?: string;
   name: string;
   meaning: string;
 }

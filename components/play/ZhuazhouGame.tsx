@@ -45,6 +45,7 @@ import {
   type PlayItem,
 } from "@/lib/play/items";
 import { playGame } from "@/lib/site-content/blocks/play";
+import { ZhuazhouItemIcon } from "@/components/ZhuazhouItemIcon";
 
 interface Result {
   item: PlayItem;
@@ -718,7 +719,9 @@ const Mat = ({
                   className="cursor-grabbing"
                 >
                   <div className="grid aspect-square scale-110 place-items-center rounded-2xl bg-white text-3xl shadow-xl ring-4 ring-brand sm:text-5xl">
-                    <span aria-hidden>{items[dragging.index].emoji}</span>
+                    <span aria-hidden>
+                      <ZhuazhouItemIcon item={items[dragging.index]} />
+                    </span>
                   </div>
                 </div>
               ) : null}
@@ -813,7 +816,7 @@ const MatCell = ({
           )}
         >
           <span aria-hidden className={cn(isDragging && "opacity-30")}>
-            {item.emoji}
+            <ZhuazhouItemIcon item={item} />
           </span>
         </div>
         <p
@@ -850,7 +853,7 @@ const ResultCard = ({
     )}
     <div className="mx-auto grid size-32 place-items-center rounded-full bg-brand-beige text-7xl ring-8 ring-brand-soft/40 sm:size-40 sm:text-8xl">
       <span role="img" aria-label={item.name}>
-        {item.emoji}
+        <ZhuazhouItemIcon item={item} />
       </span>
     </div>
     <h2 className="mt-6 text-2xl font-semibold tracking-wide text-brand sm:text-3xl">

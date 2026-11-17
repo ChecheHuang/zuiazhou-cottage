@@ -2,9 +2,11 @@
 
 import { motion } from "framer-motion";
 import { cn } from "@/lib/cn";
+import { ZhuazhouItemIcon } from "@/components/ZhuazhouItemIcon";
 
 interface ZhuazhouItem {
   emoji: string;
+  image?: string;
   name: string;
   meaning: string;
 }
@@ -76,7 +78,7 @@ export const ZhuazhouGrid = ({
                 aria-label={item.name}
                 className="absolute inset-0 grid place-items-center text-5xl transition-transform duration-500 group-hover:scale-110 md:text-6xl"
               >
-                {item.emoji}
+                <ZhuazhouItemIcon item={item} />
               </span>
               <div className="absolute inset-0 bg-brand/0 transition-colors duration-500 group-hover:bg-brand/15" />
             </div>

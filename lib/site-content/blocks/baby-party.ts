@@ -351,12 +351,25 @@ export const partyRitual = defineBlock({
   },
 });
 
+// 預設物品大多沒有圖片，統一補上 image: ""，型別才會一致
+type ZhuazhouItem = { emoji: string; image: string; name: string; meaning: string };
+const zhuazhouItems = (
+  items: (Omit<ZhuazhouItem, "image"> & { image?: string })[],
+): ZhuazhouItem[] => items.map((item) => ({ ...item, image: item.image ?? "" }));
+
 const zhuazhouItemFields = [
   {
     type: "text" as const,
     key: "emoji",
     label: "圖示（表情符號）",
-    hint: "顯示在方框中央的大圖示，例如 ✈️",
+    hint: "顯示在方框中央的大圖示，例如 ✈️；分享文字裡也會用到，上傳了圖片也請保留",
+  },
+  {
+    type: "image" as const,
+    key: "image",
+    label: "圖片（選填）",
+    hint: "上傳後會取代上面的表情符號，用在寶寶派對頁與模擬抓周。建議用正方形、去背的 PNG；分享預覽圖只支援 PNG／JPG",
+    optional: true,
   },
   { type: "text" as const, key: "name", label: "物品名稱" },
   {
@@ -394,7 +407,7 @@ export const partyCareerItems = defineBlock({
     eyebrow: "Career Items",
     title: "抓周職業物品",
     description: "共 21 種職業道具，象徵寶寶未來無限可能。",
-    items: [
+    items: zhuazhouItems([
       { emoji: "✈️", name: "飛機", meaning: "機師、航空業" },
       { emoji: "🧮", name: "算盤", meaning: "商人、會計" },
       { emoji: "📷", name: "相機", meaning: "攝影師" },
@@ -416,7 +429,7 @@ export const partyCareerItems = defineBlock({
       { emoji: "🎹", name: "鋼琴", meaning: "音樂家" },
       { emoji: "🔍", name: "放大鏡", meaning: "研究員、科學家" },
       { emoji: "🖌️", name: "毛筆", meaning: "文學家、書法家" },
-    ],
+    ]),
   },
 });
 
@@ -447,10 +460,15 @@ export const partyTraditionalItems = defineBlock({
     eyebrow: "Traditional Items",
     title: "抓周傳統物品",
     description: "承載家族祝福的傳統祈福物品。",
-    items: [
+    items: zhuazhouItems([
       { emoji: "🧺", name: "籐籃", meaning: "盛裝祝福，事事如意" },
       { emoji: "🐢", name: "紅龜粿", meaning: "長命百歲、平安健康" },
-      { emoji: "🌿", name: "蔥", meaning: "聰明伶俐" },
+      {
+        emoji: "🌿",
+        image: "/play/items/scallion.svg",
+        name: "蔥",
+        meaning: "聰明伶俐",
+      },
       { emoji: "🍗", name: "雞腿", meaning: "豐衣足食" },
       { emoji: "💰", name: "金元寶", meaning: "財運亨通、富貴吉祥" },
       { emoji: "🧄", name: "蒜", meaning: "會精打細算" },
@@ -458,7 +476,7 @@ export const partyTraditionalItems = defineBlock({
       { emoji: "🥬", name: "芹菜", meaning: "勤奮努力" },
       { emoji: "🍘", name: "米香", meaning: "好人緣、人見人愛" },
       { emoji: "🥜", name: "花生", meaning: "長生不老、福氣綿延" },
-    ],
+    ]),
   },
 });
 

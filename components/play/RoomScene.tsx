@@ -29,6 +29,7 @@ import {
 } from "@/components/play/itemDnd";
 import { cn } from "@/lib/cn";
 import type { PlayItem } from "@/lib/play/items";
+import { ZhuazhouItemIcon } from "@/components/ZhuazhouItemIcon";
 
 // 房間模式：物品擺在地毯上，嬰兒從左邊爬進來，
 // 先到一兩樣物品前面摸摸、張望，最後爬到目標物品前伸手抓起來。
@@ -492,7 +493,7 @@ const ItemVisual = ({
           )}
           style={px(0.085)}
         >
-          {item.emoji}
+          <ZhuazhouItemIcon item={item} />
         </span>
       </span>
       <span

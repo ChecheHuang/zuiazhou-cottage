@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- 抓周物品「蔥」：一小把青蔥綁紅緞帶（Unicode 沒有蔥的 emoji） -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- 鬚根 -->
+    <g stroke="#cdbb8f" stroke-width="2.2">
+      <path d="M33 101 L22 109" />
+      <path d="M33 101 L26 115" />
+      <path d="M34 102 L34 117" />
+      <path d="M44 105 L36 119" />
+      <path d="M45 105 L45 120" />
+      <path d="M45 105 L53 117" />
+    </g>
+
+    <!-- 蔥葉（後層） -->
+    <g stroke="#2f8a3a" stroke-width="9">
+      <path d="M66 72 C 84 63, 100 63, 114 75" />
+      <path d="M60 66 C 64 47, 66 32, 63 11" />
+    </g>
+    <g stroke="#6cc46a" stroke-width="2.4" opacity="0.85">
+      <path d="M68 70 C 84 62, 98 62, 110 71" />
+      <path d="M62 62 C 65 47, 66 34, 64 16" />
+    </g>
+
+    <!-- 蔥白 -->
+    <g stroke="#bdb68e" stroke-width="13.5">
+      <path d="M34 100 L60 66" />
+      <path d="M45 104 L67 72" />
+    </g>
+    <g stroke="#f7f4e6" stroke-width="11">
+      <path d="M34 100 L60 66" />
+      <path d="M45 104 L67 72" />
+    </g>
+    <!-- 蔥白往上漸漸變淡綠 -->
+    <g stroke="#c8e58a" stroke-width="11">
+      <path d="M50 79 L60 66" />
+      <path d="M58 85 L67 72" />
+    </g>
+
+    <!-- 蔥葉（前層） -->
+    <g stroke="#3fa047" stroke-width="9">
+      <path d="M60 66 C 70 50, 80 35, 93 17" />
+      <path d="M63 69 C 77 56, 93 47, 115 40" />
+    </g>
+    <g stroke="#8fdc78" stroke-width="2.4" opacity="0.9">
+      <path d="M61 61 C 70 48, 79 35, 90 20" />
+      <path d="M65 64 C 78 54, 92 46, 111 39" />
+    </g>
+  </g>
+
+  <!-- 紅緞帶 -->
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <path d="M38 82 L 63 95" stroke="#d93a3a" stroke-width="7" fill="none" />
+    <path d="M38 82 L 63 95" stroke="#f26b6b" stroke-width="2" fill="none" />
+    <path d="M62 94 C 72 86, 78 92, 70 98 Z" fill="#e14848" stroke="#c22f2f" stroke-width="1.5" />
+    <path d="M62 94 C 66 106, 59 110, 56 102 Z" fill="#e14848" stroke="#c22f2f" stroke-width="1.5" />
+    <path d="M62 95 L 72 108" stroke="#d93a3a" stroke-width="3" fill="none" />
+    <circle cx="62" cy="95" r="3.4" fill="#c22f2f" />
+  </g>
+</svg>

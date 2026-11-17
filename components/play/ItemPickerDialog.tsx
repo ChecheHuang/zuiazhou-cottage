@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/cn";
 import { MAT_SIZE, type PlayItem } from "@/lib/play/items";
+import { ZhuazhouItemIcon } from "@/components/ZhuazhouItemIcon";
 
 // 浮在畫面上的物品對話框：
 // - 加物品：已在地上的顯示為已選，滿了就不能再點，可以連續加，按「完成」關閉
@@ -82,7 +83,7 @@ export const ItemPickerDialog = ({
         <div className="flex items-start gap-3 border-b border-brand-soft/40 px-5 py-4">
           {replacing && (
             <span className="text-3xl leading-none" aria-hidden>
-              {replacing.emoji}
+              <ZhuazhouItemIcon item={replacing} />
             </span>
           )}
           <h2
@@ -124,7 +125,7 @@ export const ItemPickerDialog = ({
                   )}
                 >
                   <span className="text-2xl leading-none" aria-hidden>
-                    {item.emoji}
+                    <ZhuazhouItemIcon item={item} />
                   </span>
                   <span className="w-full truncate">{item.name}</span>
                 </button>

@@ -24,6 +24,7 @@ import {
 } from "@/lib/play/fortune";
 import type { PlayItem } from "@/lib/play/items";
 import { playFortune } from "@/lib/site-content/blocks/play";
+import { ZhuazhouItemIcon } from "@/components/ZhuazhouItemIcon";
 
 interface Fortune {
   zodiac: string;
@@ -156,7 +157,7 @@ export const FortunePanel = ({
           >
             <p className="text-center text-sm tracking-wider text-brand-accent">
               屬{fortune.zodiac} ・ {fortune.sign} ・ 抓到{item.name}
-              {item.emoji}
+              <ZhuazhouItemIcon item={item} className="ml-0.5" />
             </p>
             {(
               [

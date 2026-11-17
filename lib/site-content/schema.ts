@@ -5,7 +5,7 @@ import { isAllowedImageUrl } from "@/lib/site-images/urls";
 //
 // 欄位型別與值：
 //   text   → string            （multiline: true 會顯示多行輸入框）
-//   image  → string            （圖片網址，後台可上傳）
+//   image  → string            （圖片網址，後台可上傳；optional: true 時可留空 ""）
 //   images → string[]          （一組圖片，後台可新增、移除、排序）
 //   toggle → boolean           （開關，例如選單項目要不要顯示）
 //   list   → string[]          （of: "text"，文字清單）
@@ -24,6 +24,8 @@ export interface TextField extends BaseField {
 
 export interface ImageField extends BaseField {
   type: "image";
+  /** 選填：可以不上傳（值為 ""），舊資料沒有這個欄位也視為沒上傳 */
+  optional?: boolean;
 }
 
 export interface ImagesField extends BaseField {
@@ -113,6 +115,9 @@ const validateField = (
         return { ok: false, error: `${where}：文字太長` };
       return { ok: true, value };
     case "image":
+      if (field.optional && (value === undefined || value === "")) {
+        return { ok: true, value: "" };
+      }
       if (typeof value !== "string" || !isAllowedImageUrl(value)) {
         return { ok: false, error: `${where}：請上傳圖片` };
       }
@@ -207,7 +212,7 @@ export const collectImageUrls = (fields: Field[], value: unknown): string[] => {
   if (!isRecord(value)) return [];
   return fields.flatMap((field) => {
     const v = value[field.key];
-    if (field.type === "image") return typeof v === "string" ? [v] : [];
+    if (field.type === "image") return typeof v === "string" && v ? [v] : [];
     if (field.type === "images") {
       return Array.isArray(v) ? v.filter((x) => typeof x === "string") : [];
     }

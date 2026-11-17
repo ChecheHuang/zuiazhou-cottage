@@ -103,11 +103,13 @@ const ImageInput = ({
   onChange,
   folder,
   label,
+  optional,
 }: {
   value: string;
   onChange: (v: string) => void;
   folder: string;
   label: string;
+  optional?: boolean;
 }) => {
   const input = useRef<HTMLInputElement>(null);
   const { uploading, error, run } = useUploader(folder);
@@ -125,6 +127,15 @@ const ImageInput = ({
         >
           {uploading ? "上傳中…" : value ? "更換圖片" : "上傳圖片"}
         </button>
+        {optional && value && !uploading && (
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            className="ml-2 rounded-full px-3 py-1.5 text-sm text-brand-ink/60 hover:bg-brand-ink/5"
+          >
+            移除圖片
+          </button>
+        )}
         {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
       </div>
       <input
@@ -451,6 +462,7 @@ const FieldEditor = ({
             value={typeof value === "string" ? value : ""}
             onChange={set}
             folder={folder}
+            optional={field.optional}
           />
         );
       case "images":

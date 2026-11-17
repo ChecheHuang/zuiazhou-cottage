@@ -24,6 +24,19 @@ const loadFont = async (text: string) => {
   return fetch(url).then((res) => res.arrayBuffer());
 };
 
+// 物品圖片先自己抓下來轉成 data URI 再交給 ImageResponse：
+// 它內建的抓圖會擋 localhost，且抓失敗整張圖會壞掉；這裡失敗就退回 emoji。
+// 繪圖引擎只看得懂 PNG／JPG／SVG，WebP、AVIF 等同樣退回 emoji。
+const ICON_TYPES = ["image/png", "image/jpeg", "image/svg+xml"];
+const loadIcon = async (url: URL) => {
+  const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const type = res.headers.get("content-type")?.split(";")[0].trim() ?? "";
+  if (!ICON_TYPES.includes(type)) return undefined;
+  const data = Buffer.from(await res.arrayBuffer()).toString("base64");
+  return `data:${type};base64,${data}`;
+};
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const [items, biz] = await Promise.all([
@@ -32,6 +45,13 @@ export async function GET(request: Request) {
   ]);
   const item = findPlayItem(items, searchParams.get("item"));
   if (!item) return new Response("Not found", { status: 404 });
+
+  const icon = item.image
+    ? await loadIcon(new URL(item.image, request.url)).catch((error) => {
+        console.error("[play/og] 載入物品圖片失敗", error);
+        return undefined;
+      })
+    : undefined;
 
   const text = [HEADLINE, CTA, item.name, item.meaning, biz.brand].join("");
   const fonts = await loadFont(text)
@@ -72,7 +92,12 @@ export async function GET(request: Request) {
             fontSize: 200,
           }}
         >
-          {item.emoji}
+          {icon ? (
+            // eslint-disable-next-line @next/next/no-img-element -- ImageResponse 只能用 <img>
+            <img src={icon} alt="" width={230} height={230} style={{ objectFit: "contain" }} />
+          ) : (
+            item.emoji
+          )}
         </div>
         <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
           <div style={{ fontSize: 44, color: BRAND }}>{HEADLINE}</div>
