@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { DayPicker } from "react-day-picker";
 import { zhTW } from "react-day-picker/locale";
 import "react-day-picker/style.css";
@@ -32,6 +32,39 @@ const startOfToday = () => {
 
 const BIRTHDAY_FIRST_YEAR = 1920;
 
+// 生日快速鈕：點了把日曆翻到 N 年前的這個月（日子還是要自己點）
+// 快速鈕依「今天」計算，伺服器（UTC）跟台灣時間在半夜會差一天，只在瀏覽器端顯示
+const noopSubscribe = () => () => {};
+const useIsClient = () =>
+  useSyncExternalStore(noopSubscribe, () => true, () => false);
+
+const AGE_PRESETS = [
+  { label: "週歲寶寶", years: 1 },
+  { label: "2 歲", years: 2 },
+  { label: "3 歲", years: 3 },
+];
+
+// 派對日期快速鈕：接下來的兩個週末（今天是週六／週日也算進去）
+const mondayOf = (d: Date) =>
+  new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7)).getTime();
+
+const upcomingWeekends = (today: Date) => {
+  const days: { date: Date; label: string }[] = [];
+  for (let i = 0; days.length < 4 && i < 14; i++) {
+    const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
+    const wd = d.getDay();
+    if (wd !== 0 && wd !== 6) continue;
+    // 以週一為一週的開始，判斷是這週還是下週
+    const weeks = Math.round((mondayOf(d) - mondayOf(today)) / (7 * 86_400_000));
+    const week = ["這", "下", "下下"][weeks] ?? "";
+    days.push({
+      date: d,
+      label: `${i === 0 ? "今天" : `${week}週${WEEKDAYS[wd]}`} ${d.getMonth() + 1}/${d.getDate()}`,
+    });
+  }
+  return days;
+};
+
 const addMonths = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth() + n, 1);
 
 interface DatePickerFieldProps {
@@ -55,8 +88,20 @@ export const DatePickerField = ({
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const labelId = useId();
+  const isClient = useIsClient();
   const selected = toDate(value);
   const today = startOfToday();
+  // 生日：抓周寶寶多半剛滿一歲，預設翻到一年前的這個月（只是翻頁，不會自動選日期）
+  const initialMonth = () =>
+    selected ?? (kind === "birthday" ? addMonths(today, -12) : today);
+  const [month, setMonth] = useState(initialMonth);
+  const chipClass = (on: boolean) =>
+    cn(
+      "rounded-full border px-3 py-1 text-xs transition-colors disabled:opacity-50",
+      on
+        ? "border-brand bg-brand text-white"
+        : "border-brand-soft/70 bg-white text-brand hover:bg-brand-soft/30",
+    );
 
   // 點外面或按 Esc 關閉
   useEffect(() => {
@@ -101,7 +146,10 @@ export const DatePickerField = ({
         aria-labelledby={labelId}
         aria-haspopup="dialog"
         aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          if (!open) setMonth(initialMonth());
+          setOpen((v) => !v);
+        }}
         className={cn(
           "flex w-full items-center justify-between gap-2 rounded-full border bg-white px-4 py-2 text-left outline-none transition",
           open
@@ -117,6 +165,47 @@ export const DatePickerField = ({
           📅
         </span>
       </button>
+
+      <div
+        className={cn(
+          "flex min-h-7 flex-wrap gap-1.5",
+          kind === "birthday" ? "justify-center" : "justify-start",
+        )}
+      >
+        {!isClient ? null : kind === "birthday"
+          ? AGE_PRESETS.map((p) => (
+              <button
+                key={p.label}
+                type="button"
+                disabled={disabled}
+                onClick={() => {
+                  setMonth(addMonths(today, -12 * p.years));
+                  setOpen(true);
+                }}
+                className={chipClass(false)}
+              >
+                {p.label}
+              </button>
+            ))
+          : upcomingWeekends(today).map((d) => {
+              const v = toValue(d.date);
+              return (
+                <button
+                  key={v}
+                  type="button"
+                  disabled={disabled}
+                  aria-pressed={value === v}
+                  onClick={() => {
+                    onChange(v);
+                    setOpen(false);
+                  }}
+                  className={chipClass(value === v)}
+                >
+                  {d.label}
+                </button>
+              );
+            })}
+      </div>
 
       {open && (
         <>
@@ -138,10 +227,8 @@ export const DatePickerField = ({
               // 台灣日曆習慣週日開頭（zh-TW 語系預設是週一）
               weekStartsOn={0}
               selected={selected}
-              // 生日：抓周寶寶多半剛滿一歲，預設翻到一年前的這個月（只是翻頁，不會自動選日期）
-              defaultMonth={
-                selected ?? (kind === "birthday" ? addMonths(today, -12) : today)
-              }
+              month={month}
+              onMonthChange={setMonth}
               onSelect={(d) => {
                 if (!d) return;
                 onChange(toValue(d));
