@@ -13,7 +13,7 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { motion, useAnimate } from "framer-motion";
-import { CrawlingBaby } from "@/components/play/CrawlingBaby";
+import { CrawlingBaby, type OutfitId } from "@/components/play/CrawlingBaby";
 import {
   ROOM_BACKGROUNDS,
   type RoomThemeId,
@@ -85,6 +85,8 @@ interface RoomSceneProps {
   /** 每個物品的擺放點；拿掉物品時其他物品才不會跟著換位置 */
   slots?: number[];
   theme: RoomThemeId;
+  /** 寶寶穿的衣服 */
+  outfit?: OutfitId;
   /** 有值時開始一輪：嬰兒最後會抓這個 index 的物品 */
   target: number | null;
   reduced: boolean;
@@ -142,6 +144,7 @@ export const RoomScene = ({
   items,
   slots,
   theme,
+  outfit,
   target,
   reduced,
   onDone,
@@ -446,7 +449,7 @@ export const RoomScene = ({
             originY: 1,
           }}
         >
-          <CrawlingBaby />
+          <CrawlingBaby outfit={outfit} />
         </motion.div>
       </motion.div>
     </div>

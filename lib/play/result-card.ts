@@ -10,6 +10,8 @@ export interface ResultCardInput {
   blessing: string;
   /** 例如「有 8% 的寶寶也抓到算盤」，沒有就不畫 */
   statsLine?: string;
+  /** 結果卡上穿著衣服的寶寶（獨立 SVG 字串），有的話畫在物品旁邊 */
+  babySvg?: string;
   brand: string;
   /** 例如「線上模擬抓周，換你家寶寶試試！」 */
   cta: string;
@@ -99,9 +101,14 @@ export const drawResultCard = async (input: ResultCardInput): Promise<Blob> => {
     document.fonts.load(font(400, 40), allText),
   ]).catch(() => undefined);
 
-  const [icon, logo] = await Promise.all([
+  const [icon, logo, baby] = await Promise.all([
     item.image ? loadImage(sameOrigin(item.image)).catch(() => null) : null,
     loadImage("/photos/logo.png").catch(() => null),
+    input.babySvg
+      ? loadImage(
+          `data:image/svg+xml;charset=utf-8,${encodeURIComponent(input.babySvg)}`,
+        ).catch(() => null)
+      : null,
   ]);
 
   const canvas = document.createElement("canvas");
@@ -172,6 +179,12 @@ export const drawResultCard = async (input: ResultCardInput): Promise<Blob> => {
   } else {
     ctx.font = `300px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
     ctx.fillText(item.emoji, W / 2, cy + 20);
+  }
+
+  // 穿著衣服的寶寶爬到物品左下方
+  if (baby) {
+    const bw = 360;
+    ctx.drawImage(baby, 70, cy + 95, bw, bw * (100 / 150));
   }
 
   // 物品名稱與象徵意義

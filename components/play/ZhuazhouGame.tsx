@@ -30,6 +30,11 @@ import {
 } from "@/components/play/itemDnd";
 import { RoomScene } from "@/components/play/RoomScene";
 import {
+  CrawlingBaby,
+  OUTFIT_IDS,
+  type OutfitId,
+} from "@/components/play/CrawlingBaby";
+import {
   ROOM_THEME_IDS,
   type RoomThemeId,
 } from "@/components/play/roomThemes";
@@ -134,6 +139,8 @@ export const ZhuazhouGame = ({
   const [editing, setEditing] = useState<number | null>(null);
   const [picker, setPicker] = useState<Picker | null>(null);
   const [theme, setTheme] = useState<RoomThemeId>("galaxy");
+  // 主打虎衣：抓周儀式本來就要穿虎衣，店裡方案也有附
+  const [outfit, setOutfit] = useState<OutfitId>("tiger");
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => () => clearTimeout(timer.current), []);
@@ -357,6 +364,18 @@ export const ZhuazhouGame = ({
       .replaceAll("{item}", r.item.name);
   };
 
+  // 結果卡上那個穿著衣服的寶寶，轉成獨立的 SVG 給存圖用（主題色換成實際顏色）
+  const babySvg = () => {
+    const el = document.querySelector("[data-result-baby] svg");
+    if (!el) return undefined;
+    const brand = getComputedStyle(document.documentElement)
+      .getPropertyValue("--color-brand")
+      .trim();
+    return new XMLSerializer()
+      .serializeToString(el)
+      .replaceAll("var(--color-brand)", brand || "#eda09d");
+  };
+
   // 存成直式圖片：手機能分享檔案就叫出分享面板（可存到相簿、傳 LINE、IG），不行就直接下載
   const saveImage = async (r: Result) => {
     setSavingImage(true);
@@ -366,6 +385,7 @@ export const ZhuazhouGame = ({
         item: r.item,
         blessing: c.blessing,
         statsLine: statsLine(r),
+        babySvg: babySvg(),
         brand: biz.brand,
         cta: c.cardCta,
         link: `${window.location.host}/play`,
@@ -414,6 +434,7 @@ export const ZhuazhouGame = ({
               blessing={c.blessing}
               intro={phase.shared ? c.sharedIntro : ""}
               statsLine={statsLine(phase.result)}
+              outfit={outfit}
             />
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
@@ -528,8 +549,9 @@ export const ZhuazhouGame = ({
               />
 
               {mode === "room" && (
-                <ThemePicker
+                <ChipPicker
                   label={c.themeLabel}
+                  ids={ROOM_THEME_IDS}
                   value={theme}
                   onChange={setTheme}
                   disabled={phase.kind === "grabbing"}
@@ -542,11 +564,31 @@ export const ZhuazhouGame = ({
                 />
               )}
 
+              <ChipPicker
+                label={c.outfitLabel}
+                ids={OUTFIT_IDS}
+                value={outfit}
+                onChange={setOutfit}
+                disabled={phase.kind === "grabbing"}
+                names={{
+                  tiger: c.outfitTiger,
+                  onesie: c.outfitOnesie,
+                  overalls: c.outfitOveralls,
+                  tutu: c.outfitTutu,
+                }}
+              />
+              {outfit === "tiger" && c.outfitTigerHint && (
+                <p className="-mt-1 text-center text-xs text-brand-ink/65">
+                  {c.outfitTigerHint}
+                </p>
+              )}
+
               {mode === "room" ? (
                 <RoomScene
                   items={mat}
                   slots={slots}
                   theme={theme}
+                  outfit={outfit}
                   target={phase.kind === "grabbing" ? phase.target : null}
                   reduced={reduced}
                   onDone={finishRoom}
@@ -675,23 +717,26 @@ export const ZhuazhouGame = ({
   );
 };
 
-const ThemePicker = ({
+// 一排可左右滑的單選小鈕（場地、衣服共用）
+const ChipPicker = <T extends string>({
   label,
+  ids,
   value,
   onChange,
   disabled,
   names,
 }: {
   label: string;
-  value: RoomThemeId;
-  onChange: (theme: RoomThemeId) => void;
+  ids: readonly T[];
+  value: T;
+  onChange: (id: T) => void;
   disabled: boolean;
-  names: Record<RoomThemeId, string>;
+  names: Record<T, string>;
 }) => (
   <div role="radiogroup" aria-label={label} className="flex flex-col gap-1.5">
     <p className="text-center text-xs text-brand-ink/60">{label}</p>
     <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:justify-center sm:px-0 [&::-webkit-scrollbar]:hidden">
-      {ROOM_THEME_IDS.map((id) => (
+      {ids.map((id) => (
         <button
           key={id}
           type="button"
@@ -965,12 +1010,14 @@ const ResultCard = ({
   blessing,
   intro,
   statsLine,
+  outfit,
 }: {
   title: string;
   item: PlayItem;
   blessing: string;
   intro: string;
   statsLine: string;
+  outfit: OutfitId;
 }) => (
   <div className="relative overflow-hidden rounded-[2rem] border border-brand-soft/50 bg-white px-6 py-10 text-center shadow-[0_18px_40px_rgba(237,160,157,0.15)] sm:px-10">
     <span
@@ -980,10 +1027,19 @@ const ResultCard = ({
     {intro && (
       <p className="mb-4 text-sm tracking-wider text-brand-accent">{intro}</p>
     )}
-    <div className="mx-auto grid size-32 place-items-center rounded-full bg-brand-beige text-7xl ring-8 ring-brand-soft/40 sm:size-40 sm:text-8xl">
-      <span role="img" aria-label={item.name}>
-        <ZhuazhouItemIcon item={item} />
-      </span>
+    <div className="relative mx-auto size-32 sm:size-40">
+      <div className="grid size-full place-items-center rounded-full bg-brand-beige text-7xl ring-8 ring-brand-soft/40 sm:text-8xl">
+        <span role="img" aria-label={item.name}>
+          <ZhuazhouItemIcon item={item} />
+        </span>
+      </div>
+      {/* 穿著選好衣服的寶寶爬到物品旁邊 */}
+      <div
+        data-result-baby
+        className="absolute -bottom-3 -left-16 w-24 sm:-left-20 sm:w-28"
+      >
+        <CrawlingBaby outfit={outfit} />
+      </div>
     </div>
     <h2 className="mt-6 text-2xl font-semibold tracking-wide text-brand sm:text-3xl">
       {title}
