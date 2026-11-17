@@ -90,17 +90,28 @@ export const InviteGenerator = () => {
   const [keyOpen, setKeyOpen] = useState(false);
   /** 產生出來、還沒填入名字日期的訊息（填入在顯示時做，改欄位不用重新產生） */
   const [draft, setDraft] = useState("");
+  /** 一般版目前用的是哪種語氣的第幾份範本，「換一個寫法」時避開它 */
+  const [variant, setVariant] = useState<{ tone: Tone; index: number } | null>(
+    null,
+  );
   const [copied, setCopied] = useState(false);
 
   const useAi = ai.enabled && mode === "ai";
   // 「其他／未定」時不寫店內場地名稱
   const venueText = venue === c.venueOther ? "（待定）" : `${biz.brand} ${venue}`;
 
+  const applyTemplate = (input: Parameters<typeof templateInvite>[0]) => {
+    const avoid = variant?.tone === input.tone ? variant.index : undefined;
+    const { text, index } = templateInvite(input, avoid);
+    setDraft(text);
+    setVariant({ tone: input.tone, index });
+  };
+
   const generate = async () => {
     setCopied(false);
     const input = { partyType, venue: venueText, tone };
     if (!useAi) {
-      setDraft(templateInvite(input));
+      applyTemplate(input);
       return;
     }
     if (!gemini.key) {
@@ -114,7 +125,7 @@ export const InviteGenerator = () => {
       parse: parseInvite,
     });
     if (fromAi) setDraft(fromAi);
-    else if (gemini.key) setDraft(templateInvite(input));
+    else if (gemini.key) applyTemplate(input);
   };
 
   const footer =
