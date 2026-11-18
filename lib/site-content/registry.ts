@@ -2,6 +2,7 @@ import * as about from "./blocks/about";
 import * as ai from "./blocks/ai";
 import * as babyParty from "./blocks/baby-party";
 import * as blog from "./blocks/blog";
+import * as budget from "./blocks/budget";
 import * as contact from "./blocks/contact";
 import * as faq from "./blocks/faq";
 import * as food from "./blocks/food";
@@ -28,6 +29,7 @@ const modules = [
   photo,
   food,
   productsBlocks,
+  budget,
   faq,
   blog,
   contact,

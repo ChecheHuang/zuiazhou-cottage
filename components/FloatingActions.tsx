@@ -65,9 +65,12 @@ export const FloatingActions = () => {
   }, []);
 
   // 收起時往右下滑出畫面並暫停點擊；md 以上不受影響
-  const tuckClass = tucked
-    ? "max-md:pointer-events-none max-md:translate-x-[150%] max-md:opacity-0"
-    : "";
+  const tuckClass = cn(
+    tucked &&
+      "max-md:pointer-events-none max-md:translate-x-[150%] max-md:opacity-0",
+    // 預算試算頁在手機／平板底部有自己的總計列和 LINE 按鈕，浮動按鈕會擋住金額
+    pathname === "/budget" && "max-lg:hidden",
+  );
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 

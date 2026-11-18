@@ -86,6 +86,14 @@ export const SITE_PAGES: SitePageSection[] = [
     slotPages: [],
   },
   {
+    slug: "budget",
+    label: "預算試算",
+    icon: "🧮",
+    href: "/budget",
+    blockPages: ["預算試算"],
+    slotPages: [],
+  },
+  {
     slug: "faq",
     label: "常見問題",
     icon: "❓",
@@ -208,14 +216,16 @@ export const ADMIN_NAV: NavGroup[] = [
           pageLink("invite"),
         ],
       },
-      pageLink("photo"),
-      pageLink("food"),
+      // 跟前台導覽列一樣：餐食、商品、預算試算都收在「派對加購」底下
       {
-        label: "商品專區",
-        icon: "🛍️",
+        label: "派對加購",
+        icon: "📸",
         children: [
+          pageLink("photo", "攝影與其他加購"),
+          pageLink("food"),
           { href: "/admin/products", label: "商品管理", icon: "📦" },
-          pageLink("products-page", "頁面文字"),
+          pageLink("products-page", "商品專區頁面文字"),
+          pageLink("budget"),
         ],
       },
       pageLink("faq"),

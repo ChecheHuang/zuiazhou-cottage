@@ -15,6 +15,7 @@ const PAGES: { path: string; name: string; desc: string }[] = [
   { path: "/photo", name: "派對加購方案", desc: "攝影師與其他加購項目" },
   { path: "/food", name: "餐食加購", desc: "派對餐點方案" },
   { path: "/products", name: "商品專區", desc: "抓周道具與紀念商品" },
+  { path: "/budget", name: "派對預算試算", desc: "選場地、攝影、加購與餐點，算出預估總花費" },
   { path: "/play", name: "線上模擬抓周", desc: "線上抓周小遊戲" },
   { path: "/invite", name: "派對邀請文案產生器", desc: "抓周、收涎、生日、性別揭曉邀請文案" },
   { path: "/faq", name: "常見問題", desc: "流程、人數、攝影、寵物、雙寶加價等問答" },

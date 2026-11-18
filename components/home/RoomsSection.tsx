@@ -103,7 +103,7 @@ export const RoomsSection = () => {
           })}
         </motion.ul>
 
-        <div className="mt-12 text-center">
+        <div className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/baby-party#plans"
             className="inline-flex items-center gap-2 rounded-full bg-brand px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-all duration-300 hover:scale-105 hover:bg-brand/90"
@@ -111,6 +111,14 @@ export const RoomsSection = () => {
             {c.button}
             <span aria-hidden>→</span>
           </Link>
+          {c.budgetButton && (
+            <Link
+              href="/budget"
+              className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-white px-8 py-3 text-sm font-medium text-brand transition-colors hover:bg-brand-soft/20"
+            >
+              🧮 {c.budgetButton}
+            </Link>
+          )}
         </div>
       </div>
     </section>

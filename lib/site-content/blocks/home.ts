@@ -182,6 +182,7 @@ export const homeRooms = defineBlock({
       hint: "例如「起」，留空就不顯示",
     },
     { type: "text", key: "button", label: "下方按鈕文字" },
+    { type: "text", key: "budgetButton", label: "「預算試算」按鈕文字" },
   ],
   defaults: {
     watermark: "Rooms",
@@ -189,6 +190,7 @@ export const homeRooms = defineBlock({
     description: "依人數挑選最適合的空間，價格已含主持、道具與拍照側錄。",
     priceSuffix: "",
     button: "看完整方案與照片",
+    budgetButton: "試算派對總預算",
   },
 });
 

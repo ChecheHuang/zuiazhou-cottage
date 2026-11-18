@@ -49,10 +49,11 @@ const NAV_ITEMS: NavItem[] = [
     children: [
       { href: "/photo", labelKey: "navPhotoPhotographer" },
       { href: "/photo#other", labelKey: "navPhotoOther" },
+      { href: "/food", labelKey: "navFood" },
+      { href: "/products", labelKey: "navProducts" },
+      { href: "/budget", labelKey: "navBudget" },
     ],
   },
-  { href: "/food", labelKey: "navFood" },
-  { href: "/products", labelKey: "navProducts" },
   { href: "/faq", labelKey: "navFaq" },
   { href: "/contact", labelKey: "navContact" },
 ];
@@ -121,7 +122,11 @@ const isItemActive = (item: NavItem, pathname: string) => {
       : pathname === item.href || pathname.startsWith(`${item.href}/`);
   return (
     self ||
-    (item.children ?? []).some((sub) => splitHref(sub.href).path === pathname)
+    (item.children ?? []).some((sub) => {
+      const path = splitHref(sub.href).path;
+      // 子頁面（例如商品詳細頁 /products/3）也算
+      return path === pathname || pathname.startsWith(`${path}/`);
+    })
   );
 };
 
