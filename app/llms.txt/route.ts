@@ -1,3 +1,4 @@
+import { ARTICLES } from "@/lib/blog/articles";
 import { partyNotices, partyPlans } from "@/lib/site-content/blocks/baby-party";
 import { faqList } from "@/lib/site-content/blocks/faq";
 import { homeAbout, homeSeo } from "@/lib/site-content/blocks/home";
@@ -72,6 +73,10 @@ export async function GET() {
     "## 頁面",
     "",
     ...PAGES.map((p) => `- [${p.name}](${absoluteUrl(p.path)})：${p.desc}`),
+    "",
+    "## 文章",
+    "",
+    ...ARTICLES.map((a) => `- [${a.title}](${absoluteUrl(`/blog/${a.slug}`)})：${a.excerpt}`),
     "",
   ].filter((l): l is string => typeof l === "string");
 

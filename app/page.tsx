@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AboutSection } from "@/components/home/AboutSection";
 import { AvailabilitySection } from "@/components/home/AvailabilitySection";
+import { BlogSection } from "@/components/home/BlogSection";
 import { BookingSteps } from "@/components/home/BookingSteps";
 import { HeroSlideshow } from "@/components/home/HeroSlideshow";
 import { HomeGallery } from "@/components/home/HomeGallery";
@@ -37,7 +38,7 @@ export default function Home() {
         <BookingSteps />
         <AvailabilitySection />
         <InformationSection />
-        {/* 部落格文章頁尚未上線，先不顯示「即將推出」卡片；文章上線後再放回 <BlogSection /> */}
+        <BlogSection />
       </main>
       <SiteFooter />
     </>

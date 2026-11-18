@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { ARTICLES } from "@/lib/blog/articles";
 import { getPublishedProducts } from "@/lib/products/server";
 import { absoluteUrl } from "@/lib/seo";
 
@@ -17,6 +18,7 @@ const PAGES: {
   { path: "/products", priority: 0.8, changeFrequency: "weekly" },
   { path: "/about", priority: 0.6, changeFrequency: "monthly" },
   { path: "/faq", priority: 0.6, changeFrequency: "monthly" },
+  { path: "/blog", priority: 0.6, changeFrequency: "weekly" },
   { path: "/contact", priority: 0.6, changeFrequency: "monthly" },
 ];
 
@@ -29,6 +31,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified,
       changeFrequency,
       priority,
+    })),
+    // 部落格文章
+    ...ARTICLES.map((a) => ({
+      url: absoluteUrl(`/blog/${a.slug}`),
+      lastModified: new Date(a.updatedAt ?? a.publishedAt),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
     // 已上架的商品頁
     ...products.map((p) => ({

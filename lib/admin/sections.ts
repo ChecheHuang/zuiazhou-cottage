@@ -94,6 +94,14 @@ export const SITE_PAGES: SitePageSection[] = [
     slotPages: [],
   },
   {
+    slug: "blog",
+    label: "部落格",
+    icon: "📝",
+    href: "/blog",
+    blockPages: ["部落格"],
+    slotPages: [],
+  },
+  {
     slug: "contact",
     label: "聯絡我們",
     icon: "📞",
@@ -211,6 +219,7 @@ export const ADMIN_NAV: NavGroup[] = [
         ],
       },
       pageLink("faq"),
+      pageLink("blog"),
       pageLink("contact"),
     ],
   },

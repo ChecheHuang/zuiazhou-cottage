@@ -451,7 +451,7 @@ export const homeBlog = defineBlock({
   page: PAGE,
   label: "部落格",
   description:
-    "首頁最下方的文章卡片。文章頁尚未上線，這個區塊目前在首頁先隱藏，內容可以先寫好。",
+    "首頁最下方的文章卡片。文章標題、摘要與內文在程式碼裡（lib/blog/articles.ts），這裡只改區塊標題與按鈕。",
   fields: [
     watermarkField,
     { type: "text", key: "title", label: "區塊標題" },
@@ -462,60 +462,16 @@ export const homeBlog = defineBlock({
       label: "閱讀時間前綴",
       hint: "例如「Read」會顯示成 Read · 8 分鐘",
     },
-    { type: "text", key: "comingSoon", label: "「即將推出」標籤" },
-    {
-      type: "list",
-      key: "posts",
-      label: "文章",
-      itemLabel: "文章",
-      titleKey: "title",
-      of: [
-        { type: "image", key: "cover", label: "封面照片" },
-        {
-          type: "text",
-          key: "category",
-          label: "分類",
-          hint: "顯示在封面左上角",
-        },
-        { type: "text", key: "readTime", label: "閱讀時間" },
-        { type: "text", key: "title", label: "文章標題" },
-        { type: "text", key: "excerpt", label: "文章摘要", multiline: true },
-      ],
-    },
+    { type: "text", key: "readMore", label: "卡片「閱讀全文」文字" },
+    { type: "text", key: "button", label: "下方按鈕文字" },
   ],
   defaults: {
     watermark: "Blog",
     title: "部落格",
     description:
-      "一邊籌備派對，一邊累積知識：場地、道具、流程、禁忌全部一次告訴你。",
+      "一邊籌備派對，一邊累積知識：場地、道具、流程、習俗全部一次告訴你。",
     readLabel: "Read",
-    comingSoon: "即將推出",
-    posts: [
-      {
-        cover: "/photos/fb-venue.jpg",
-        category: "場地推薦",
-        readTime: "8 分鐘",
-        title:
-          "桃園平鎮抓週場地全攻略！5 大類型場地＋費用比較，爸媽不再選擇困難！",
-        excerpt:
-          "從專業派對小屋到自家客廳，五種場地各有什麼優缺點？費用、空間、便利性一次比較給你看。",
-      },
-      {
-        cover: "/photos/p33.jpg",
-        category: "抓周指南",
-        readTime: "10 分鐘",
-        title: "抓周要準備哪些道具？抓周物品清單、吉祥話、意義全都告訴你！",
-        excerpt:
-          "完整列出 21 種職業道具與 10 種傳統祈福物，每個物品的吉祥話與寓意一次解析。",
-      },
-      {
-        cover: "/photos/fb-decor.jpg",
-        category: "派對攻略",
-        readTime: "12 分鐘",
-        title: "寶寶周歲派對怎麼辦？抓周流程、禁忌與舉辦模式選擇全攻略",
-        excerpt:
-          "從吉時挑選、流程設計到傳統禁忌，第一次幫寶貝辦派對也能輕鬆上手的完整指南。",
-      },
-    ],
+    readMore: "閱讀全文",
+    button: "看所有文章",
   },
 });
