@@ -250,11 +250,18 @@ export const homeReviews = defineBlock({
         { type: "text", key: "body", label: "評論內容", multiline: true },
       ],
     },
+    {
+      type: "text",
+      key: "igButton",
+      label: "「到 IG 看更多」按鈕文字",
+      hint: "連到「店家資訊」的 Instagram 連結；留空就不顯示",
+    },
   ],
   defaults: {
     watermark: "Testimonial",
     title: "好評分享",
     description: "爸爸媽媽們的真實回饋，是我們繼續用心做下去的最大動力。",
+    igButton: "到 IG 看派對現場的歡樂影片",
     items: [
       {
         name: "派對主辦媽咪",
@@ -291,12 +298,19 @@ export const homeGallery = defineBlock({
     { type: "text", key: "title", label: "區塊標題" },
     { type: "text", key: "description", label: "區塊說明" },
     { type: "text", key: "button", label: "按鈕文字" },
+    {
+      type: "text",
+      key: "igButton",
+      label: "「到 IG 看更多」按鈕文字",
+      hint: "連到「店家資訊」的 Instagram 連結；留空就不顯示",
+    },
   ],
   defaults: {
     watermark: "Photo Portfolio",
     title: "攝影作品",
     description: "點擊任一張照片，看見每場派對最動人的瞬間。",
     button: "觀看完整作品集",
+    igButton: "到 IG 看更多派對現場影片",
   },
 });
 

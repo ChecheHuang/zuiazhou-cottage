@@ -17,6 +17,10 @@ export interface ResultCardInput {
   cta: string;
   /** 例如「example.com/play」 */
   link: string;
+  /** IG 帳號（例如 @happyonehouse），印在網址旁邊，分享限動時朋友看得到 */
+  instagram?: string;
+  /** 分享優惠文字（選填），印在日期上方 */
+  promo?: string;
 }
 
 const W = 1080;
@@ -94,7 +98,8 @@ export const drawResultCard = async (input: ResultCardInput): Promise<Blob> => {
   const font = (weight: number, size: number) => `${weight} ${size}px ${family}`;
 
   const { title, item, blessing, statsLine, cta, link } = input;
-  const allText = [title, item.name, item.meaning, blessing, statsLine, input.brand, cta, link].join("");
+  const footerLine = input.instagram ? `${link}　IG ${input.instagram}` : link;
+  const allText = [title, item.name, item.meaning, blessing, statsLine, input.brand, cta, footerLine, input.promo].join("");
   // 中文字型是依字分批載入的，先把會用到的字載好，不然會畫成系統字型
   await Promise.all([
     document.fonts.load(font(700, 60), allText),
@@ -218,6 +223,15 @@ export const drawResultCard = async (input: ResultCardInput): Promise<Blob> => {
     ctx.globalAlpha = 1;
   }
 
+  // 分享優惠（後台有填才印）
+  if (input.promo) {
+    ctx.fillStyle = brand;
+    ctx.font = font(700, 32);
+    wrap(ctx, input.promo, W - 240, 2).forEach((line, i) => {
+      ctx.fillText(line, W / 2, 1600 + i * 44);
+    });
+  }
+
   // 日期
   const now = new Date();
   ctx.fillStyle = ink;
@@ -238,7 +252,7 @@ export const drawResultCard = async (input: ResultCardInput): Promise<Blob> => {
   ctx.font = font(700, 38);
   ctx.fillText(cta, W / 2, 1772);
   ctx.font = font(400, 30);
-  ctx.fillText(link, W / 2, 1818);
+  ctx.fillText(footerLine, W / 2, 1818);
 
   return new Promise<Blob>((resolve, reject) =>
     canvas.toBlob(

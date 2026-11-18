@@ -390,6 +390,8 @@ export const ZhuazhouGame = ({
         brand: biz.brand,
         cta: c.cardCta,
         link: `${window.location.host}/play`,
+        instagram: biz.instagram,
+        promo: c.cardPromo,
       });
       const file = new File([blob], `抓周-${r.item.name}.png`, {
         type: "image/png",

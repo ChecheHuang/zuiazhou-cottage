@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import Lightbox from "yet-another-react-lightbox";
 import { useSlotImages } from "@/components/SiteImagesProvider";
+import { InstagramButton } from "@/components/InstagramButton";
 import { useContent } from "@/components/SiteContentProvider";
 import { photoPortfolio as photoPortfolioBlock } from "@/lib/site-content/blocks/photo";
 import { SectionHeading } from "@/components/SectionHeading";
@@ -63,7 +64,7 @@ export const PhotoPortfolio = () => {
           ))}
         </motion.ul>
 
-        <div className="mt-12 flex justify-center">
+        <div className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/baby-party#gallery"
             className="inline-flex items-center gap-2 rounded-full border border-brand/30 bg-white px-7 py-3 text-sm font-medium text-brand transition-all duration-300 hover:scale-105 hover:bg-brand-soft/30"
@@ -71,6 +72,7 @@ export const PhotoPortfolio = () => {
             {c.moreButton}
             <span aria-hidden>→</span>
           </Link>
+          <InstagramButton label={c.igButton} />
         </div>
       </div>
 

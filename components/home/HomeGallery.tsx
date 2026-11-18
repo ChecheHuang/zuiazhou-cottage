@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import Lightbox from "yet-another-react-lightbox";
 import { useSlotImages } from "@/components/SiteImagesProvider";
 import { SectionHeading } from "@/components/SectionHeading";
+import { InstagramButton } from "@/components/InstagramButton";
 import { useContent } from "@/components/SiteContentProvider";
 import { homeGallery } from "@/lib/site-content/blocks/home";
 
@@ -73,7 +74,7 @@ export const HomeGallery = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-12 text-center"
+          className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row"
         >
           <Link
             href="/baby-party#gallery"
@@ -82,6 +83,7 @@ export const HomeGallery = () => {
             {c.button}
             <span aria-hidden>→</span>
           </Link>
+          <InstagramButton label={c.igButton} />
         </motion.div>
       </div>
 

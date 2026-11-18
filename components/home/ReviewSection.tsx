@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { useSlotImages } from "@/components/SiteImagesProvider";
 import { SectionHeading } from "@/components/SectionHeading";
+import { InstagramButton } from "@/components/InstagramButton";
 import { useContent } from "@/components/SiteContentProvider";
 import { homeReviews } from "@/lib/site-content/blocks/home";
 
@@ -108,6 +109,11 @@ export const ReviewSection = () => {
             </motion.div>
           ))}
         </motion.div>
+        {c.igButton && (
+          <div className="mt-10 text-center">
+            <InstagramButton label={c.igButton} />
+          </div>
+        )}
       </div>
     </section>
   );

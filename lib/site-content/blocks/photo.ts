@@ -84,12 +84,19 @@ export const photoPortfolio = defineBlock({
     { type: "text", key: "title", label: "區塊標題" },
     { type: "text", key: "description", label: "區塊說明" },
     { type: "text", key: "moreButton", label: "照片牆下方按鈕文字" },
+    {
+      type: "text",
+      key: "igButton",
+      label: "「到 IG 看更多」按鈕文字",
+      hint: "連到「店家資訊」的 Instagram 連結；留空就不顯示",
+    },
   ],
   defaults: {
     watermark: "Portfolio",
     title: "攝影作品",
     description: "長期合作的攝影師團隊，擅長捕捉寶寶最真實的表情與互動。",
     moreButton: "我要看更多照片",
+    igButton: "到 IG 看更多作品與 Reels",
   },
 });
 

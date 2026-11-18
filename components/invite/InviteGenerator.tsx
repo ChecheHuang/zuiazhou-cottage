@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import {
   AiModeSwitch,
@@ -63,6 +63,11 @@ const Chips = <T extends string>({
     </div>
   </div>
 );
+
+// 官網網址：用瀏覽器目前的網域，正式站、預覽站都會是對的網址
+const noSubscribe = () => () => {};
+const useSiteOrigin = () =>
+  useSyncExternalStore(noSubscribe, () => window.location.origin, () => "");
 
 const inputClass =
   "w-full rounded-full border border-brand-soft/70 bg-white px-4 py-2 text-brand-ink outline-none focus:border-brand focus:ring-4 focus:ring-brand-soft/40";
@@ -129,10 +134,13 @@ export const InviteGenerator = () => {
     else if (gemini.key) applyTemplate(input);
   };
 
+  const origin = useSiteOrigin();
+  const linkLine =
+    c.footerLinkPrefix && origin ? `\n${c.footerLinkPrefix}${origin}` : "";
   const footer =
     venue === c.venueOther
       ? ""
-      : `\n\n${c.footerPrefix} ${biz.brand}｜${biz.address}${biz.landmark ? `（${biz.landmark}）` : ""}`;
+      : `\n\n${c.footerPrefix} ${biz.brand}｜${biz.address}${biz.landmark ? `（${biz.landmark}）` : ""}${linkLine}`;
   const message = draft
     ? fillInvite(draft, {
         name: cleanBabyName(name) || "寶貝",

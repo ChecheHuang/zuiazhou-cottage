@@ -51,6 +51,12 @@ export const inviteForm = defineBlock({
     { type: "text", key: "lineShareButton", label: "分享到 LINE 按鈕" },
     { type: "text", key: "regenerateButton", label: "重新產生按鈕" },
     { type: "text", key: "footerPrefix", label: "訊息結尾的店名前綴", hint: "例如「📍」" },
+    {
+      type: "text",
+      key: "footerLinkPrefix",
+      label: "訊息結尾官網網址前的文字",
+      hint: "例如「🔗 場地介紹：」，後面會自動接上官網網址；留空就不放網址",
+    },
     { type: "text", key: "unsetValue", label: "沒填日期或時間時顯示的文字" },
     {
       type: "text",
@@ -88,6 +94,7 @@ export const inviteForm = defineBlock({
     lineShareButton: "分享到 LINE",
     regenerateButton: "換一個寫法",
     footerPrefix: "📍",
+    footerLinkPrefix: "🔗 場地介紹：",
     unsetValue: "（待定）",
     bookingHint: "還沒訂好場地嗎？先確認日期有沒有空檔，再把邀請發出去會更安心。",
     bookingLineButton: "用 LINE 問這天的檔期",
