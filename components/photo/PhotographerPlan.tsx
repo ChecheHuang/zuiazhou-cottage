@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useContent } from "@/components/SiteContentProvider";
-import { siteBusiness } from "@/lib/site-content/blocks/site";
+import { lineChatHref, siteBusiness } from "@/lib/site-content/blocks/site";
 import { photoPlan } from "@/lib/site-content/blocks/photo";
 
 export const PhotographerPlan = () => {
@@ -79,7 +79,7 @@ export const PhotographerPlan = () => {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a
-              href={biz.lineUrl}
+              href={lineChatHref(biz)}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-[#06c755] px-7 py-3 text-sm font-medium text-white shadow-lg shadow-[#06c755]/30 transition-all duration-300 hover:scale-105"

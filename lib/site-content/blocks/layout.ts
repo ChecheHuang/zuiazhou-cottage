@@ -25,7 +25,7 @@ export const layoutSeo = defineBlock({
     },
   ],
   defaults: {
-    title: "Happy 抓周小屋｜桃園平鎮抓週派對推薦",
+    title: "Happy 抓周小屋｜桃園平鎮抓周派對推薦",
     description:
       "桃園平鎮包場抓週派對、兒童生日派對、性別揭曉派對，從場佈、流程到攝影一站式包辦，給寶貝最美的人生第一場派對。",
     image: "/og/home.jpg",

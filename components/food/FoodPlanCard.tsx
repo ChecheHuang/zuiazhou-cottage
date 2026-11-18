@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useContent } from "@/components/SiteContentProvider";
-import { siteBusiness } from "@/lib/site-content/blocks/site";
+import { lineChatHref, siteBusiness } from "@/lib/site-content/blocks/site";
 import type { FoodPlanItem } from "@/lib/site-content/blocks/food";
 import { cn } from "@/lib/cn";
 
@@ -153,7 +153,7 @@ export const FoodPlanCard = ({ plan, index }: FoodPlanCardProps) => {
         {plan.ctaLabel && (
           <div className="mt-8">
             <a
-              href={biz.lineUrl}
+              href={lineChatHref(biz)}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-white px-6 py-3 text-sm font-medium text-brand transition-all duration-300 hover:scale-105 hover:bg-brand-soft/30"

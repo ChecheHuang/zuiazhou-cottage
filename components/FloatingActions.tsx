@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useContent } from "@/components/SiteContentProvider";
 import { layoutFloating } from "@/lib/site-content/blocks/layout";
-import { siteBusiness } from "@/lib/site-content/blocks/site";
+import { lineChatHref, siteBusiness } from "@/lib/site-content/blocks/site";
 import { cn } from "@/lib/cn";
 
 // 手機上往下滑時收起浮動按鈕，往上滑或停下來就出現，閱讀與點選內容時不會被擋住
@@ -77,7 +77,7 @@ export const FloatingActions = () => {
   return (
     <>
       <a
-        href={biz.lineUrl}
+        href={lineChatHref(biz)}
         target="_blank"
         rel="noopener noreferrer"
         aria-label={c.lineLabel}

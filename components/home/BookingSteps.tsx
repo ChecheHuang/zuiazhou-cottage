@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useContent } from "@/components/SiteContentProvider";
-import { siteBusiness } from "@/lib/site-content/blocks/site";
+import { lineChatHref, siteBusiness } from "@/lib/site-content/blocks/site";
 import { homeBooking } from "@/lib/site-content/blocks/home";
 import { SectionHeading } from "@/components/SectionHeading";
 import { cn } from "@/lib/cn";
@@ -66,7 +66,7 @@ export const BookingSteps = () => {
 
         <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <a
-            href={biz.lineUrl}
+            href={lineChatHref(biz)}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-full bg-brand px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-all duration-300 hover:scale-105 hover:bg-brand/90"

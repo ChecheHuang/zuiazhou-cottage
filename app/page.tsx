@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { AboutSection } from "@/components/home/AboutSection";
-import { BlogSection } from "@/components/home/BlogSection";
 import { BookingSteps } from "@/components/home/BookingSteps";
 import { HeroSlideshow } from "@/components/home/HeroSlideshow";
 import { HomeGallery } from "@/components/home/HomeGallery";
 import { InformationSection } from "@/components/home/InformationSection";
 import { ParallaxBreak } from "@/components/home/ParallaxBreak";
 import { ReviewSection } from "@/components/home/ReviewSection";
+import { RoomsSection } from "@/components/home/RoomsSection";
 import { ServiceSection } from "@/components/home/ServiceSection";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -29,12 +29,13 @@ export default function Home() {
         <HeroSlideshow />
         <AboutSection />
         <ServiceSection />
+        <RoomsSection />
         <ParallaxBreak />
         <ReviewSection />
         <HomeGallery />
         <BookingSteps />
         <InformationSection />
-        <BlogSection />
+        {/* 部落格文章頁尚未上線，先不顯示「即將推出」卡片；文章上線後再放回 <BlogSection /> */}
       </main>
       <SiteFooter />
     </>

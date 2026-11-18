@@ -27,7 +27,7 @@ export const homeSeo = defineBlock({
     },
   ],
   defaults: {
-    title: "Happy 抓周小屋｜桃園平鎮抓週派對推薦",
+    title: "Happy 抓周小屋｜桃園平鎮抓周派對推薦",
     description:
       "桃園平鎮包場抓週派對、兒童生日派對、性別揭曉派對，從場佈、流程到攝影一站式包辦，給寶貝最美的人生第一場派對。",
     image: "/og/home.jpg",
@@ -162,6 +162,33 @@ export const homeService = defineBlock({
     ],
     cardLink: "查看詳情",
     button: "查看所有服務",
+  },
+});
+
+export const homeRooms = defineBlock({
+  key: "home.rooms",
+  page: PAGE,
+  label: "主題場地一覽",
+  description:
+    "首頁的四大主題場地對照卡片。場地名稱、價格、人數與照片會直接沿用「寶寶派對 › 主題場地方案」，這裡只改標題與按鈕。",
+  fields: [
+    watermarkField,
+    { type: "text", key: "title", label: "區塊標題" },
+    { type: "text", key: "description", label: "區塊說明" },
+    {
+      type: "text",
+      key: "priceSuffix",
+      label: "價格後的小字",
+      hint: "例如「起」，留空就不顯示",
+    },
+    { type: "text", key: "button", label: "下方按鈕文字" },
+  ],
+  defaults: {
+    watermark: "Rooms",
+    title: "四大主題場地",
+    description: "依人數挑選最適合的空間，價格已含主持、道具與拍照側錄。",
+    priceSuffix: "",
+    button: "看完整方案與照片",
   },
 });
 
@@ -380,7 +407,8 @@ export const homeBlog = defineBlock({
   key: "home.blog",
   page: PAGE,
   label: "部落格",
-  description: "首頁最下方的文章卡片（文章頁尚未上線，卡片目前不能點）。",
+  description:
+    "首頁最下方的文章卡片。文章頁尚未上線，這個區塊目前在首頁先隱藏，內容可以先寫好。",
   fields: [
     watermarkField,
     { type: "text", key: "title", label: "區塊標題" },

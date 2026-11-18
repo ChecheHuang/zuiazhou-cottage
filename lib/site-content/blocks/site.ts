@@ -27,6 +27,13 @@ export const siteBusiness = defineBlock({
     { type: "text", key: "phone", label: "電話" },
     { type: "text", key: "lineId", label: "LINE ID" },
     { type: "text", key: "lineUrl", label: "LINE 加好友連結" },
+    {
+      type: "text",
+      key: "lineInquiry",
+      label: "LINE 按鈕預填的詢問文字",
+      multiline: true,
+      hint: "客人點「加入官方 LINE」等按鈕時，聊天框會先帶入這段文字，客人補完再送出。留空就只開聊天、不帶文字",
+    },
     { type: "text", key: "instagram", label: "Instagram 帳號" },
     { type: "text", key: "instagramUrl", label: "Instagram 連結" },
     { type: "text", key: "facebookUrl", label: "Facebook 連結" },
@@ -41,6 +48,8 @@ export const siteBusiness = defineBlock({
     phone: "0981 987 355",
     lineId: "@262qhmgi",
     lineUrl: "https://line.me/R/ti/p/@262qhmgi",
+    lineInquiry:
+      "您好！我想詢問派對檔期～\n派對類型：\n預計日期：\n人數約：\n想了解的場地：",
     instagram: "@happyonehouse",
     instagramUrl: "https://www.instagram.com/happyonehouse",
     facebookUrl: "https://www.facebook.com/happyonehouse913/",
@@ -51,6 +60,19 @@ export const mapEmbedUrlFor = (address: string) =>
   `https://www.google.com/maps?q=${encodeURIComponent(
     address.replace(/\s/g, ""),
   )}&hl=zh-TW&z=16&output=embed`;
+
+// LINE 詢問按鈕：有 LINE ID 和預填文字就開聊天並帶入文字，否則退回加好友連結
+export const lineChatHref = (biz: {
+  lineId: string;
+  lineUrl: string;
+  lineInquiry: string;
+}) => {
+  const id = biz.lineId.trim() || /@[\w.-]+/.exec(biz.lineUrl)?.[0] || "";
+  const text = biz.lineInquiry.trim();
+  return id && text
+    ? `https://line.me/R/oaMessage/${encodeURIComponent(id)}/?${encodeURIComponent(text)}`
+    : biz.lineUrl;
+};
 
 export const telHref = (phone: string) =>
   `tel:${phone.replace(/[^0-9+]/g, "")}`;

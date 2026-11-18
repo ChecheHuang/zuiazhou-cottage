@@ -12,7 +12,7 @@ import {
   faqSeo,
 } from "@/lib/site-content/blocks/faq";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { siteBusiness } from "@/lib/site-content/blocks/site";
+import { lineChatHref, siteBusiness } from "@/lib/site-content/blocks/site";
 import { buildPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -71,7 +71,7 @@ export default async function FaqPage() {
               <p className="whitespace-pre-line text-brand-ink">{cta.text}</p>
               <div className="flex flex-col gap-3 sm:flex-row">
                 <a
-                  href={biz.lineUrl}
+                  href={lineChatHref(biz)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-[#06c755] px-7 py-3 text-sm font-medium text-white shadow-lg shadow-[#06c755]/30 transition-all duration-300 hover:scale-105"
