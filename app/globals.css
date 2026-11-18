@@ -337,3 +337,11 @@ body {
     scroll-behavior: smooth;
   }
 }
+
+/* 切換配色的那一瞬間停用過渡效果（見 ThemeToggle），切換更即時、也不會讓手機卡頓 */
+.theme-switching,
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
+}

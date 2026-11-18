@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useContent } from "@/components/SiteContentProvider";
@@ -578,7 +578,9 @@ export const ZhuazhouGame = ({
 
               <ModeSwitch
                 mode={mode}
-                onChange={setMode}
+                // 換模式、換場地要重畫整個大場景：標成不急的更新，
+                // 讓點擊的回饋先畫出來，場景在背景算（手機上不會卡住 0.3～0.4 秒）
+                onChange={(m) => startTransition(() => setMode(m))}
                 disabled={phase.kind === "grabbing"}
                 labels={{ room: c.modeRoom, quick: c.modeQuick }}
               />
@@ -588,7 +590,7 @@ export const ZhuazhouGame = ({
                   label={c.themeLabel}
                   ids={ROOM_THEME_IDS}
                   value={theme}
-                  onChange={setTheme}
+                  onChange={(t) => startTransition(() => setTheme(t))}
                   disabled={phase.kind === "grabbing"}
                   names={{
                     galaxy: c.themeGalaxy,

@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import {
+  startTransition,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { DayPicker } from "react-day-picker";
 import { zhTW } from "react-day-picker/locale";
 import "react-day-picker/style.css";
@@ -147,8 +154,15 @@ export const DatePickerField = ({
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => {
-          if (!open) setMonth(initialMonth());
-          setOpen((v) => !v);
+          // 第一次展開要畫整個月曆，包成 transition 讓按鈕的按下回饋先出現，不卡住點擊
+          if (open) {
+            setOpen(false);
+            return;
+          }
+          startTransition(() => {
+            setMonth(initialMonth());
+            setOpen(true);
+          });
         }}
         className={cn(
           "flex w-full items-center justify-between gap-2 rounded-full border bg-white px-4 py-2 text-left outline-none transition",
@@ -179,8 +193,10 @@ export const DatePickerField = ({
                 type="button"
                 disabled={disabled}
                 onClick={() => {
-                  setMonth(addMonths(today, -12 * p.years));
-                  setOpen(true);
+                  startTransition(() => {
+                    setMonth(addMonths(today, -12 * p.years));
+                    setOpen(true);
+                  });
                 }}
                 className={chipClass(false)}
               >

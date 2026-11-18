@@ -14,11 +14,17 @@ const readDomTheme = (): Theme =>
 
 const applyTheme = (theme: Theme) => {
   const root = document.documentElement;
+  // 切換瞬間先關掉全站的 transition：否則幾百個元素會同時啟動顏色過渡，
+  // 在中低階手機上讓這一下卡住 0.3～0.4 秒（INP 變差）；兩幀後再恢復
+  root.classList.add("theme-switching");
   if (theme === "teal") {
     root.dataset.theme = "teal";
   } else {
     delete root.dataset.theme;
   }
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => root.classList.remove("theme-switching")),
+  );
   try {
     localStorage.setItem(STORAGE_KEY, theme);
   } catch {
