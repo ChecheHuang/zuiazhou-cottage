@@ -214,7 +214,7 @@ const SectionView = async ({
         <ol className="mt-6 space-y-4">
           {c.steps.map((s, i) => (
             <li key={`${i}-${s.title}`} className="flex gap-4">
-              <span className="grid size-9 shrink-0 place-items-center rounded-full bg-brand text-sm font-semibold text-white">
+              <span className="grid size-9 shrink-0 place-items-center rounded-full bg-brand-strong text-sm font-semibold text-white">
                 {i + 1}
               </span>
               <div>
@@ -238,7 +238,7 @@ const SectionView = async ({
             href={lineChatHref(biz, text.ctaMessage.replaceAll("{文章}", articleTitle))}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-all duration-300 hover:scale-105 hover:bg-brand/90"
+            className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand-strong px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-all duration-300 hover:scale-105 hover:bg-brand-strong/90"
           >
             {text.ctaButton}
             <span aria-hidden>→</span>

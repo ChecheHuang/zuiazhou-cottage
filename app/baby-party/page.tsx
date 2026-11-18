@@ -61,7 +61,7 @@ export default async function BabyPartyPage() {
             <div className="flex flex-col items-center gap-3 sm:flex-row">
               <Link
                 href="/play"
-                className="inline-flex items-center justify-center rounded-full bg-brand px-8 py-3 font-medium tracking-wider text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105"
+                className="inline-flex items-center justify-center rounded-full bg-brand-strong px-8 py-3 font-medium tracking-wider text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105"
               >
                 {playEntry.button}
               </Link>

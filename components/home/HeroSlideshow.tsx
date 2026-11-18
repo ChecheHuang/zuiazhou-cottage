@@ -83,7 +83,7 @@ export const HeroSlideshow = () => {
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href="#rooms"
-              className="rounded-full bg-brand px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/40 transition-all duration-300 hover:scale-105 hover:bg-brand/90"
+              className="rounded-full bg-brand-strong px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/40 transition-all duration-300 hover:scale-105 hover:bg-brand-strong/90"
             >
               {c.primaryButton}
             </Link>
@@ -97,16 +97,22 @@ export const HeroSlideshow = () => {
         </motion.div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+      {/* 外觀仍是細長條，但按鈕本身至少 24×24，手指點得到 */}
+      <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2">
         {slides.map((_, i) => (
           <button
             key={i}
             type="button"
             aria-label={`第 ${i + 1} 張`}
+            aria-current={i === active % count ? "true" : undefined}
             onClick={() => setActive(i)}
-            className="h-1 rounded-full bg-white/40 transition-all duration-500 hover:bg-white/70"
-            style={{ width: i === active % count ? 32 : 12 }}
-          />
+            className="group grid h-6 min-w-6 place-items-center px-1"
+          >
+            <span
+              className="block h-1 rounded-full bg-white/40 transition-all duration-500 group-hover:bg-white/70"
+              style={{ width: i === active % count ? 32 : 12 }}
+            />
+          </button>
         ))}
       </div>
     </section>

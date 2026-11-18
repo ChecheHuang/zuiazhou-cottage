@@ -242,3 +242,24 @@ export const layoutFloating = defineBlock({
     scrollTopLabel: "返回頂端",
   },
 });
+
+export const layoutNotFound = defineBlock({
+  key: "layout.notFound",
+  page: "頁首頁尾",
+  label: "找不到頁面（404）",
+  description: "網址打錯或連結失效時顯示的頁面。",
+  fields: [
+    { type: "text", key: "title", label: "標題" },
+    { type: "text", key: "text", label: "說明", multiline: true },
+    { type: "text", key: "homeButton", label: "回首頁按鈕文字" },
+    { type: "text", key: "plansButton", label: "看主題場地按鈕文字" },
+    { type: "text", key: "lineButton", label: "LINE 按鈕文字" },
+  ],
+  defaults: {
+    title: "找不到這個頁面",
+    text: "這個網址可能打錯了，或是頁面已經搬家。\n可以從下面回到首頁，或直接用 LINE 問我們。",
+    homeButton: "回首頁",
+    plansButton: "看主題場地與價格",
+    lineButton: "LINE 詢問",
+  },
+});

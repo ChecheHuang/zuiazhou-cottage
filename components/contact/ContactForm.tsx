@@ -142,7 +142,7 @@ export const ContactForm = () => {
         </p>
         <button
           type="submit"
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-9 py-3.5 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-all duration-300 hover:scale-105 hover:bg-brand/90"
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-strong px-9 py-3.5 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-all duration-300 hover:scale-105 hover:bg-brand-strong/90"
         >
           {c.submit}
           <span aria-hidden>→</span>

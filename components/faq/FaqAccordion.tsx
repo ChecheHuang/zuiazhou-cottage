@@ -11,7 +11,7 @@ const PlusIcon = ({ open }: { open: boolean }) => (
     aria-hidden
     className={cn(
       "grid size-9 shrink-0 place-items-center rounded-full border border-brand-soft/60 text-brand transition-all duration-300",
-      open ? "rotate-45 bg-brand text-white" : "bg-white",
+      open ? "rotate-45 bg-brand-strong text-white" : "bg-white",
     )}
   >
     <svg

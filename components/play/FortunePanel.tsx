@@ -168,7 +168,7 @@ export const FortunePanel = ({
           <button
             type="submit"
             disabled={!date || ai.busy}
-            className="mx-auto rounded-full bg-brand px-8 py-2.5 font-medium text-white shadow-lg shadow-brand/30 transition-transform hover:scale-105 disabled:scale-100 disabled:opacity-50"
+            className="mx-auto rounded-full bg-brand-strong px-8 py-2.5 font-medium text-white shadow-lg shadow-brand/30 transition-transform hover:scale-105 disabled:scale-100 disabled:opacity-50"
           >
             {ai.busy ? ai.generatingText : c.generateButton}
           </button>
@@ -251,7 +251,7 @@ export const FortunePanel = ({
                   <p className="flex flex-wrap items-center gap-x-2 gap-y-1 font-medium text-brand-ink">
                     <span className="whitespace-nowrap">{day.label}</span>
                     {day.isBirthday && (
-                      <span className="whitespace-nowrap rounded-full bg-brand px-2 py-0.5 text-xs text-white">
+                      <span className="whitespace-nowrap rounded-full bg-brand-strong px-2 py-0.5 text-xs text-white">
                         {c.birthdayTag}
                       </span>
                     )}

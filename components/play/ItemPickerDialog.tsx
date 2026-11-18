@@ -140,7 +140,7 @@ export const ItemPickerDialog = ({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full bg-brand px-8 py-2 text-sm font-medium text-white"
+              className="rounded-full bg-brand-strong px-8 py-2 text-sm font-medium text-white"
             >
               {doneLabel}
             </button>

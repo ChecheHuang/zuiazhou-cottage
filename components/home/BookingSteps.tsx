@@ -47,7 +47,7 @@ export const BookingSteps = () => {
             >
               <span
                 aria-hidden
-                className="absolute -top-5 left-1/2 grid size-12 -translate-x-1/2 place-items-center rounded-full bg-brand text-white shadow-lg shadow-brand/30"
+                className="absolute -top-5 left-1/2 grid size-12 -translate-x-1/2 place-items-center rounded-full bg-brand-strong text-white shadow-lg shadow-brand/30"
               >
                 <span className="text-xl">{step.emoji}</span>
               </span>
@@ -69,7 +69,7 @@ export const BookingSteps = () => {
             href={lineChatHref(biz)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-brand px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-all duration-300 hover:scale-105 hover:bg-brand/90"
+            className="inline-flex items-center gap-2 rounded-full bg-brand-strong px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-all duration-300 hover:scale-105 hover:bg-brand-strong/90"
           >
             {c.lineButton}
             <span aria-hidden>→</span>

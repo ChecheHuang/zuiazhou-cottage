@@ -507,7 +507,7 @@ const ItemVisual = ({
             ? "mt-1 px-2 py-0.5"
             : "mt-[0.6cqw] px-[1.6cqw] py-[0.3cqw] text-[2.6cqw]",
           selected || lifted
-            ? "bg-brand text-white"
+            ? "bg-brand-strong text-white"
             : "bg-white/85 text-brand-ink",
         )}
         style={px(0.026)}

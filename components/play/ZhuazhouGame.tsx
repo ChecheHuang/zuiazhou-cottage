@@ -476,7 +476,7 @@ export const ZhuazhouGame = ({
                 <button
                   type="button"
                   onClick={playAgain}
-                  className="inline-flex items-center justify-center rounded-full bg-brand px-8 py-3 font-medium text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105"
+                  className="inline-flex items-center justify-center rounded-full bg-brand-strong px-8 py-3 font-medium text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105"
                 >
                   {c.playYourselfButton}
                 </button>
@@ -487,7 +487,7 @@ export const ZhuazhouGame = ({
                     type="button"
                     disabled={savingImage}
                     onClick={() => saveImage(phase.result)}
-                    className="inline-flex items-center justify-center rounded-full bg-brand px-7 py-3 font-medium text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105 disabled:opacity-60"
+                    className="inline-flex items-center justify-center rounded-full bg-brand-strong px-7 py-3 font-medium text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105 disabled:opacity-60"
                   >
                     {savingImage ? c.savingImage : c.saveImageButton}
                   </button>
@@ -727,7 +727,7 @@ export const ZhuazhouGame = ({
               <button
                 type="submit"
                 disabled={phase.kind === "grabbing"}
-                className="mx-auto inline-flex min-w-48 items-center justify-center rounded-full bg-brand px-10 py-3.5 text-lg font-medium tracking-wider text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105 disabled:scale-100 disabled:opacity-60"
+                className="mx-auto inline-flex min-w-48 items-center justify-center rounded-full bg-brand-strong px-10 py-3.5 text-lg font-medium tracking-wider text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105 disabled:scale-100 disabled:opacity-60"
               >
                 {c.startButton}
               </button>
@@ -784,7 +784,7 @@ const ChipPicker = <T extends string>({
           className={cn(
             "shrink-0 whitespace-nowrap rounded-full px-3.5 py-1.5 text-sm transition-all disabled:cursor-not-allowed",
             value === id
-              ? "bg-brand font-medium text-white shadow"
+              ? "bg-brand-strong font-medium text-white shadow"
               : "bg-white/80 text-brand-ink ring-1 ring-brand-soft/60 hover:bg-brand-soft/30",
           )}
         >
@@ -821,7 +821,7 @@ const ModeSwitch = ({
         className={cn(
           "rounded-full px-5 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed",
           mode === m
-            ? "bg-brand text-white shadow"
+            ? "bg-brand-strong text-white shadow"
             : "text-brand hover:bg-brand-soft/30",
         )}
       >

@@ -104,7 +104,7 @@ export const InformationSection = () => {
             <div className="mt-2 flex flex-col gap-3 sm:flex-row">
               <a
                 href={telHref(biz.phone)}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-all duration-300 hover:scale-105 hover:bg-brand/90"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-brand-strong px-6 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-all duration-300 hover:scale-105 hover:bg-brand-strong/90"
               >
                 {c.callButton}
               </a>

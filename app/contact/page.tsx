@@ -87,7 +87,7 @@ export default async function ContactPage() {
                   href={mapsDirectionsUrlFor(biz.address)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand px-7 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105"
+                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand-strong px-7 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105"
                 >
                   {location.navButton}
                 </a>

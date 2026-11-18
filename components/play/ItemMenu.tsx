@@ -89,7 +89,7 @@ export const ItemMenu = ({
           type="button"
           role="menuitem"
           onClick={onReplace}
-          className="rounded-full bg-brand px-2.5 py-1 text-xs font-medium text-white transition-opacity sm:px-3 sm:py-1.5 sm:text-sm hover:opacity-90"
+          className="rounded-full bg-brand-strong px-2.5 py-1 text-xs font-medium text-white transition-opacity sm:px-3 sm:py-1.5 sm:text-sm hover:opacity-90"
         >
           {replaceLabel}
         </button>

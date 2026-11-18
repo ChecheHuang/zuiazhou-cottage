@@ -78,7 +78,7 @@ export const HomeGallery = () => {
         >
           <Link
             href="/baby-party#gallery"
-            className="inline-flex items-center gap-2 rounded-full border border-brand-soft/60 bg-white px-8 py-3 text-sm font-medium text-brand transition-all duration-300 hover:scale-105 hover:bg-brand hover:text-white"
+            className="inline-flex items-center gap-2 rounded-full border border-brand-soft/60 bg-white px-8 py-3 text-sm font-medium text-brand transition-all duration-300 hover:scale-105 hover:bg-brand-strong hover:text-white"
           >
             {c.button}
             <span aria-hidden>→</span>

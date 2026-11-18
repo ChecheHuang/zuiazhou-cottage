@@ -99,7 +99,7 @@ export const DatePickerField = ({
     cn(
       "rounded-full border px-3 py-1 text-xs transition-colors disabled:opacity-50",
       on
-        ? "border-brand bg-brand text-white"
+        ? "border-brand bg-brand-strong text-white"
         : "border-brand-soft/70 bg-white text-brand hover:bg-brand-soft/30",
     );
 

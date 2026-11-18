@@ -34,7 +34,7 @@ export const PageCta = async ({
           {primaryLabel && (
             <Link
               href={primaryHref}
-              className="inline-flex items-center gap-2 rounded-full bg-brand px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105"
+              className="inline-flex items-center gap-2 rounded-full bg-brand-strong px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105"
             >
               {primaryLabel}
               <span aria-hidden>→</span>

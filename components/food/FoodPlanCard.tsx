@@ -13,7 +13,7 @@ interface FoodPlanCardProps {
 }
 
 const PriceTag = ({ price, seats }: { price: string; seats?: string }) => (
-  <div className="inline-flex items-baseline gap-3 rounded-full bg-brand px-6 py-2.5 text-white shadow-md shadow-brand/30">
+  <div className="inline-flex items-baseline gap-3 rounded-full bg-brand-strong px-6 py-2.5 text-white shadow-md shadow-brand/30">
     <span className="text-2xl font-semibold md:text-3xl">{price}</span>
     {seats && <span className="text-sm text-white/85">／{seats}</span>}
   </div>

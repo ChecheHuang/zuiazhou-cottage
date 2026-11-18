@@ -83,13 +83,13 @@ export const SiteFooter = async () => {
             height={56}
             className="size-14"
           />
-          <span className="text-lg font-semibold text-brand">{biz.brand}</span>
+          <span className="text-lg font-semibold text-brand-strong">{biz.brand}</span>
         </Link>
 
-        <p className="max-w-xl whitespace-pre-line leading-loose text-brand-ink/80">
+        <p className="max-w-xl whitespace-pre-line leading-loose text-brand-ink/90">
           {c.intro}
         </p>
-        <p className="text-sm text-brand-ink/70">
+        <p className="text-sm text-brand-ink/90">
           {biz.phone} · {biz.address}
         </p>
 
@@ -101,7 +101,7 @@ export const SiteFooter = async () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={s.label}
-                className="grid size-11 place-items-center rounded-full border border-brand-soft/60 text-brand transition-all duration-300 hover:scale-90 hover:bg-brand hover:text-white"
+                className="grid size-11 place-items-center rounded-full border border-brand-soft/60 text-brand transition-all duration-300 hover:scale-90 hover:bg-brand-strong hover:text-white"
               >
                 {s.icon}
               </a>
@@ -109,7 +109,7 @@ export const SiteFooter = async () => {
           ))}
         </ul>
 
-        <div className="mt-4 w-full border-t border-brand-soft/40 pt-6 text-xs text-brand-ink/60">
+        <div className="mt-4 w-full border-t border-brand-soft/40 pt-6 text-xs text-brand-ink/85">
           {copyright}
         </div>
       </div>

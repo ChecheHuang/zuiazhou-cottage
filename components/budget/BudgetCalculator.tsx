@@ -49,7 +49,7 @@ const Step = ({
 }) => (
   <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-brand-soft/50 sm:p-6">
     <h2 className="flex items-center gap-3 text-lg font-semibold text-brand">
-      <span className="grid size-8 place-items-center rounded-full bg-brand text-sm text-white">
+      <span className="grid size-8 place-items-center rounded-full bg-brand-strong text-sm text-white">
         {n}
       </span>
       {title}

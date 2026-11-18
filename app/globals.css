@@ -7,6 +7,8 @@
   --color-brand-ink: #555555;
   --color-brand-cream: #f5eae2;
   --color-brand-beige: #ffeee1;
+  /* 實心按鈕底色：比品牌粉深一些，白字對比 ≥ 4.5（無障礙標準）；標題、裝飾仍用 --color-brand */
+  --color-brand-strong: #c24c70;
 
   --font-sans: var(--font-noto-tc), "Noto Sans TC", ui-sans-serif, system-ui,
     sans-serif;
@@ -22,6 +24,7 @@
   --color-brand-accent: #e2c3a0;
   --color-brand-cream: #d8eee3;
   --color-brand-beige: #f1f8f4;
+  --color-brand-strong: #38816b;
 }
 
 html {

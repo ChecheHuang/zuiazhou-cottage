@@ -66,7 +66,7 @@ export const RitualTimeline = () => {
                 <span
                   aria-hidden
                   className={cn(
-                    "absolute -left-[1.6rem] top-2 grid size-9 place-items-center rounded-full bg-brand text-xs font-semibold text-white shadow-lg shadow-brand/30 md:-left-auto md:top-4",
+                    "absolute -left-[1.6rem] top-2 grid size-9 place-items-center rounded-full bg-brand-strong text-xs font-semibold text-white shadow-lg shadow-brand/30 md:-left-auto md:top-4",
                     onLeft ? "md:-right-[1.125rem]" : "md:-left-[1.125rem]",
                   )}
                 >
@@ -110,7 +110,7 @@ export const RitualTimeline = () => {
               href={lineChatHref(biz)}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand-strong px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105"
             >
               {c.ctaButton}
               <span aria-hidden>→</span>

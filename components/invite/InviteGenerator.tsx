@@ -53,7 +53,7 @@ const Chips = <T extends string>({
           className={cn(
             "rounded-full px-3.5 py-1.5 text-sm transition-colors",
             value === o
-              ? "bg-brand text-white shadow"
+              ? "bg-brand-strong text-white shadow"
               : "bg-white text-brand-ink ring-1 ring-brand-soft/60 hover:bg-brand-soft/30",
           )}
         >
@@ -216,7 +216,7 @@ export const InviteGenerator = () => {
         <button
           type="submit"
           disabled={ai.busy}
-          className="rounded-full bg-brand px-8 py-3 font-medium tracking-wider text-white shadow-lg shadow-brand/30 transition-transform hover:scale-[1.02] disabled:opacity-60"
+          className="rounded-full bg-brand-strong px-8 py-3 font-medium tracking-wider text-white shadow-lg shadow-brand/30 transition-transform hover:scale-[1.02] disabled:opacity-60"
         >
           {ai.busy ? ai.generatingText : draft ? c.regenerateButton : c.generateButton}
         </button>
@@ -266,7 +266,7 @@ export const InviteGenerator = () => {
                 href={bookingHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 rounded-full bg-brand px-4 py-2 text-center font-medium text-white shadow-md shadow-brand/30 hover:bg-brand/90"
+                className="flex-1 rounded-full bg-brand-strong px-4 py-2 text-center font-medium text-white shadow-md shadow-brand/30 hover:bg-brand-strong/90"
               >
                 {c.bookingLineButton}
               </a>

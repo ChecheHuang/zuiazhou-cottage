@@ -50,7 +50,7 @@ export const AiModeSwitch = ({
             className={cn(
               "rounded-full px-4 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed",
               mode === m
-                ? "bg-brand text-white shadow"
+                ? "bg-brand-strong text-white shadow"
                 : "text-brand hover:bg-brand-soft/30",
             )}
           >
@@ -125,7 +125,7 @@ const KeyDialog = ({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full bg-brand px-6 py-1.5 text-sm font-medium text-white shadow-sm hover:scale-105"
+            className="rounded-full bg-brand-strong px-6 py-1.5 text-sm font-medium text-white shadow-sm hover:scale-105"
           >
             完成
           </button>
@@ -237,7 +237,7 @@ export const GeminiKeyField = ({
             href={c.keyHelpUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded-full bg-brand px-3.5 py-1.5 text-xs font-medium text-white shadow-sm transition-transform hover:scale-105"
+            className="inline-flex items-center gap-1 rounded-full bg-brand-strong px-3.5 py-1.5 text-xs font-medium text-white shadow-sm transition-transform hover:scale-105"
           >
             🔑 {c.keyHelpLinkText}
             <span aria-hidden>↗</span>
