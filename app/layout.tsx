@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Noto_Sans_TC } from "next/font/google";
+import { Analytics } from "@/components/Analytics";
 import { FloatingActions } from "@/components/FloatingActions";
 import { MotionProvider } from "@/components/MotionProvider";
 import { SiteContentProvider } from "@/components/SiteContentProvider";
@@ -86,6 +87,7 @@ export default async function RootLayout({
           </SiteFlagsProvider>
         </SiteContentProvider>
         <LocalBusinessJsonLd />
+        <Analytics />
       </body>
     </html>
   );

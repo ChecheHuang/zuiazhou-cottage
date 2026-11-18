@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { startTransition, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import {
   AiModeSwitch,
@@ -28,6 +28,7 @@ import { cleanBabyName, MAX_NAME_LENGTH } from "@/lib/play/items";
 import { inviteForm } from "@/lib/site-content/blocks/invite";
 import { playGame } from "@/lib/site-content/blocks/play";
 import { lineChatHref, siteBusiness } from "@/lib/site-content/blocks/site";
+import { trackEvent } from "@/lib/analytics";
 
 const Chips = <T extends string>({
   label,
@@ -109,13 +110,18 @@ export const InviteGenerator = () => {
   const applyTemplate = (input: Parameters<typeof templateInvite>[0]) => {
     const avoid = variant?.tone === input.tone ? variant.index : undefined;
     const { text, index } = templateInvite(input, avoid);
-    setDraft(text);
-    setVariant({ tone: input.tone, index });
+    // 第一次顯示整段文案時，瀏覽器要另外載入中文字型的分段檔並重新排版（手機上約 0.2 秒）；
+    // 標成不急的更新，按鈕先有反應，文案緊接著出現
+    startTransition(() => {
+      setDraft(text);
+      setVariant({ tone: input.tone, index });
+    });
   };
 
   const generate = async () => {
     setCopied(false);
     const input = { partyType, venue: venueText, tone };
+    trackEvent("generate_invite", { party_type: partyType, tone, ai: useAi ? "yes" : "no" });
     if (!useAi) {
       applyTemplate(input);
       return;

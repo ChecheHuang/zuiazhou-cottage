@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, eq, gte, lte } from "drizzle-orm";
+import { and, asc, eq, gte, lte, max } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
 import { scheduleBookings, scheduleClosedDays } from "@/lib/db/schema";
@@ -33,8 +33,10 @@ const bookingColumns = {
 // ─── 前台：只回傳每天的狀態，不含任何客人資料 ──────────────────
 
 const loadPublicRange = async (from: string, to: string) => {
-  if (!db) return { bookings: [], closedDays: [] as string[] };
-  const [bookings, closed] = await Promise.all([
+  if (!db) {
+    return { bookings: [], closedDays: [] as string[], lastEdited: null as string | null };
+  }
+  const [bookings, closed, [bookingEdit], [closedEdit]] = await Promise.all([
     db
       .select({ date: scheduleBookings.date, slot: scheduleBookings.slot })
       .from(scheduleBookings)
@@ -45,8 +47,15 @@ const loadPublicRange = async (from: string, to: string) => {
       .where(
         and(gte(scheduleClosedDays.date, from), lte(scheduleClosedDays.date, to)),
       ),
+    // 最後一次在後台新增／修改預約或公休的時間（刪除不留紀錄，所以不算在內）
+    db.select({ at: max(scheduleBookings.updatedAt) }).from(scheduleBookings),
+    db.select({ at: max(scheduleClosedDays.createdAt) }).from(scheduleClosedDays),
   ]);
-  return { bookings, closedDays: closed.map((c) => c.date) };
+  const edits = [bookingEdit?.at, closedEdit?.at].filter((d): d is Date => !!d);
+  const lastEdited = edits.length
+    ? new Date(Math.max(...edits.map((d) => new Date(d).getTime()))).toISOString()
+    : null;
+  return { bookings, closedDays: closed.map((c) => c.date), lastEdited };
 };
 
 const getCachedPublicRange = unstable_cache(loadPublicRange, ["schedule-public"], {
@@ -62,10 +71,12 @@ export const getPublicAvailability = async (): Promise<PublicAvailability> => {
   const from = todayKey();
   const to = addDays(from, config.daysAhead - 1);
   try {
-    const { bookings, closedDays } = await getCachedPublicRange(from, to);
+    const { bookings, closedDays, lastEdited } = await getCachedPublicRange(from, to);
     return {
       from,
       to,
+      // 存成台灣日期（YYYY-MM-DD）；快取會把 Date 轉成字串，所以這裡一律用 ISO 字串再換算
+      updatedOn: lastEdited ? todayKey(new Date(lastEdited)) : null,
       statuses: computeDayStatuses({
         bookings,
         closedDays,
@@ -76,7 +87,7 @@ export const getPublicAvailability = async (): Promise<PublicAvailability> => {
   } catch (error) {
     // 讀不到資料庫時全部顯示「有空」，客人仍可用 LINE 詢問
     console.error("[schedule] 讀取檔期失敗", error);
-    return { from, to, statuses: {} };
+    return { from, to, statuses: {}, updatedOn: null };
   }
 };
 

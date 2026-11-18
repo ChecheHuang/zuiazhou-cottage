@@ -58,6 +58,7 @@ import {
 } from "@/lib/play/stats";
 import { useSfx } from "@/lib/play/use-sfx";
 import { ZhuazhouItemIcon } from "@/components/ZhuazhouItemIcon";
+import { openTracked, trackEvent } from "@/lib/analytics";
 
 interface Result {
   item: PlayItem;
@@ -134,6 +135,16 @@ export const ZhuazhouGame = ({
   );
   const [copied, setCopied] = useState(false);
   const [mode, setMode] = useState<Mode>("room");
+  const stageRef = useRef<HTMLDivElement>(null);
+
+  // 抓完（不含打開別人分享的結果網址）記一次 finish_play，看大家最常抓到什麼
+  const finishedItem =
+    phase.kind === "result" && !phase.shared ? phase.result.item.name : null;
+  useEffect(() => {
+    if (finishedItem) trackEvent("finish_play", { picked_item: finishedItem, mode });
+    // 只在抓到新結果時記，切換模式不重記
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
   // 點了地上哪個物品（顯示「拿掉／換一個」選單）
   const [editing, setEditing] = useState<number | null>(null);
   const [picker, setPicker] = useState<Picker | null>(null);
@@ -445,9 +456,23 @@ export const ZhuazhouGame = ({
   };
   const activeIndex = picker?.kind === "replace" ? picker.index : editing;
 
+  // 遊戲畫面 ↔ 結果卡切換後，把卡片頂端帶回畫面。
+  // 結果卡比遊戲畫面高，瀏覽器的「捲動錨定」會讓畫面停在卡片下半部，看起來像亂跳。
+  const onSwapComplete = () => {
+    const el = stageRef.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top;
+    if (top < 64 || top > window.innerHeight * 0.4) {
+      el.scrollIntoView({ block: "start", behavior: reduced ? "auto" : "smooth" });
+    }
+  };
+
   return (
-    <div className="mx-auto mt-6 max-w-2xl">
-      <AnimatePresence mode="wait" initial={false}>
+    <div
+      ref={stageRef}
+      className="mx-auto mt-6 max-w-2xl scroll-mt-20 [overflow-anchor:none]"
+    >
+      <AnimatePresence mode="wait" initial={false} onExitComplete={onSwapComplete}>
         {phase.kind === "result" ? (
           <motion.div
             key="result"
@@ -494,11 +519,7 @@ export const ZhuazhouGame = ({
                   <button
                     type="button"
                     onClick={() =>
-                      window.open(
-                        lineShareUrl(shareUrl(phase.result)),
-                        "_blank",
-                        "noopener,noreferrer",
-                      )
+                      openTracked(lineShareUrl(shareUrl(phase.result)), "play_result")
                     }
                     className="inline-flex items-center justify-center rounded-full bg-[#06c755] px-7 py-3 font-medium text-white shadow-lg shadow-[#06c755]/30 transition-transform duration-300 hover:scale-105"
                   >
@@ -585,21 +606,34 @@ export const ZhuazhouGame = ({
                 labels={{ room: c.modeRoom, quick: c.modeQuick }}
               />
 
-              {mode === "room" && (
-                <ChipPicker
-                  label={c.themeLabel}
-                  ids={ROOM_THEME_IDS}
-                  value={theme}
-                  onChange={(t) => startTransition(() => setTheme(t))}
-                  disabled={phase.kind === "grabbing"}
-                  names={{
-                    galaxy: c.themeGalaxy,
-                    forest: c.themeForest,
-                    cream: c.themeCream,
-                    fortune: c.themeFortune,
-                  }}
-                />
-              )}
+              {/* 快速抓不用選場地：用高度動畫收合，下面的內容不會一下子跳上來 */}
+              <AnimatePresence initial={false}>
+                {mode === "room" && (
+                  <motion.div
+                    key="theme-picker"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: reduced ? 0 : 0.25, ease: "easeOut" }}
+                    // 收合時要裁切；留 4px 內距讓按鈕的外框陰影不被切到
+                    className="-m-1 overflow-hidden p-1"
+                  >
+                    <ChipPicker
+                      label={c.themeLabel}
+                      ids={ROOM_THEME_IDS}
+                      value={theme}
+                      onChange={(t) => startTransition(() => setTheme(t))}
+                      disabled={phase.kind === "grabbing"}
+                      names={{
+                        galaxy: c.themeGalaxy,
+                        forest: c.themeForest,
+                        cream: c.themeCream,
+                        fortune: c.themeFortune,
+                      }}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               <ChipPicker
                 label={c.outfitLabel}
@@ -614,8 +648,9 @@ export const ZhuazhouGame = ({
                   tutu: c.outfitTutu,
                 }}
               />
-              {outfitHints[outfit] && (
-                <p className="-mt-1 text-balance text-center text-xs text-brand-ink/65">
+              {/* 每件衣服的說明長短不一：固定留兩行高，換衣服時下面的場景才不會上下跳 */}
+              {Object.values(outfitHints).some(Boolean) && (
+                <p className="-mt-1 min-h-[2lh] text-balance text-center text-xs text-brand-ink/65 md:min-h-lh">
                   {outfitHints[outfit]}
                 </p>
               )}
@@ -650,8 +685,15 @@ export const ZhuazhouGame = ({
                 />
               )}
 
-              {c.tapHint && phase.kind !== "grabbing" && (
-                <p className="-mt-1 text-center text-xs text-brand-ink/60">
+              {/* 抓周中只隱藏、不拿掉，避免下面的按鈕往上縮 */}
+              {c.tapHint && (
+                <p
+                  aria-hidden={phase.kind === "grabbing"}
+                  className={cn(
+                    "-mt-1 text-center text-xs text-brand-ink/60",
+                    phase.kind === "grabbing" && "invisible",
+                  )}
+                >
                   👆 {c.tapHint}
                 </p>
               )}

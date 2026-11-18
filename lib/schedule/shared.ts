@@ -31,6 +31,8 @@ export interface PublicAvailability {
   from: string;
   to: string;
   statuses: Record<string, DayStatus>;
+  /** 後台最後一次新增／修改檔期的台灣日期（YYYY-MM-DD），沒有資料時為 null */
+  updatedOn: string | null;
 }
 
 export interface ScheduleConfig {

@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { SectionHeading } from "@/components/SectionHeading";
 import { useContent } from "@/components/SiteContentProvider";
 import { cn } from "@/lib/cn";
+import { openTracked } from "@/lib/analytics";
 import { homeAvailability } from "@/lib/site-content/blocks/home";
 import { lineChatHref, siteBusiness } from "@/lib/site-content/blocks/site";
 import {
@@ -48,7 +49,7 @@ export const AvailabilityCalendar = ({ data }: { data: PublicAvailability }) => 
 
   const openLine = (key: string) => {
     const message = c.lineMessage.replaceAll("{日期}", formatDateLabel(key));
-    window.open(lineChatHref(biz, message), "_blank", "noopener,noreferrer");
+    openTracked(lineChatHref(biz, message), "calendar_date");
   };
 
   // 日期下方加一行狀態小字；範圍外的日子維持原樣（會被 disabled）
@@ -117,6 +118,11 @@ export const AvailabilityCalendar = ({ data }: { data: PublicAvailability }) => 
         {c.footnote && (
           <p className="mx-auto mt-4 max-w-xl whitespace-pre-line text-center text-sm leading-relaxed text-brand-ink/70">
             {c.footnote}
+          </p>
+        )}
+        {c.updatedLabel && data.updatedOn && (
+          <p className="mt-2 text-center text-xs text-brand-ink/70">
+            {c.updatedLabel.replaceAll("{日期}", formatDateLabel(data.updatedOn))}
           </p>
         )}
       </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useContent } from "@/components/SiteContentProvider";
+import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 import { formatNT, isPerTable, parsePrice, type ParsedPrice } from "@/lib/budget";
 import { partyPlans } from "@/lib/site-content/blocks/baby-party";
@@ -166,7 +167,10 @@ export const BudgetCalculator = () => {
                   type="radio"
                   name="room"
                   checked={room === r.id}
-                  onChange={() => setRoom(r.id)}
+                  onChange={() => {
+                    setRoom(r.id);
+                    trackEvent("calculate_budget", { room_name: r.name });
+                  }}
                   className="accent-brand"
                 />
                 <span className="flex-1">{r.name}</span>

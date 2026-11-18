@@ -6,6 +6,7 @@ import { useContent } from "@/components/SiteContentProvider";
 import { contactForm } from "@/lib/site-content/blocks/contact";
 import { siteBusiness } from "@/lib/site-content/blocks/site";
 import { cn } from "@/lib/cn";
+import { openTracked } from "@/lib/analytics";
 
 type FormState = "idle" | "success";
 
@@ -52,7 +53,7 @@ export const ContactForm = () => {
       ? `https://line.me/R/oaMessage/${encodeURIComponent(lineId)}/?${encodeURIComponent(text)}`
       : biz.lineUrl;
     // 要在點擊的同步流程裡開視窗，避免被擋彈出視窗
-    window.open(url, "_blank", "noopener");
+    openTracked(url, "contact_form");
     navigator.clipboard?.writeText(text).catch(() => {});
     setState("success");
   };

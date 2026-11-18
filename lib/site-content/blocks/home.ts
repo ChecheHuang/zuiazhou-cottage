@@ -253,12 +253,19 @@ export const homeReviews = defineBlock({
       label: "「到 IG 看更多」按鈕文字",
       hint: "連到「店家資訊」的 Instagram 連結；留空就不顯示",
     },
+    {
+      type: "text",
+      key: "googleButton",
+      label: "「看 Google 評價」按鈕文字",
+      hint: "連到「店家資訊」的 Google 評論連結；留空就不顯示",
+    },
   ],
   defaults: {
     watermark: "Testimonial",
     title: "好評分享",
     description: "爸爸媽媽們的真實回饋，是我們繼續用心做下去的最大動力。",
     igButton: "到 IG 看派對現場的歡樂影片",
+    googleButton: "看看 Google 地圖上的真實評價",
     items: [
       {
         name: "派對主辦媽咪",
@@ -406,6 +413,12 @@ export const homeAvailability = defineBlock({
       label: "日曆下方小字",
       multiline: true,
     },
+    {
+      type: "text",
+      key: "updatedLabel",
+      label: "最後更新日期文字",
+      hint: "{日期} 會換成後台最後一次修改檔期的日期，例如 11/18（二）；讓爸媽知道日曆有在維護。留空就不顯示",
+    },
   ],
   defaults: {
     watermark: "Calendar",
@@ -419,6 +432,7 @@ export const homeAvailability = defineBlock({
       "您好！我想詢問 {日期} 的檔期～\n派對類型：\n人數約：\n想了解的場地：",
     footnote:
       "日曆每次有新預約時更新，實際場次以 LINE 確認為準；已滿的日期也歡迎詢問是否有其他時段。",
+    updatedLabel: "📅 檔期表更新於 {日期}",
   },
 });
 

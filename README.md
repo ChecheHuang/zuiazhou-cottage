@@ -32,6 +32,7 @@ pnpm dev                     # http://localhost:3000
 | `ADMIN_PASSWORD` | 後台登入密碼 |
 | `ADMIN_SESSION_SECRET` | 後台登入 cookie 的簽章金鑰，至少 32 字元 |
 | `NEXT_PUBLIC_SITE_URL` | （選用）正式網址，用於 SEO；沒設時用 Vercel 的正式網域 |
+| `NEXT_PUBLIC_GA_ID` | （選用）GA4 評估 ID（`G-` 開頭），只設在 **Production**；沒設就不載入 GA。自訂事件見 `lib/analytics.ts` |
 
 ## 指令
 

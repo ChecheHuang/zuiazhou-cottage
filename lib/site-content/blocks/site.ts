@@ -37,6 +37,12 @@ export const siteBusiness = defineBlock({
     { type: "text", key: "instagram", label: "Instagram 帳號" },
     { type: "text", key: "instagramUrl", label: "Instagram 連結" },
     { type: "text", key: "facebookUrl", label: "Facebook 連結" },
+    {
+      type: "text",
+      key: "googleReviewUrl",
+      label: "Google 評論連結",
+      hint: "到 Google 商家檔案按「索取評論」複製連結貼上（g.page 開頭）。留空時，「看 Google 評價」按鈕會改用店名＋地址開 Google 地圖",
+    },
   ],
   defaults: {
     brand: "Happy 抓周小屋",
@@ -53,6 +59,7 @@ export const siteBusiness = defineBlock({
     instagram: "@happyonehouse",
     instagramUrl: "https://www.instagram.com/happyonehouse",
     facebookUrl: "https://www.facebook.com/happyonehouse913/",
+    googleReviewUrl: "",
   },
 });
 
@@ -79,6 +86,17 @@ export const lineChatHref = (
     ? `https://line.me/R/oaMessage/${encodeURIComponent(id)}/?${encodeURIComponent(text)}`
     : biz.lineUrl;
 };
+
+// Google 評價：有填評論連結就用，否則用店名＋地址搜尋 Google 地圖（會直接開到店家頁，看得到評論）
+export const googleReviewsHref = (biz: {
+  googleReviewUrl: string;
+  brand: string;
+  address: string;
+}) =>
+  biz.googleReviewUrl.trim() ||
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    `${biz.brand} ${biz.address.replace(/\s/g, "")}`,
+  )}`;
 
 export const telHref = (phone: string) =>
   `tel:${phone.replace(/[^0-9+]/g, "")}`;

@@ -7,6 +7,7 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { InstagramButton } from "@/components/InstagramButton";
 import { useContent } from "@/components/SiteContentProvider";
 import { homeReviews } from "@/lib/site-content/blocks/home";
+import { googleReviewsHref, siteBusiness } from "@/lib/site-content/blocks/site";
 
 const Star = () => (
   <svg aria-hidden viewBox="0 0 24 24" fill="currentColor" className="size-4">
@@ -21,6 +22,7 @@ const starCount = (rating: string) =>
 export const ReviewSection = () => {
   const photos = useSlotImages("home.reviews");
   const c = useContent(homeReviews);
+  const biz = useContent(siteBusiness);
   return (
     <section
       id="reviews"
@@ -109,9 +111,20 @@ export const ReviewSection = () => {
             </motion.div>
           ))}
         </motion.div>
-        {c.igButton && (
-          <div className="mt-10 text-center">
+        {(c.igButton || c.googleButton) && (
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <InstagramButton label={c.igButton} />
+            {c.googleButton && (
+              <a
+                href={googleReviewsHref(biz)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-medium text-brand-ink shadow-md ring-1 ring-brand-soft/60 transition-transform duration-300 hover:scale-105"
+              >
+                <span aria-hidden className="text-brand">★</span>
+                {c.googleButton}
+              </a>
+            )}
           </div>
         )}
       </div>
