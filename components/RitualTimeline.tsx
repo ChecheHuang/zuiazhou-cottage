@@ -6,9 +6,11 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/cn";
 import { partyRitual } from "@/lib/site-content/blocks/baby-party";
+import { lineChatHref, siteBusiness } from "@/lib/site-content/blocks/site";
 
 export const RitualTimeline = () => {
   const c = useContent(partyRitual);
+  const biz = useContent(siteBusiness);
   return (
     <section
       id="timeline"
@@ -99,6 +101,22 @@ export const RitualTimeline = () => {
             );
           })}
         </ol>
+
+        {/* 看完流程最心動的時候，直接接住詢問 */}
+        {c.ctaText && (
+          <div className="mx-auto mt-16 max-w-2xl rounded-3xl bg-brand-soft/25 px-6 py-8 text-center">
+            <p className="leading-relaxed text-brand-ink">{c.ctaText}</p>
+            <a
+              href={lineChatHref(biz)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105"
+            >
+              {c.ctaButton}
+              <span aria-hidden>→</span>
+            </a>
+          </div>
+        )}
       </div>
     </section>
   );

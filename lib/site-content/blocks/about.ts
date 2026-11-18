@@ -149,3 +149,22 @@ export const aboutEnvironment = defineBlock({
     description: "桃園平鎮四大主題場地，從溫馨小聚到大家族派對都適合。",
   },
 });
+
+export const aboutCta = defineBlock({
+  key: "about.cta",
+  page: "關於我們",
+  label: "頁尾引導",
+  description: "頁面最下方的「看方案／LINE 問檔期」收尾區塊。標題留空就不顯示。",
+  fields: [
+    { type: "text", key: "title", label: "標題" },
+    { type: "text", key: "text", label: "說明", multiline: true },
+    { type: "text", key: "plansButton", label: "看方案按鈕文字" },
+    { type: "text", key: "lineButton", label: "LINE 按鈕文字" },
+  ],
+  defaults: {
+    title: "認識我們之後，來看看適合寶貝的派對吧！",
+    text: "四種主題場地、從 10 人小家庭到大家族都適合。",
+    plansButton: "看主題場地與方案",
+    lineButton: "LINE 問檔期",
+  },
+});

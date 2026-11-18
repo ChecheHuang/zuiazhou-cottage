@@ -1,11 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useContent } from "@/components/SiteContentProvider";
 import { partyNotices } from "@/lib/site-content/blocks/baby-party";
 
 export const NoticeList = () => {
   const c = useContent(partyNotices);
+  const [expanded, setExpanded] = useState(false);
+  // 一開始只顯示前幾條（最重要的），其餘收在「看全部」裡，避免一進來就是一整屏規定
+  const limit = Number.parseInt(c.previewCount, 10);
+  const collapsible = limit > 0 && c.bullets.length > limit;
+  const shown = collapsible && !expanded ? c.bullets.slice(0, limit) : c.bullets;
   return (
     <section
       id="notice"
@@ -34,7 +40,7 @@ export const NoticeList = () => {
           }}
           className="mx-auto mt-12 grid max-w-4xl gap-4 md:grid-cols-2 md:gap-x-10"
         >
-          {c.bullets.map((bullet, i) => (
+          {shown.map((bullet, i) => (
             <motion.li
               key={`${i}-${bullet}`}
               variants={{
@@ -48,6 +54,21 @@ export const NoticeList = () => {
             </motion.li>
           ))}
         </motion.ul>
+
+        {collapsible && (
+          <div className="mt-8 text-center">
+            <button
+              type="button"
+              onClick={() => setExpanded(!expanded)}
+              aria-expanded={expanded}
+              className="rounded-full border border-brand/40 bg-white px-6 py-2.5 text-sm font-medium text-brand hover:bg-brand-soft/20"
+            >
+              {expanded
+                ? c.collapseButton
+                : c.expandButton.replaceAll("{數量}", String(c.bullets.length))}
+            </button>
+          </div>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -77,13 +77,13 @@ export const HeroSlideshow = () => {
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
-              href="/baby-party"
+              href="#rooms"
               className="rounded-full bg-brand px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/40 transition-all duration-300 hover:scale-105 hover:bg-brand/90"
             >
               {c.primaryButton}
             </Link>
             <a
-              href="#about"
+              href="/budget"
               className="rounded-full border border-white/70 bg-white/10 px-8 py-3 text-sm font-medium text-white backdrop-blur-md transition-all duration-300 hover:scale-105 hover:bg-white/20"
             >
               {c.secondaryButton}

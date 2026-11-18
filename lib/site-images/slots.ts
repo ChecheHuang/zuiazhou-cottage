@@ -5,7 +5,6 @@ import {
   GALLERY_PHOTOS,
   HERO_SLIDESHOW,
   HOST_PHOTO,
-  PARALLAX_BG,
   REVIEW_PHOTOS,
   SERVICE_PHOTOS,
 } from "@/data/photos";
@@ -48,7 +47,6 @@ export const SLOTS: SlotDef[] = [
   // 首頁
   multi("home.hero", "首頁", "最上方大圖輪播", HERO_SLIDESHOW, "建議橫式照片"),
   single("home.about", "首頁", "關於我們", ABOUT_PHOTO),
-  single("home.parallax", "首頁", "中段滿版背景", PARALLAX_BG, "建議橫式照片"),
   multi("home.reviews", "首頁", "好評區照片牆", REVIEW_PHOTOS),
   multi(
     "gallery",

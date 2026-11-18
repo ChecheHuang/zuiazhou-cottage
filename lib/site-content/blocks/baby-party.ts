@@ -194,6 +194,14 @@ export const partyNotices = defineBlock({
     },
     {
       type: "text",
+      key: "previewCount",
+      label: "一開始顯示幾條",
+      hint: "其餘的收在「展開」按鈕裡。最重要的放前面；填 0 或留空就全部顯示",
+    },
+    { type: "text", key: "expandButton", label: "展開按鈕文字", hint: "{數量} 會換成總條數" },
+    { type: "text", key: "collapseButton", label: "收合按鈕文字" },
+    {
+      type: "text",
       key: "customNote",
       label: "客製化說明（白色框上半）",
       multiline: true,
@@ -223,6 +231,9 @@ export const partyNotices = defineBlock({
       "場地容納人數依主題場地而定：福氣滿滿屋推薦 10～15 人；森林童話屋、奶油寶貝屋推薦 15～25 人；星河派對屋推薦 25～100 人，最多可容納 150 人",
       "指定主持人須另加 $2000 ❣️ 會由主理人親自執行，需再協助確認是否有可安排的檔期。",
     ],
+    previewCount: "4",
+    expandButton: "看全部注意事項（共 {數量} 條）",
+    collapseButton: "收合",
     customNote:
       "如需客製化的佈置或其他鮮花系列皆可討論，會依照需求調整細節並提供報價，不含餐點的方案價格 $17,800 起（方案包含主持人、抓周道具、虎衣虎鞋、祈福品以及贈送 1-12 月寶寶相框）",
     cancelTitle: "⭐ 包場取消規範",
@@ -289,6 +300,13 @@ export const partyRitual = defineBlock({
         { type: "image", key: "image", label: "步驟照片" },
       ],
     },
+    {
+      type: "text",
+      key: "ctaText",
+      label: "流程最後的預約引導文字",
+      hint: "留空就不顯示這一區",
+    },
+    { type: "text", key: "ctaButton", label: "流程最後的 LINE 按鈕文字" },
   ],
   defaults: {
     eyebrow: "Ritual Flow",
@@ -296,6 +314,8 @@ export const partyRitual = defineBlock({
     intro:
       "十個步驟、一段珍貴回憶，從穿虎衣到合影留念，由主持人陪伴全家完整走完。",
     stepLabel: "Step",
+    ctaText: "喜歡這樣的流程嗎？告訴我們想要的日期，幫你確認檔期！",
+    ctaButton: "用 LINE 問檔期",
     steps: [
       {
         title: "穿虎衣、虎鞋",

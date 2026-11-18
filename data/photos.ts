@@ -51,4 +51,3 @@ export const SERVICE_PHOTOS = {
 
 export const REVIEW_PHOTOS = range(35, 42);
 
-export const PARALLAX_BG = photo(20);

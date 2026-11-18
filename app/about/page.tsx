@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { AboutHero } from "@/components/about/AboutHero";
 import { AboutPhotoStrip } from "@/components/about/AboutPhotoStrip";
 import { AboutTeams } from "@/components/about/AboutTeams";
+import { PageCta } from "@/components/PageCta";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
+  aboutCta,
   aboutEnvironment,
   aboutPhotos,
   aboutSeo,
@@ -20,9 +22,10 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 export default async function AboutPage() {
-  const [photos, environment] = await Promise.all([
+  const [photos, environment, cta] = await Promise.all([
     getContent(aboutPhotos),
     getContent(aboutEnvironment),
+    getContent(aboutCta),
   ]);
   return (
     <>
@@ -42,6 +45,13 @@ export default async function AboutPage() {
           description={environment.description}
           slot="about.environment"
           bg="beige"
+        />
+        <PageCta
+          title={cta.title}
+          text={cta.text}
+          primaryLabel={cta.plansButton}
+          primaryHref="/baby-party#plans"
+          lineLabel={cta.lineButton}
         />
       </main>
       <SiteFooter />

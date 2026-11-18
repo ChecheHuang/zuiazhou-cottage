@@ -39,7 +39,6 @@ export default async function BabyPartyPage() {
       <main className="flex-1">
         <HeroIntro />
         <PartyPlansSection />
-        <NoticeList />
         <HostIntro />
         <RitualTimeline />
         <section id="items">
@@ -77,6 +76,8 @@ export default async function BabyPartyPage() {
             </div>
           </div>
         </section>
+        {/* 注意事項放在流程與物品之後：先讓爸媽看到儀式感，再看規定 */}
+        <NoticeList />
         <PhotoGallery />
         <BackgroundSlideshow />
         <BirthdayPlan />

@@ -55,17 +55,27 @@ export const homeHero = defineBlock({
       multiline: true,
       hint: "可以換行",
     },
-    { type: "text", key: "primaryButton", label: "主要按鈕文字" },
-    { type: "text", key: "secondaryButton", label: "次要按鈕文字" },
+    {
+      type: "text",
+      key: "primaryButton",
+      label: "主要按鈕文字",
+      hint: "點了會往下捲到「主題場地一覽」",
+    },
+    {
+      type: "text",
+      key: "secondaryButton",
+      label: "次要按鈕文字",
+      hint: "點了會前往「預算試算」頁",
+    },
   ],
   defaults: {
     eyebrow: "Happy moments, lasting memories",
     titleLine1: "為寶貝留下",
     titleLine2: "最珍貴的派對時光",
     subtitle:
-      "桃園平鎮 ｜ 抓週派對 × 兒童生日派對 × 性別揭曉派對\n場佈、流程、主持、攝影一站式包辦",
-    primaryButton: "查看派對方案",
-    secondaryButton: "認識 Happy 抓周小屋",
+      "桃園平鎮・秉坤婦幼醫院對面\n抓周・收涎・生日・性別揭曉，場佈主持拍照一站包辦",
+    primaryButton: "看主題場地與價格",
+    secondaryButton: "試算派對預算",
   },
 });
 
@@ -191,24 +201,6 @@ export const homeRooms = defineBlock({
     priceSuffix: "",
     button: "看完整方案與照片",
     budgetButton: "試算派對總預算",
-  },
-});
-
-export const homeParallax = defineBlock({
-  key: "home.parallax",
-  page: PAGE,
-  label: "環境照片橫幅",
-  description: "首頁中段滿版環境照片上的文字。",
-  fields: [
-    { ...watermarkField, hint: "照片上的淡色英文大字" },
-    { type: "text", key: "title", label: "標題" },
-    { type: "text", key: "description", label: "說明", multiline: true },
-  ],
-  defaults: {
-    watermark: "Environment",
-    title: "走進溫柔的派對小屋",
-    description:
-      "四大主題空間、專業主持、滿滿的祝福儀式——所有讓你拍照不踩雷的元素，我們都準備好了。",
   },
 });
 
