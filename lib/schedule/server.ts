@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, gte, lte } from "drizzle-orm";
+import { and, asc, eq, gte, lte } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
 import { scheduleBookings, scheduleClosedDays } from "@/lib/db/schema";
@@ -101,6 +101,17 @@ export const listBookingsBetween = async (
       ),
   ]);
   return { bookings, closedDays };
+};
+
+/** 後台總覽：今天以後還在「保留中（待付訂金）」的預約，日期近的在前 */
+export const listUpcomingHolds = async (from: string, limit = 20): Promise<Booking[]> => {
+  if (!db) return [];
+  return db
+    .select(bookingColumns)
+    .from(scheduleBookings)
+    .where(and(eq(scheduleBookings.status, "hold"), gte(scheduleBookings.date, from)))
+    .orderBy(asc(scheduleBookings.date), asc(scheduleBookings.slot))
+    .limit(limit);
 };
 
 /** 後台用的場地名稱清單（來自寶寶派對頁的場地方案） */

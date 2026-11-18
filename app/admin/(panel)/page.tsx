@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { UpcomingBookings } from "@/components/admin/UpcomingBookings";
 import { loadOverview, type SectionStat } from "@/lib/admin/overview";
 import { pageSectionHref } from "@/lib/admin/sections";
 
@@ -49,7 +50,7 @@ export default async function AdminOverviewPage() {
     <>
       <h1 className="text-2xl font-semibold text-brand">總覽</h1>
       <p className="mt-2 text-sm text-brand-ink/70">
-        從左邊選單選擇要修改的頁面；同一頁的圖片和文字都在同一個地方。
+        最上面是近期的預約；要改網站內容，從左邊選單或下方選擇頁面，同一頁的圖片和文字都在同一個地方。
       </p>
 
       {!hasDb && (
@@ -57,6 +58,8 @@ export default async function AdminOverviewPage() {
           目前沒有連上資料庫，網站顯示的是程式內建的預設內容，後台無法存檔。
         </p>
       )}
+
+      {hasDb && <UpcomingBookings />}
 
       {/* 數字摘要 */}
       <div className="mt-6 grid gap-4 sm:grid-cols-3">

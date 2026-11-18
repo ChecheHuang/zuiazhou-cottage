@@ -135,6 +135,8 @@ export default async function AdminPageSectionPage({
                     defaults={block.defaults}
                     initialValue={mergeBlockValue(block, stored)}
                     initialIsCustom={stored !== undefined}
+                    // 區塊少時直接展開；多時先收合，只列標題，點開再編輯
+                    defaultOpen={blocks.length <= 2}
                   />
                 </div>
               );

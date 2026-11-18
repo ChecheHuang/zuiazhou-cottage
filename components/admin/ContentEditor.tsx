@@ -5,6 +5,7 @@ import Image from "next/image";
 import { resetContent, saveContent } from "@/app/admin/(panel)/content/actions";
 import { IMAGE_ACCEPT, uploadImage } from "@/lib/admin/upload-client";
 import { cn } from "@/lib/cn";
+import { useUnsavedGuard } from "./useUnsavedGuard";
 import {
   emptyRecord,
   type ContentRecord,
@@ -551,6 +552,8 @@ interface ContentEditorProps {
   defaults: ContentRecord;
   initialValue: ContentRecord;
   initialIsCustom: boolean;
+  /** 一開始是否展開；頁面區塊多時預設收合，只看標題 */
+  defaultOpen?: boolean;
 }
 
 export const ContentEditor = ({
@@ -561,7 +564,9 @@ export const ContentEditor = ({
   defaults,
   initialValue,
   initialIsCustom,
+  defaultOpen = true,
 }: ContentEditorProps) => {
+  const [open, setOpen] = useState(defaultOpen);
   const [saved, setSaved] = useState(initialValue);
   const [draft, setDraft] = useState(initialValue);
   const [isCustom, setIsCustom] = useState(initialIsCustom);
@@ -569,13 +574,18 @@ export const ContentEditor = ({
   const dirty = JSON.stringify(draft) !== JSON.stringify(saved);
   const busy = status.kind === "busy";
 
-  // 有未儲存的修改時，離開頁面前提醒
+  // 有未儲存的修改時，關網頁或點選單換頁前提醒
+  useUnsavedGuard(blockKey, dirty);
+
+  // 從上方「快速跳轉」點進來（網址 #區塊）時自動展開
   useEffect(() => {
-    if (!dirty) return;
-    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
-    window.addEventListener("beforeunload", warn);
-    return () => window.removeEventListener("beforeunload", warn);
-  }, [dirty]);
+    const openIfTarget = () => {
+      if (decodeURIComponent(location.hash.slice(1)) === blockKey) setOpen(true);
+    };
+    openIfTarget();
+    window.addEventListener("hashchange", openIfTarget);
+    return () => window.removeEventListener("hashchange", openIfTarget);
+  }, [blockKey]);
 
   const onSave = async () => {
     setStatus({ kind: "busy", message: "儲存中…" });
@@ -605,9 +615,24 @@ export const ContentEditor = ({
 
   return (
     <article className="rounded-2xl border border-brand-soft/40 bg-white p-4 shadow-sm sm:p-6">
-      <header className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h2 className="flex flex-wrap items-center gap-2 font-semibold text-brand-ink">
+      <header>
+        <button
+          type="button"
+          onClick={() => setOpen(!open)}
+          aria-expanded={open}
+          className="flex w-full items-start gap-3 text-left"
+        >
+          <span
+            aria-hidden
+            className={cn(
+              "mt-0.5 text-sm text-brand-ink/50 transition-transform",
+              open && "rotate-90",
+            )}
+          >
+            ▶
+          </span>
+          <span className="min-w-0 flex-1">
+          <span className="flex flex-wrap items-center gap-2 font-semibold text-brand-ink">
             {label}
             <span
               className={cn(
@@ -624,13 +649,19 @@ export const ContentEditor = ({
                 未儲存
               </span>
             )}
-          </h2>
+          </span>
           {description && (
-            <p className="mt-1 text-sm text-brand-ink/60">{description}</p>
+            <span className="mt-1 block text-sm font-normal text-brand-ink/60">
+              {description}
+            </span>
           )}
-        </div>
+          </span>
+          <span className="shrink-0 text-sm text-brand">{open ? "收合" : "編輯"}</span>
+        </button>
       </header>
 
+      {open && (
+      <>
       <div className="mt-5 space-y-5">
         <FieldsEditor
           fields={fields}
@@ -686,6 +717,8 @@ export const ContentEditor = ({
           </button>
         </div>
       </footer>
+      </>
+      )}
     </article>
   );
 };

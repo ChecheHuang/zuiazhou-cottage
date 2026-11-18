@@ -11,6 +11,7 @@ import {
   type ScheduleActionResult,
 } from "@/app/admin/(panel)/schedule/actions";
 import { cn } from "@/lib/cn";
+import { useUnsavedGuard } from "./useUnsavedGuard";
 import {
   BOOKING_STATUS_LABEL,
   formatDateLabel,
@@ -84,6 +85,11 @@ export const ScheduleBoard = ({
   const [draft, setDraft] = useState<Draft>();
   const [closeNote, setCloseNote] = useState("");
   const [error, setError] = useState<string>();
+  // 預約表單填到一半就換頁時提醒
+  useUnsavedGuard(
+    "schedule-draft",
+    Boolean(draft && (draft.customer || draft.phone || draft.note)),
+  );
 
   const byDate = useMemo(() => {
     const map = new Map<string, Booking[]>();
