@@ -47,7 +47,7 @@ import {
   type PlayItem,
 } from "@/lib/play/items";
 import { playGame } from "@/lib/site-content/blocks/play";
-import { siteBusiness } from "@/lib/site-content/blocks/site";
+import { lineChatHref, siteBusiness } from "@/lib/site-content/blocks/site";
 import confetti from "canvas-confetti";
 import { drawResultCard } from "@/lib/play/result-card";
 import {
@@ -378,6 +378,25 @@ export const ZhuazhouGame = ({
   };
 
   // 存成直式圖片：手機能分享檔案就叫出分享面板（可存到相簿、傳 LINE、IG），不行就直接下載
+  // LINE 預約：帶入剛剛抓到的物品和選的場地，主理人一看就知道怎麼接話
+  const themeNames: Record<RoomThemeId, string> = {
+    galaxy: c.themeGalaxy,
+    forest: c.themeForest,
+    cream: c.themeCream,
+    fortune: c.themeFortune,
+  };
+  const bookingHref = (r: Result) => {
+    if (!c.ctaLineMessage.trim()) return lineUrl;
+    const message = c.ctaLineMessage
+      .replaceAll("{寶寶}", r.babyName || c.defaultName)
+      .replaceAll("{物品}", r.item.name)
+      .replaceAll(
+        "{場地}",
+        mode === "room" ? themeNames[theme].replace(/^[^\p{L}\p{N}]+/u, "").trim() : "",
+      );
+    return lineChatHref(biz, message);
+  };
+
   const saveImage = async (r: Result) => {
     setSavingImage(true);
     try {
@@ -463,12 +482,14 @@ export const ZhuazhouGame = ({
                 </button>
               ) : (
                 <>
+                  {/* 存成圖片（發 IG 限動）最常用，放第一個、用主色 */}
                   <button
                     type="button"
-                    onClick={() => share(phase.result)}
-                    className="inline-flex items-center justify-center rounded-full bg-brand px-7 py-3 font-medium text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105"
+                    disabled={savingImage}
+                    onClick={() => saveImage(phase.result)}
+                    className="inline-flex items-center justify-center rounded-full bg-brand px-7 py-3 font-medium text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105 disabled:opacity-60"
                   >
-                    {c.shareButton}
+                    {savingImage ? c.savingImage : c.saveImageButton}
                   </button>
                   <button
                     type="button"
@@ -485,16 +506,15 @@ export const ZhuazhouGame = ({
                   </button>
                   <button
                     type="button"
-                    disabled={savingImage}
-                    onClick={() => saveImage(phase.result)}
-                    className="inline-flex items-center justify-center rounded-full border border-brand-soft/60 bg-white px-7 py-3 font-medium text-brand transition-all duration-300 hover:scale-105 hover:bg-brand-soft/30 disabled:opacity-60"
+                    onClick={() => share(phase.result)}
+                    className="inline-flex items-center justify-center rounded-full border border-brand-soft/60 bg-white px-7 py-3 font-medium text-brand transition-all duration-300 hover:scale-105 hover:bg-brand-soft/30"
                   >
-                    {savingImage ? c.savingImage : c.saveImageButton}
+                    {c.shareButton}
                   </button>
                   <button
                     type="button"
                     onClick={playAgain}
-                    className="inline-flex items-center justify-center rounded-full border border-brand-soft/60 bg-white px-7 py-3 font-medium text-brand transition-all duration-300 hover:scale-105 hover:bg-brand-soft/30"
+                    className="inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-medium text-brand-ink/70 underline-offset-4 hover:underline"
                   >
                     {c.againButton}
                   </button>
@@ -524,7 +544,7 @@ export const ZhuazhouGame = ({
               text={c.ctaText}
               lineLabel={c.ctaLineButton}
               moreLabel={c.ctaMoreButton}
-              lineUrl={lineUrl}
+              lineUrl={bookingHref(phase.result)}
             />
           </motion.div>
         ) : (
@@ -751,7 +771,8 @@ const ChipPicker = <T extends string>({
 }) => (
   <div role="radiogroup" aria-label={label} className="flex flex-col gap-1.5">
     <p className="text-center text-xs text-brand-ink/60">{label}</p>
-    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:justify-center sm:px-0 [&::-webkit-scrollbar]:hidden">
+    {/* 自動換行：手機上四個選項都看得到，不用左右滑 */}
+    <div className="flex flex-wrap justify-center gap-2 pb-1">
       {ids.map((id) => (
         <button
           key={id}

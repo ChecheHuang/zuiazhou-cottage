@@ -155,6 +155,7 @@ export const InviteGenerator = () => {
     c.bookingMessage
       .replaceAll("{派對類型}", partyType)
       .replaceAll("{日期}", formatDate(date))
+      .replaceAll("{時間}", time)
       .replaceAll("{場地}", venue === c.venueOther ? "" : venue),
   );
 

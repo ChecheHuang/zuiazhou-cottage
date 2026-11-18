@@ -19,6 +19,8 @@ interface Option {
   price: ParsedPrice;
   /** 按桌計價（餐點） */
   perTable?: boolean;
+  /** 例如「每席 10 位」，顯示在桌數旁 */
+  seats?: string;
 }
 
 const stripEmoji = (s: string) => s.replace(/^[^\p{L}\p{N}]+/u, "").trim();
@@ -99,6 +101,7 @@ export const BudgetCalculator = () => {
         priceText: m.title,
         price: { amount: parsePrice(m.title).amount, from: false },
         perTable,
+        seats: f.seats,
       }));
     }
     return [
@@ -108,6 +111,7 @@ export const BudgetCalculator = () => {
         priceText: f.price,
         price: parsePrice(f.price),
         perTable,
+        seats: f.seats,
       },
     ];
   });
@@ -127,7 +131,9 @@ export const BudgetCalculator = () => {
   ];
 
   const total = selected.reduce((sum, s) => sum + (s.option.price.amount ?? 0) * s.qty, 0);
-  const isFrom = selected.some((s) => s.option.price.from || s.option.price.amount === null);
+  const isFrom = selected.some((s) => s.option.price.from);
+  // 選了沒標價的項目（例如單點）：總計不含它，要提醒另計
+  const hasUnpriced = selected.some((s) => s.option.price.amount === null);
 
   const togglePick = (id: string) =>
     setPicked((prev) => {
@@ -144,7 +150,7 @@ export const BudgetCalculator = () => {
       const price = p.amount === null ? c.askPrice : `${formatNT(p.amount * qty)}${p.from ? " 起" : ""}`;
       return `・${option.name}${qty > 1 ? ` × ${qty}` : ""}：${price}`;
     }),
-    `${c.totalLabel}：${formatNT(total)}${isFrom ? " 起" : ""}`,
+    `${c.totalLabel}：${formatNT(total)}${isFrom ? " 起" : ""}${hasUnpriced ? ` ${c.partialNote}` : ""}`,
     "預計日期：",
     "人數約：",
   ].join("\n");
@@ -227,19 +233,35 @@ export const BudgetCalculator = () => {
               </label>
             ))}
             {foodChoice?.perTable && (
-              <label className="mt-2 flex items-center gap-3 px-1 text-sm">
-                {c.tablesLabel}
-                <input
-                  type="number"
-                  min={1}
-                  max={30}
-                  value={tables}
-                  onChange={(e) =>
-                    setTables(Math.min(30, Math.max(1, Number(e.target.value) || 1)))
-                  }
-                  className="w-20 rounded-full border border-brand-soft/70 px-3 py-1.5"
-                />
-              </label>
+              <div className="mt-2 flex flex-wrap items-center gap-3 px-1 text-sm">
+                <span>{c.tablesLabel}</span>
+                {/* 加減按鈕：手機上不用叫出鍵盤，也不會填成 0 */}
+                <div className="flex items-center rounded-full ring-1 ring-brand-soft/70">
+                  <button
+                    type="button"
+                    aria-label="減少一桌"
+                    onClick={() => setTables((n) => Math.max(1, n - 1))}
+                    disabled={tables <= 1}
+                    className="grid size-10 place-items-center rounded-full text-lg text-brand disabled:opacity-30"
+                  >
+                    －
+                  </button>
+                  <span aria-live="polite" className="w-8 text-center font-semibold tabular-nums">
+                    {tables}
+                  </span>
+                  <button
+                    type="button"
+                    aria-label="增加一桌"
+                    onClick={() => setTables((n) => Math.min(30, n + 1))}
+                    className="grid size-10 place-items-center rounded-full text-lg text-brand"
+                  >
+                    ＋
+                  </button>
+                </div>
+                {foodChoice.seats && (
+                  <span className="text-brand-ink/60">（{foodChoice.seats}）</span>
+                )}
+              </div>
             )}
           </Step>
         )}
@@ -269,6 +291,9 @@ export const BudgetCalculator = () => {
             {isFrom && <span className="ml-1 text-sm font-normal">起</span>}
           </span>
         </p>
+        {hasUnpriced && (
+          <p className="text-right text-xs text-brand-ink/60">{c.partialNote}</p>
+        )}
         <a
           href={lineChatHref(biz, lineMessage)}
           target="_blank"

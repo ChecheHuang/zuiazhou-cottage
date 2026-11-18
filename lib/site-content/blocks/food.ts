@@ -328,6 +328,12 @@ export const foodNotice = defineBlock({
     },
     { type: "text", key: "lineButton", label: "LINE 按鈕文字" },
     { type: "text", key: "partyButton", label: "「查看派對方案」按鈕文字" },
+    {
+      type: "text",
+      key: "budgetButton",
+      label: "「預算試算」按鈕文字",
+      hint: "連到預算試算頁；留空就不顯示",
+    },
   ],
   defaults: {
     eyebrow: "Notice",
@@ -346,5 +352,6 @@ export const foodNotice = defineBlock({
     ],
     lineButton: "LINE 線上諮詢",
     partyButton: "查看派對方案",
+    budgetButton: "🧮 試算派對總預算",
   },
 });

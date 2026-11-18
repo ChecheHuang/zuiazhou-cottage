@@ -81,6 +81,14 @@ export const FoodPlansSection = () => {
             >
               {notice.partyButton}
             </Link>
+            {notice.budgetButton && (
+              <Link
+                href="/budget"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-brand/40 bg-white px-7 py-3 text-sm font-medium text-brand transition-all duration-300 hover:scale-105 hover:bg-brand-soft/30"
+              >
+                {notice.budgetButton}
+              </Link>
+            )}
           </div>
         </motion.div>
       </div>

@@ -47,6 +47,12 @@ export const budgetText = defineBlock({
     { type: "text", key: "askPrice", label: "沒有標價時顯示的文字" },
     {
       type: "text",
+      key: "partialNote",
+      label: "選了沒標價項目時，總計後面的小字",
+      hint: "例如「＋單點另計」",
+    },
+    {
+      type: "text",
       key: "note",
       label: "總計下方的提醒",
       multiline: true,
@@ -72,6 +78,7 @@ export const budgetText = defineBlock({
     tablesLabel: "桌數",
     totalLabel: "預估總計",
     askPrice: "價格另洽",
+    partialNote: "＋部分項目另計",
     note: "加時、雙寶加價、指定主持人等費用請參考寶寶派對頁的注意事項；有「起」的項目依實際選擇報價。",
     lineButton: "把清單傳給我們詢問",
     lineIntro: "您好！我用官網試算了派對預算，想詢問檔期～",

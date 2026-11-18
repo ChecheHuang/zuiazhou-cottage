@@ -61,8 +61,8 @@ export const aiSettings = defineBlock({
   defaults: {
     enabled: true,
     model: "gemini-3.5-flash-lite",
-    modeNormal: "一般版",
-    modeAi: "✨ AI 版",
+    modeNormal: "簡單版",
+    modeAi: "✨ AI 寫得更豐富",
     keyLabel: "你的 Gemini API key",
     keyPlaceholder: "貼上 AIza 開頭的 key",
     rememberLabel: "在這台裝置記住",

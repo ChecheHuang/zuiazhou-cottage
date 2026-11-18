@@ -128,6 +128,12 @@ export const photoAddons = defineBlock({
     },
     { type: "text", key: "lineButton", label: "LINE 按鈕文字" },
     { type: "text", key: "backButton", label: "「回派對方案」按鈕文字" },
+    {
+      type: "text",
+      key: "budgetButton",
+      label: "「預算試算」按鈕文字",
+      hint: "連到預算試算頁；留空就不顯示",
+    },
   ],
   defaults: {
     watermark: "Add-ons",
@@ -148,5 +154,6 @@ export const photoAddons = defineBlock({
     ],
     lineButton: "LINE 線上諮詢",
     backButton: "回派對方案",
+    budgetButton: "🧮 試算派對總預算",
   },
 });

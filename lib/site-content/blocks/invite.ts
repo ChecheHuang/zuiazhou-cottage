@@ -72,7 +72,7 @@ export const inviteForm = defineBlock({
       key: "bookingMessage",
       label: "點 LINE 按鈕時帶入的文字",
       multiline: true,
-      hint: "{派對類型}、{日期}、{場地} 會換成表單裡選的內容，沒填的會留空",
+      hint: "{派對類型}、{日期}、{時間}、{場地} 會換成表單裡選的內容，沒填的會留空",
     },
   ],
   defaults: {
@@ -100,6 +100,6 @@ export const inviteForm = defineBlock({
     bookingLineButton: "用 LINE 問這天的檔期",
     bookingCalendarButton: "看檔期日曆",
     bookingMessage:
-      "您好！我正在籌備{派對類型}，想詢問檔期～\n預計日期：{日期}\n想了解的場地：{場地}\n人數約：",
+      "您好！我正在籌備{派對類型}，想詢問檔期～\n預計日期：{日期} {時間}\n想了解的場地：{場地}\n人數約：",
   },
 });

@@ -247,6 +247,13 @@ export const playGame = defineBlock({
     { type: "text", key: "playYourselfButton", label: "朋友自己玩的按鈕" },
     { type: "text", key: "ctaText", label: "結果下方的邀約文字", multiline: true },
     { type: "text", key: "ctaLineButton", label: "LINE 預約按鈕" },
+    {
+      type: "text",
+      key: "ctaLineMessage",
+      label: "LINE 預約按鈕帶入的文字",
+      multiline: true,
+      hint: "{寶寶}、{物品}、{場地} 會換成這次的結果；留空就只開 LINE 不帶文字",
+    },
     { type: "text", key: "ctaMoreButton", label: "了解方案按鈕" },
     {
       type: "text",
@@ -302,7 +309,7 @@ export const playGame = defineBlock({
     lineShareButton: "分享到 LINE",
     copiedText: "已複製連結，貼給親友吧！",
     statsText: "累計 {total} 次線上抓周，有 {percent} 跟{name}一樣抓到{item}",
-    saveImageButton: "📥 存成圖片",
+    saveImageButton: "📥 存成圖片・發限動",
     savingImage: "製作圖片中…",
     cardCta: "線上模擬抓周，換你家寶寶試試！",
     cardPromo: "",
@@ -313,6 +320,8 @@ export const playGame = defineBlock({
     playYourselfButton: "換我家寶寶抓抓看",
     ctaText: "線上抓好玩，現場抓更難忘！\n帶寶貝來抓周小屋，留下一輩子的回憶。",
     ctaLineButton: "LINE 預約抓周",
+    ctaLineMessage:
+      "您好！我剛在官網玩模擬抓周，{寶寶}抓到了{物品}～\n想詢問實體抓周的檔期\n想了解的場地：{場地}\n預計日期：\n人數約：",
     ctaMoreButton: "看抓周方案",
     inviteLink: "✉️ 順便產生派對邀請文案 →",
     disclaimer: "結果為隨機產生，僅供娛樂。",
