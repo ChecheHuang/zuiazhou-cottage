@@ -56,6 +56,11 @@ export const HeroSlideshow = () => {
         aria-hidden
         className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/25 to-black/55"
       />
+      {/* 文字後方再加一圈柔和暗暈：照片偏亮時白字也清楚，不用把整張照片壓暗 */}
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.38)_0%,rgba(0,0,0,0.18)_45%,transparent_75%)]"
+      />
 
       <div className="relative z-10 flex h-full items-center justify-center px-6 text-center text-white">
         <motion.div
@@ -64,7 +69,7 @@ export const HeroSlideshow = () => {
           transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
           className="max-w-3xl"
         >
-          <p className="font-display text-2xl italic tracking-wide text-white/90 md:text-3xl">
+          <p className="font-display text-2xl italic tracking-wide text-white drop-shadow-md md:text-3xl">
             {c.eyebrow}
           </p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight tracking-wide drop-shadow-lg md:text-6xl">
@@ -72,7 +77,7 @@ export const HeroSlideshow = () => {
             <br className="md:hidden" />
             {c.titleLine2}
           </h1>
-          <p className="mx-auto mt-6 max-w-xl whitespace-pre-line text-base leading-loose text-white/90 md:text-lg">
+          <p className="mx-auto mt-6 max-w-xl whitespace-pre-line text-balance text-base leading-loose text-white drop-shadow-md md:text-lg">
             {c.subtitle}
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">

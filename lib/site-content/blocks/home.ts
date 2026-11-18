@@ -73,7 +73,7 @@ export const homeHero = defineBlock({
     titleLine1: "為寶貝留下",
     titleLine2: "最珍貴的派對時光",
     subtitle:
-      "桃園平鎮・秉坤婦幼醫院對面\n抓周・收涎・生日・性別揭曉，場佈主持拍照一站包辦",
+      "桃園平鎮・秉坤婦幼醫院對面\n抓周・收涎・生日・性別揭曉\n場佈、主持、拍照一站包辦",
     primaryButton: "看主題場地與價格",
     secondaryButton: "試算派對預算",
   },
@@ -192,7 +192,12 @@ export const homeRooms = defineBlock({
       hint: "例如「起」，留空就不顯示",
     },
     { type: "text", key: "button", label: "下方按鈕文字" },
-    { type: "text", key: "budgetButton", label: "「預算試算」按鈕文字" },
+    {
+      type: "text",
+      key: "lineButton",
+      label: "LINE 詢問按鈕文字",
+      hint: "留空就不顯示（大圖已經有「試算派對預算」按鈕）",
+    },
   ],
   defaults: {
     watermark: "Rooms",
@@ -200,7 +205,7 @@ export const homeRooms = defineBlock({
     description: "依人數挑選最適合的空間，價格已含主持、道具與拍照側錄。",
     priceSuffix: "",
     button: "看完整方案與照片",
-    budgetButton: "試算派對總預算",
+    lineButton: "LINE 問場地空檔",
   },
 });
 

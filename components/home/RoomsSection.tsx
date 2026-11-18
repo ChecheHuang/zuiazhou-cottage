@@ -7,10 +7,12 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { useContent } from "@/components/SiteContentProvider";
 import { partyPlans } from "@/lib/site-content/blocks/baby-party";
 import { homeRooms } from "@/lib/site-content/blocks/home";
+import { lineChatHref, siteBusiness } from "@/lib/site-content/blocks/site";
 
 // 首頁的主題場地對照：資料直接沿用寶寶派對頁的場地方案，避免兩邊各寫一份
 export const RoomsSection = () => {
   const c = useContent(homeRooms);
+  const biz = useContent(siteBusiness);
   const { plans } = useContent(partyPlans);
   if (plans.length === 0) return null;
 
@@ -111,13 +113,15 @@ export const RoomsSection = () => {
             {c.button}
             <span aria-hidden>→</span>
           </Link>
-          {c.budgetButton && (
-            <Link
-              href="/budget"
-              className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-white px-8 py-3 text-sm font-medium text-brand transition-colors hover:bg-brand-soft/20"
+          {c.lineButton && (
+            <a
+              href={lineChatHref(biz)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-[#06c755] px-8 py-3 text-sm font-medium text-white shadow-lg shadow-[#06c755]/30 transition-transform duration-300 hover:scale-105"
             >
-              🧮 {c.budgetButton}
-            </Link>
+              💬 {c.lineButton}
+            </a>
           )}
         </div>
       </div>
