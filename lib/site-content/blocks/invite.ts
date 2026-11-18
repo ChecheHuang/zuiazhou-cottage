@@ -52,6 +52,22 @@ export const inviteForm = defineBlock({
     { type: "text", key: "regenerateButton", label: "重新產生按鈕" },
     { type: "text", key: "footerPrefix", label: "訊息結尾的店名前綴", hint: "例如「📍」" },
     { type: "text", key: "unsetValue", label: "沒填日期或時間時顯示的文字" },
+    {
+      type: "text",
+      key: "bookingHint",
+      label: "產生後的預約提醒",
+      multiline: true,
+      hint: "顯示在邀請訊息下方，提醒還沒訂場地的爸媽先問檔期",
+    },
+    { type: "text", key: "bookingLineButton", label: "提醒區 LINE 按鈕文字" },
+    { type: "text", key: "bookingCalendarButton", label: "提醒區「看檔期」按鈕文字" },
+    {
+      type: "text",
+      key: "bookingMessage",
+      label: "點 LINE 按鈕時帶入的文字",
+      multiline: true,
+      hint: "{派對類型}、{日期}、{場地} 會換成表單裡選的內容，沒填的會留空",
+    },
   ],
   defaults: {
     watermark: "Invitation",
@@ -73,5 +89,10 @@ export const inviteForm = defineBlock({
     regenerateButton: "換一個寫法",
     footerPrefix: "📍",
     unsetValue: "（待定）",
+    bookingHint: "還沒訂好場地嗎？先確認日期有沒有空檔，再把邀請發出去會更安心。",
+    bookingLineButton: "用 LINE 問這天的檔期",
+    bookingCalendarButton: "看檔期日曆",
+    bookingMessage:
+      "您好！我正在籌備{派對類型}，想詢問檔期～\n預計日期：{日期}\n想了解的場地：{場地}\n人數約：",
   },
 });

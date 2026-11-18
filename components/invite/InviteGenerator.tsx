@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   AiModeSwitch,
   useAiGenerate,
@@ -26,7 +27,7 @@ import {
 import { cleanBabyName, MAX_NAME_LENGTH } from "@/lib/play/items";
 import { inviteForm } from "@/lib/site-content/blocks/invite";
 import { playGame } from "@/lib/site-content/blocks/play";
-import { siteBusiness } from "@/lib/site-content/blocks/site";
+import { lineChatHref, siteBusiness } from "@/lib/site-content/blocks/site";
 
 const Chips = <T extends string>({
   label,
@@ -140,6 +141,15 @@ export const InviteGenerator = () => {
       }) + footer
     : "";
 
+  // 還沒訂場地的爸媽：帶著表單內容直接問檔期
+  const bookingHref = lineChatHref(
+    biz,
+    c.bookingMessage
+      .replaceAll("{派對類型}", partyType)
+      .replaceAll("{日期}", formatDate(date))
+      .replaceAll("{場地}", venue === c.venueOther ? "" : venue),
+  );
+
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(message);
@@ -237,6 +247,27 @@ export const InviteGenerator = () => {
             >
               {c.lineShareButton}
             </a>
+          </div>
+        )}
+        {message && c.bookingHint && (
+          <div className="mt-2 rounded-2xl border border-dashed border-brand/40 bg-white/70 p-4 text-sm">
+            <p className="leading-relaxed text-brand-ink">{c.bookingHint}</p>
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+              <a
+                href={bookingHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 rounded-full bg-brand px-4 py-2 text-center font-medium text-white shadow-md shadow-brand/30 hover:bg-brand/90"
+              >
+                {c.bookingLineButton}
+              </a>
+              <Link
+                href="/#calendar"
+                className="flex-1 rounded-full border border-brand/40 px-4 py-2 text-center font-medium text-brand hover:bg-brand-soft/20"
+              >
+                {c.bookingCalendarButton}
+              </Link>
+            </div>
           </div>
         )}
       </div>
