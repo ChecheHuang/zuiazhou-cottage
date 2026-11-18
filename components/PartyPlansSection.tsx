@@ -7,6 +7,9 @@ export const PartyPlansSection = async () => {
   const c = await getContent(partyPlans);
   return (
     <section id="plans" aria-labelledby="plans-heading">
+      {/* 導覽列「收涎派對」「性別揭曉派對」的落點：目前與方案區相同，之後有獨立內容再移過去 */}
+      <span id="saliva" aria-hidden className="block" />
+      <span id="gender" aria-hidden className="block" />
       <div className="mx-auto max-w-content px-6 pt-16 md:pt-24">
         <h2
           id="plans-heading"

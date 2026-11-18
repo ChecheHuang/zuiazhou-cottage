@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -36,10 +42,11 @@ const NAV_ITEMS: NavItem[] = [
     labelKey: "navBabyParty",
     children: [
       { href: "/baby-party", labelKey: "navBabyPartyZhuazhou" },
-      // 收涎、性別揭曉還沒有獨立區塊，先連到包場方案
-      { href: "/baby-party#plans", labelKey: "navBabyPartySaliva" },
+      // 收涎、性別揭曉還沒有獨立區塊，先跳到包場方案；
+      // 用各自的錨點（放在方案區最上方），選單才只會亮使用者點的那一項
+      { href: "/baby-party#saliva", labelKey: "navBabyPartySaliva" },
       { href: "/baby-party#birthday", labelKey: "navBabyPartyBirthday" },
-      { href: "/baby-party#plans", labelKey: "navBabyPartyGender" },
+      { href: "/baby-party#gender", labelKey: "navBabyPartyGender" },
       { href: "/play", labelKey: "navBabyPartyPlay" },
       { href: "/invite", labelKey: "navBabyPartyInvite" },
     ],
@@ -171,16 +178,27 @@ export const SiteHeader = () => {
     setOpenDropdown(null);
   }
 
-  // 緩衝區間：超過 48px 才縮小、回到 16px 以下才放大，門檻附近小幅滑動不會來回切換
+  // 下拉選單開著時先不縮放頁首：頁首一變高變矮，選單會整排上下移，
+  // 滑鼠明明沒動卻被判定「離開」，下拉就自己收起來（平滑捲動時特別明顯）
+  const dropdownOpenRef = useRef(false);
   useEffect(() => {
-    const onScroll = () =>
-      setScrolled((prev) =>
-        prev ? window.scrollY > 16 : window.scrollY > 48,
-      );
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    dropdownOpenRef.current = openDropdown !== null;
+  }, [openDropdown]);
+
+  // 緩衝區間：超過 48px 才縮小、回到 16px 以下才放大，門檻附近小幅滑動不會來回切換
+  const updateScrolled = useCallback(() => {
+    if (dropdownOpenRef.current) return;
+    setScrolled((prev) => (prev ? window.scrollY > 16 : window.scrollY > 48));
   }, []);
+  useEffect(() => {
+    updateScrolled();
+    window.addEventListener("scroll", updateScrolled, { passive: true });
+    return () => window.removeEventListener("scroll", updateScrolled);
+  }, [updateScrolled]);
+  // 下拉關掉後補算一次，捲動期間被擋下的縮放現在套用
+  useEffect(() => {
+    if (openDropdown === null) updateScrolled();
+  }, [openDropdown, updateScrolled]);
 
   useEffect(() => {
     return () => {
@@ -360,7 +378,11 @@ export const SiteHeader = () => {
                             href={sub.href}
                             role="menuitem"
                             aria-current={subActive ? "page" : undefined}
-                            onClick={notifyHashChange}
+                            onClick={() => {
+                              notifyHashChange();
+                              // 同頁錨點（例如 #saliva）不會換頁，要自己關下拉
+                              setOpenDropdown(null);
+                            }}
                             className={cn(
                               "block rounded-xl px-4 py-2.5 text-sm transition-colors duration-200 hover:bg-brand-soft/30 hover:text-brand",
                               subActive
