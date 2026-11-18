@@ -61,14 +61,14 @@ export const mapEmbedUrlFor = (address: string) =>
     address.replace(/\s/g, ""),
   )}&hl=zh-TW&z=16&output=embed`;
 
-// LINE 詢問按鈕：有 LINE ID 和預填文字就開聊天並帶入文字，否則退回加好友連結
-export const lineChatHref = (biz: {
-  lineId: string;
-  lineUrl: string;
-  lineInquiry: string;
-}) => {
+// LINE 詢問按鈕：有 LINE ID 和預填文字就開聊天並帶入文字，否則退回加好友連結。
+// message 不給時用後台「店家資訊」的預填詢問文字。
+export const lineChatHref = (
+  biz: { lineId: string; lineUrl: string; lineInquiry: string },
+  message = biz.lineInquiry,
+) => {
   const id = biz.lineId.trim() || /@[\w.-]+/.exec(biz.lineUrl)?.[0] || "";
-  const text = biz.lineInquiry.trim();
+  const text = message.trim();
   return id && text
     ? `https://line.me/R/oaMessage/${encodeURIComponent(id)}/?${encodeURIComponent(text)}`
     : biz.lineUrl;

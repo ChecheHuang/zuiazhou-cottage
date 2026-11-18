@@ -7,6 +7,7 @@ import {
   serial,
   text,
   timestamp,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 // 商品專區的商品（實體商品或服務）。published = false 時前台看不到。
@@ -70,6 +71,48 @@ export const playGrabStats = pgTable("play_grab_stats", {
   item: text("item").primaryKey(),
   count: integer("count").notNull().default(0),
   updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+// 排程日曆：每一筆是某天、某個場次、某間主題場地的一場預約（後台「排程日曆」管理）。
+// 前台只會看到每天「有空／快滿／已滿」，客人姓名電話不會出現在前台。
+export const scheduleBookings = pgTable(
+  "schedule_bookings",
+  {
+    id: serial("id").primaryKey(),
+    /** 台灣當地日期，格式 YYYY-MM-DD */
+    date: text("date").notNull(),
+    /** 場次開始時間，例如 10:00（對應後台「檔期設定」的場次） */
+    slot: text("slot").notNull(),
+    /** 主題場地名稱（對應寶寶派對頁的場地方案） */
+    room: text("room").notNull(),
+    /** hold = 保留中（待付訂金）、confirmed = 已確認 */
+    status: text("status", { enum: ["hold", "confirmed"] })
+      .notNull()
+      .default("hold"),
+    customer: text("customer").notNull().default(""),
+    phone: text("phone").notNull().default(""),
+    note: text("note").notNull().default(""),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    // 同一天同一場次，同一間場地只能有一筆
+    uniqueIndex("schedule_bookings_unique_idx").on(t.date, t.slot, t.room),
+  ],
+);
+
+// 公休日：整天不接場，前台顯示「公休」
+export const scheduleClosedDays = pgTable("schedule_closed_days", {
+  /** 台灣當地日期，格式 YYYY-MM-DD */
+  date: text("date").primaryKey(),
+  note: text("note").notNull().default(""),
+  createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
 });

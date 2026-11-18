@@ -366,6 +366,49 @@ export const homeBooking = defineBlock({
   },
 });
 
+export const homeAvailability = defineBlock({
+  key: "home.availability",
+  page: PAGE,
+  label: "檔期日曆",
+  description:
+    "首頁「預約流程」下方的檔期日曆。每天的空檔是依後台「排程日曆」的預約自動計算，這裡只改文字。",
+  fields: [
+    watermarkField,
+    { type: "text", key: "title", label: "區塊標題" },
+    { type: "text", key: "description", label: "區塊說明", multiline: true },
+    { type: "text", key: "openLabel", label: "「有空」標籤" },
+    { type: "text", key: "fewLabel", label: "「快滿」標籤" },
+    { type: "text", key: "fullLabel", label: "「已滿」標籤" },
+    { type: "text", key: "closedLabel", label: "「公休」標籤" },
+    {
+      type: "text",
+      key: "lineMessage",
+      label: "點日期後帶入 LINE 的文字",
+      multiline: true,
+      hint: "{日期} 會換成客人點的日期，例如 12/20（六）",
+    },
+    {
+      type: "text",
+      key: "footnote",
+      label: "日曆下方小字",
+      multiline: true,
+    },
+  ],
+  defaults: {
+    watermark: "Calendar",
+    title: "檔期查詢",
+    description: "點選想要的日期，直接用 LINE 詢問當天的場次與場地。",
+    openLabel: "有空",
+    fewLabel: "快滿",
+    fullLabel: "已滿",
+    closedLabel: "公休",
+    lineMessage:
+      "您好！我想詢問 {日期} 的檔期～\n派對類型：\n人數約：\n想了解的場地：",
+    footnote:
+      "日曆每次有新預約時更新，實際場次以 LINE 確認為準；已滿的日期也歡迎詢問是否有其他時段。",
+  },
+});
+
 export const homeInformation = defineBlock({
   key: "home.information",
   page: PAGE,

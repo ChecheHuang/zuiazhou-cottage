@@ -10,6 +10,7 @@ import * as layout from "./blocks/layout";
 import * as photo from "./blocks/photo";
 import * as play from "./blocks/play";
 import * as productsBlocks from "./blocks/products";
+import * as schedule from "./blocks/schedule";
 import * as site from "./blocks/site";
 import { getBlockOrder, isContentBlock, type ContentBlock } from "./schema";
 
@@ -28,6 +29,7 @@ const modules = [
   productsBlocks,
   faq,
   contact,
+  schedule,
 ];
 
 // 每頁內依檔案中定義的順序（＝頁面由上而下），SEO 設定放最後

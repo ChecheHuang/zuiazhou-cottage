@@ -120,6 +120,13 @@ export const SETTINGS_PAGES: SitePageSection[] = [
     slotPages: [],
   },
   {
+    slug: "schedule-settings",
+    label: "檔期設定",
+    icon: "⏰",
+    blockPages: ["檔期設定"],
+    slotPages: [],
+  },
+  {
     slug: "ai",
     label: "AI 功能",
     icon: "✨",
@@ -175,6 +182,10 @@ const pageLink = (slug: string, label?: string): NavLink => {
 // 之後加功能就在這裡加一筆。
 export const ADMIN_NAV: NavGroup[] = [
   { items: [{ href: "/admin", label: "總覽", icon: "📊" }] },
+  {
+    title: "預約",
+    items: [{ href: "/admin/schedule", label: "排程日曆", icon: "🗓️" }],
+  },
   {
     title: "網站頁面",
     items: [

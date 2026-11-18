@@ -317,3 +317,12 @@ body {
   padding: 2px 8px;
   background: color-mix(in srgb, var(--color-brand-soft) 30%, #fff);
 }
+
+/* 首頁檔期日曆：格子加高，日期下方放「有空／已滿」小字 */
+.availability-calendar .rdp-root {
+  --rdp-day-height: 52px;
+  --rdp-day-width: 44px;
+  --rdp-day_button-height: 50px;
+  --rdp-day_button-width: 42px;
+  --rdp-day_button-border-radius: 14px;
+}
