@@ -43,11 +43,22 @@ const ItemTable = ({
   </div>
 );
 
-const SectionView = async ({ section }: { section: ArticleSection }) => {
+/** 目錄用：第 n 個 h2 的錨點 id */
+export const sectionAnchor = (n: number) => `s${n + 1}`;
+
+const SectionView = async ({
+  section,
+  anchor,
+  articleTitle,
+}: {
+  section: ArticleSection;
+  anchor?: string;
+  articleTitle: string;
+}) => {
   switch (section.kind) {
     case "h2":
       return (
-        <h2 className="mt-12 text-2xl font-semibold text-brand md:text-3xl">
+        <h2 id={anchor} className="mt-12 scroll-mt-24 text-2xl font-semibold text-brand md:text-3xl">
           {section.text}
         </h2>
       );
@@ -224,7 +235,7 @@ const SectionView = async ({ section }: { section: ArticleSection }) => {
         <div className="mt-12 rounded-3xl bg-brand-soft/25 px-6 py-8 text-center">
           <p className="leading-relaxed text-brand-ink">{section.text}</p>
           <a
-            href={lineChatHref(biz)}
+            href={lineChatHref(biz, text.ctaMessage.replaceAll("{文章}", articleTitle))}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand px-8 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-all duration-300 hover:scale-105 hover:bg-brand/90"
@@ -238,10 +249,24 @@ const SectionView = async ({ section }: { section: ArticleSection }) => {
   }
 };
 
-export const ArticleBody = ({ sections }: { sections: ArticleSection[] }) => (
-  <div className="text-base text-brand-ink/90 md:text-[17px]">
-    {sections.map((s, i) => (
-      <SectionView key={i} section={s} />
-    ))}
-  </div>
-);
+export const ArticleBody = ({
+  sections,
+  articleTitle,
+}: {
+  sections: ArticleSection[];
+  articleTitle: string;
+}) => {
+  let h2Count = 0;
+  return (
+    <div className="text-base text-brand-ink/90 md:text-[17px]">
+      {sections.map((s, i) => (
+        <SectionView
+          key={i}
+          section={s}
+          anchor={s.kind === "h2" ? sectionAnchor(h2Count++) : undefined}
+          articleTitle={articleTitle}
+        />
+      ))}
+    </div>
+  );
+};

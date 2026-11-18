@@ -40,6 +40,15 @@ export const blogText = defineBlock({
     { type: "text", key: "ctaButton", label: "文末 LINE 按鈕文字" },
     { type: "text", key: "plansButton", label: "場地方案下方按鈕文字" },
     { type: "text", key: "moreTitle", label: "文末「其他文章」標題" },
+    { type: "text", key: "keyPointsTitle", label: "文章開頭「重點整理」標題" },
+    { type: "text", key: "tocTitle", label: "文章目錄標題" },
+    {
+      type: "text",
+      key: "ctaMessage",
+      label: "文末 LINE 按鈕帶入的文字",
+      multiline: true,
+      hint: "{文章} 會換成文章標題，讓你知道客人是看哪篇來的",
+    },
   ],
   defaults: {
     watermark: "Blog",
@@ -50,5 +59,9 @@ export const blogText = defineBlock({
     ctaButton: "用 LINE 詢問檔期",
     plansButton: "看完整方案與照片",
     moreTitle: "延伸閱讀",
+    keyPointsTitle: "📌 重點整理",
+    tocTitle: "文章目錄",
+    ctaMessage:
+      "您好！我剛看完官網的「{文章}」，想詢問抓周方案與檔期～\n預計日期：\n人數約：",
   },
 });

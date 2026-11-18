@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContent } from "@/components/SiteContentProvider";
+import { useSiteFlags } from "@/components/SiteFlagsProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   layoutHeader,
@@ -61,8 +62,13 @@ const NAV_ITEMS: NavItem[] = [
 type Visibility = typeof layoutNavVisibility.defaults;
 
 // 依後台開關過濾選單；沒有開關設定的項目一律顯示
-const visibleNavItems = (visibility: Visibility): NavItem[] => {
+const visibleNavItems = (
+  visibility: Visibility,
+  hasProducts: boolean,
+): NavItem[] => {
   const shown = (key: LabelKey) =>
+    // 還沒有上架商品時，不顯示「商品專區」（點進去會是空頁）
+    (key !== "navProducts" || hasProducts) &&
     (visibility as Record<string, boolean | undefined>)[key] !== false;
   return NAV_ITEMS.filter((item) => shown(item.labelKey)).map((item) => ({
     ...item,
@@ -150,7 +156,8 @@ export const SiteHeader = () => {
   const hash = useLocationHash();
   const c = useContent(layoutHeader);
   const biz = useContent(siteBusiness);
-  const navItems = visibleNavItems(useContent(layoutNavVisibility));
+  const { hasProducts } = useSiteFlags();
+  const navItems = visibleNavItems(useContent(layoutNavVisibility), hasProducts);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);

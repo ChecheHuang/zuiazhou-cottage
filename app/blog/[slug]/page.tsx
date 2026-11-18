@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArticleBody } from "@/components/blog/ArticleBody";
+import { ArticleBody, sectionAnchor } from "@/components/blog/ArticleBody";
 import { ArticleCard } from "@/components/blog/ArticleCard";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -54,6 +54,7 @@ export default async function ArticlePage({ params }: Props) {
     getContent(siteBusiness),
   ]);
   const others = ARTICLES.filter((a) => a.slug !== article.slug).slice(0, 2);
+  const toc = article.sections.flatMap((s) => (s.kind === "h2" ? [s.text] : []));
   const url = absoluteUrl(`/blog/${article.slug}`);
 
   return (
@@ -99,8 +100,35 @@ export default async function ArticlePage({ params }: Props) {
               className="object-cover"
             />
           </div>
+          {/* 重點整理：開頭直接給結論，讀者與 AI 搜尋都最先看這段 */}
+          {article.keyPoints.length > 0 && (
+            <section className="mt-8 rounded-3xl bg-brand-soft/20 px-6 py-5 ring-1 ring-brand-soft/50">
+              <h2 className="font-semibold text-brand">{text.keyPointsTitle}</h2>
+              <ul className="mt-3 list-disc space-y-2 pl-5 leading-relaxed marker:text-brand">
+                {article.keyPoints.map((p) => (
+                  <li key={p}>{p}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {toc.length > 1 && (
+            <nav aria-label={text.tocTitle} className="mt-6 rounded-3xl bg-white px-6 py-5 ring-1 ring-brand-soft/40">
+              <p className="text-sm font-semibold text-brand-ink">{text.tocTitle}</p>
+              <ol className="mt-2 space-y-1.5 text-sm">
+                {toc.map((t, i) => (
+                  <li key={t}>
+                    <a href={`#${sectionAnchor(i)}`} className="text-brand hover:underline">
+                      {t}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )}
+
           <div className="mt-8">
-            <ArticleBody sections={article.sections} />
+            <ArticleBody sections={article.sections} articleTitle={article.title} />
           </div>
         </article>
 

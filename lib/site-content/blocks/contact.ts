@@ -168,11 +168,18 @@ export const contactLocation = defineBlock({
       multiline: true,
       hint: `可以換行。可用 ${TOKEN_HINT} 帶入店家資訊`,
     },
+    {
+      type: "text",
+      key: "navButton",
+      label: "導航按鈕文字",
+      hint: "地圖下方開啟 Google Maps 導航的按鈕；留空就不顯示",
+    },
   ],
   defaults: {
     eyebrow: "Find us",
     title: "位置資訊",
     body: "地址：{地址}\n{地標說明}",
+    navButton: "📍 用 Google Maps 導航",
   },
 });
 

@@ -3,12 +3,14 @@ import { Cormorant_Garamond, Noto_Sans_TC } from "next/font/google";
 import { FloatingActions } from "@/components/FloatingActions";
 import { MotionProvider } from "@/components/MotionProvider";
 import { SiteContentProvider } from "@/components/SiteContentProvider";
+import { SiteFlagsProvider } from "@/components/SiteFlagsProvider";
 import { SiteImagesProvider } from "@/components/SiteImagesProvider";
 import { LocalBusinessJsonLd } from "@/components/seo/LocalBusinessJsonLd";
 import { layoutSeo } from "@/lib/site-content/blocks/layout";
 import { siteBusiness } from "@/lib/site-content/blocks/site";
 import { getContent, getContentOverrides } from "@/lib/site-content/server";
 import { getSiteImageOverrides } from "@/lib/site-images/server";
+import { getPublishedProducts } from "@/lib/products/server";
 import { buildPageMetadata, siteUrl } from "@/lib/seo";
 import "./globals.css";
 
@@ -56,9 +58,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [imageOverrides, contentOverrides] = await Promise.all([
+  const [imageOverrides, contentOverrides, products] = await Promise.all([
     getSiteImageOverrides(),
     getContentOverrides(),
+    getPublishedProducts(),
   ]);
 
   return (
@@ -72,12 +75,14 @@ export default async function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-white text-brand-ink">
         <SiteContentProvider overrides={contentOverrides}>
+          <SiteFlagsProvider flags={{ hasProducts: products.length > 0 }}>
           <SiteImagesProvider overrides={imageOverrides}>
             <MotionProvider>
               {children}
               <FloatingActions />
             </MotionProvider>
           </SiteImagesProvider>
+          </SiteFlagsProvider>
         </SiteContentProvider>
         <LocalBusinessJsonLd />
       </body>

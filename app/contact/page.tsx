@@ -11,7 +11,11 @@ import {
   contactSeo,
   fillBusinessTokens,
 } from "@/lib/site-content/blocks/contact";
-import { mapEmbedUrlFor, siteBusiness } from "@/lib/site-content/blocks/site";
+import {
+  mapEmbedUrlFor,
+  mapsDirectionsUrlFor,
+  siteBusiness,
+} from "@/lib/site-content/blocks/site";
 import { buildPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -77,6 +81,16 @@ export default async function ContactPage() {
                   allowFullScreen
                 />
               </div>
+              {location.navButton && (
+                <a
+                  href={mapsDirectionsUrlFor(biz.address)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand px-7 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 transition-transform duration-300 hover:scale-105"
+                >
+                  {location.navButton}
+                </a>
+              )}
             </div>
 
             <ContactForm />

@@ -61,6 +61,12 @@ export const mapEmbedUrlFor = (address: string) =>
     address.replace(/\s/g, ""),
   )}&hl=zh-TW&z=16&output=embed`;
 
+// Google Maps 導航（官方網址格式，手機會直接開 Google Maps App）
+export const mapsDirectionsUrlFor = (address: string) =>
+  `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+    address.replace(/\s/g, ""),
+  )}`;
+
 // LINE 詢問按鈕：有 LINE ID 和預填文字就開聊天並帶入文字，否則退回加好友連結。
 // message 不給時用後台「店家資訊」的預填詢問文字。
 export const lineChatHref = (

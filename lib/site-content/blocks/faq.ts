@@ -42,13 +42,13 @@ export const faqIntro = defineBlock({
       type: "text",
       key: "description",
       label: "標題下方說明",
-      hint: "如果有寫題目數量，新增或刪除題目後記得一起改",
+      hint: "{題數} 會自動換成目前的題目數量，新增或刪除題目不用回來改",
     },
   ],
   defaults: {
     watermark: "FAQ",
     title: "常見問題",
-    description: "新手爸媽最常問的問題與貼心提醒，這裡整理好了 12 個常見疑問。",
+    description: "新手爸媽最常問的問題與貼心提醒，這裡整理好了 {題數} 個常見疑問。",
   },
 });
 
@@ -153,11 +153,24 @@ export const faqCta = defineBlock({
       label: "聯絡表單按鈕文字",
       hint: "點了會前往「聯絡我們」頁",
     },
+    {
+      type: "list",
+      key: "quickQuestions",
+      label: "快速提問按鈕",
+      of: "text",
+      itemLabel: "問題",
+      hint: "還沒寫在問答裡、但常被問的問題。客人點一下就會把這句帶進 LINE 問你。留空就不顯示",
+    },
   ],
   defaults: {
     eyebrow: "Still have questions?",
     text: "找不到您要的答案？歡迎直接 LINE 線上諮詢，我們會逐項回覆。",
     lineButton: "LINE 線上諮詢",
     formButton: "填寫聯絡表單",
+    quickQuestions: [
+      "附近哪裡停車比較方便？",
+      "現場有哺乳空間或尿布台嗎？",
+      "長輩有椅子可以坐嗎？",
+    ],
   },
 });

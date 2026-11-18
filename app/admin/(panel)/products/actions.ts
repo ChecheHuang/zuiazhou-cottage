@@ -14,7 +14,8 @@ export type ProductActionResult =
 
 const refreshSite = () => {
   revalidateTag(PRODUCTS_TAG, { expire: 0 });
-  revalidatePath("/products", "layout");
+  // 選單會依「有沒有上架商品」顯示商品專區，所以整站都要更新
+  revalidatePath("/", "layout");
   revalidatePath("/sitemap.xml");
 };
 

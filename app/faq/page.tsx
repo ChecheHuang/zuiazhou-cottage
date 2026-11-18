@@ -60,7 +60,10 @@ export default async function FaqPage() {
               as="h1"
               watermark={intro.watermark}
               title={intro.title}
-              description={intro.description}
+              description={intro.description.replaceAll(
+                "{題數}",
+                String(list.items.length),
+              )}
             />
             <FaqAccordion />
 
@@ -69,6 +72,22 @@ export default async function FaqPage() {
                 {cta.eyebrow}
               </p>
               <p className="whitespace-pre-line text-brand-ink">{cta.text}</p>
+              {/* 還沒寫進問答的常見疑問：點一下就帶進 LINE 問店家，不用替店家編答案 */}
+              {cta.quickQuestions.length > 0 && (
+                <div className="flex flex-wrap justify-center gap-2">
+                  {cta.quickQuestions.map((q, i) => (
+                    <a
+                      key={`${i}-${q}`}
+                      href={lineChatHref(biz, `您好！想請問：${q}`)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-full bg-brand-soft/25 px-4 py-2 text-sm text-brand hover:bg-brand-soft/40"
+                    >
+                      💬 {q}
+                    </a>
+                  ))}
+                </div>
+              )}
               <div className="flex flex-col gap-3 sm:flex-row">
                 <a
                   href={lineChatHref(biz)}
