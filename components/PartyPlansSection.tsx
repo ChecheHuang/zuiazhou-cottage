@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PartyPlan } from "./PartyPlan";
 import { partyPlans } from "@/lib/site-content/blocks/baby-party";
 import { getContent } from "@/lib/site-content/server";
@@ -47,6 +48,24 @@ export const PartyPlansSection = async () => {
                 {n}
               </p>
             ))}
+          </div>
+          {/* 看完方案的下一步：加購細節與總預算 */}
+          <div className="mt-6 flex flex-wrap gap-2">
+            {[
+              { href: "/photo", label: c.photoLink },
+              { href: "/food", label: c.foodLink },
+              { href: "/budget", label: c.budgetLink },
+            ]
+              .filter((l) => l.label.trim())
+              .map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="rounded-full bg-white px-4 py-2 text-sm font-medium text-brand ring-1 ring-brand-soft/70 transition-colors hover:bg-brand-soft/30"
+                >
+                  {l.label} →
+                </Link>
+              ))}
           </div>
         </div>
       </div>

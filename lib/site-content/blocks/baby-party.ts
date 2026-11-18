@@ -109,6 +109,14 @@ export const partyPlans = defineBlock({
       itemLabel: "項目",
     },
     {
+      type: "text",
+      key: "photoLink",
+      label: "說明框底部「攝影加購」連結文字",
+      hint: "留空就不顯示",
+    },
+    { type: "text", key: "foodLink", label: "說明框底部「餐食加購」連結文字" },
+    { type: "text", key: "budgetLink", label: "說明框底部「預算試算」連結文字" },
+    {
       type: "list",
       key: "notes",
       label: "說明框下方補充",
@@ -160,6 +168,9 @@ export const partyPlans = defineBlock({
         images: THEME_ROOM_PHOTOS.fortune,
       },
     ],
+    photoLink: "📷 攝影與其他加購",
+    foodLink: "🍜 餐食加購",
+    budgetLink: "🧮 試算派對總預算",
     includesTitle: "🎁 抓周方案通通包含：",
     includes: [
       "1.5 小時專屬包場",

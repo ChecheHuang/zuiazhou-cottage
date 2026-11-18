@@ -326,3 +326,11 @@ body {
   --rdp-day_button-width: 42px;
   --rdp-day_button-border-radius: 14px;
 }
+
+/* 頁內跳轉（#rooms、文章目錄、注意事項…）平滑捲動；開了「減少動態效果」的裝置維持瞬間跳。
+   換頁時的回到頂端由 <html data-scroll-behavior="smooth"> 讓 Next.js 暫時關掉平滑，換頁仍然俐落。 */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}

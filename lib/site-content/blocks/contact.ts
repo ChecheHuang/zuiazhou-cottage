@@ -174,12 +174,19 @@ export const contactLocation = defineBlock({
       label: "導航按鈕文字",
       hint: "地圖下方開啟 Google Maps 導航的按鈕；留空就不顯示",
     },
+    {
+      type: "text",
+      key: "calendarLink",
+      label: "「看檔期日曆」連結文字",
+      hint: "連到首頁的檔期日曆；留空就不顯示",
+    },
   ],
   defaults: {
     eyebrow: "Find us",
     title: "位置資訊",
     body: "地址：{地址}\n{地標說明}",
     navButton: "📍 用 Google Maps 導航",
+    calendarLink: "還沒決定日期？先看檔期日曆",
   },
 });
 

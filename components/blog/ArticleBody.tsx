@@ -58,7 +58,7 @@ const SectionView = async ({
   switch (section.kind) {
     case "h2":
       return (
-        <h2 id={anchor} className="mt-12 scroll-mt-24 text-2xl font-semibold text-brand md:text-3xl">
+        <h2 id={anchor} className="mt-12 text-2xl font-semibold text-brand md:text-3xl">
           {section.text}
         </h2>
       );

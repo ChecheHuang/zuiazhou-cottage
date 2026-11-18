@@ -61,6 +61,13 @@ export const budgetText = defineBlock({
     { type: "text", key: "lineButton", label: "LINE 按鈕文字" },
     {
       type: "text",
+      key: "plansLink",
+      label: "頁面底部「回去看場地方案」連結文字",
+      hint: "留空就不顯示",
+    },
+    { type: "text", key: "addonsLink", label: "頁面底部「回去看加購內容」連結文字" },
+    {
+      type: "text",
       key: "lineIntro",
       label: "帶入 LINE 的第一行文字",
       hint: "後面會自動接上客人勾選的項目與預估總計",
@@ -81,6 +88,8 @@ export const budgetText = defineBlock({
     partialNote: "＋部分項目另計",
     note: "加時、雙寶加價、指定主持人等費用請參考寶寶派對頁的注意事項；有「起」的項目依實際選擇報價。",
     lineButton: "把清單傳給我們詢問",
+    plansLink: "← 回去看場地與流程",
+    addonsLink: "看攝影與其他加購細節",
     lineIntro: "您好！我用官網試算了派對預算，想詢問檔期～",
   },
 });

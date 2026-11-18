@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { BudgetCalculator } from "@/components/budget/BudgetCalculator";
 import { SectionHeading } from "@/components/SectionHeading";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -30,6 +31,19 @@ export default async function BudgetPage() {
             description={c.description}
           />
           <BudgetCalculator />
+          {/* 算完想再確認細節：回到場地方案或加購頁 */}
+          <div className="mx-auto mt-10 flex max-w-5xl flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
+            {c.plansLink && (
+              <Link href="/baby-party#plans" className="text-brand underline-offset-4 hover:underline">
+                {c.plansLink}
+              </Link>
+            )}
+            {c.addonsLink && (
+              <Link href="/photo" className="text-brand underline-offset-4 hover:underline">
+                {c.addonsLink} →
+              </Link>
+            )}
+          </div>
         </div>
       </main>
       <SiteFooter />

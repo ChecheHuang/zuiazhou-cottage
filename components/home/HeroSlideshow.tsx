@@ -87,12 +87,12 @@ export const HeroSlideshow = () => {
             >
               {c.primaryButton}
             </Link>
-            <a
+            <Link
               href="/budget"
               className="rounded-full border border-white/70 bg-white/10 px-8 py-3 text-sm font-medium text-white backdrop-blur-md transition-all duration-300 hover:scale-105 hover:bg-white/20"
             >
               {c.secondaryButton}
-            </a>
+            </Link>
           </div>
         </motion.div>
       </div>

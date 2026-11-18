@@ -21,7 +21,8 @@ export const BirthdayPlan = () => {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-[0_18px_48px_rgba(237,160,157,0.18)]"
+          // 手機版排在文字後面（從導覽列「生日派對」跳過來先看到標題）；電腦版維持在左邊
+          className="relative order-2 aspect-[4/5] overflow-hidden rounded-3xl shadow-[0_18px_48px_rgba(237,160,157,0.18)] md:order-none"
         >
           <Image
             src={photo}

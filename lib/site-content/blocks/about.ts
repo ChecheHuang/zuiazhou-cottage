@@ -160,11 +160,18 @@ export const aboutCta = defineBlock({
     { type: "text", key: "text", label: "說明", multiline: true },
     { type: "text", key: "plansButton", label: "看方案按鈕文字" },
     { type: "text", key: "lineButton", label: "LINE 按鈕文字" },
+    {
+      type: "text",
+      key: "calendarLink",
+      label: "「看檔期日曆」連結文字",
+      hint: "連到首頁的檔期日曆；留空就不顯示",
+    },
   ],
   defaults: {
     title: "認識我們之後，來看看適合寶貝的派對吧！",
     text: "四種主題場地、從 10 人小家庭到大家族都適合。",
     plansButton: "看主題場地與方案",
     lineButton: "LINE 問檔期",
+    calendarLink: "先看看哪幾天還有空",
   },
 });

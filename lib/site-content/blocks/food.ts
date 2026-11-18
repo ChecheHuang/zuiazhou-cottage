@@ -109,7 +109,7 @@ const plans: FoodPlanItem[] = [
     menus: [],
     dessertsTitle: "",
     desserts: [],
-    ctaLabel: "查看菜單",
+    ctaLabel: "LINE 索取菜單",
   },
   {
     image: GALLERY_PHOTOS[2] ?? "/photos/p27.jpg",

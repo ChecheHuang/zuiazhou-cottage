@@ -10,7 +10,11 @@ export const PageCta = async ({
   primaryLabel,
   primaryHref,
   lineLabel,
+  extraLabel,
+  extraHref,
 }: {
+  extraLabel?: string;
+  extraHref?: string;
   title: string;
   text?: string;
   primaryLabel: string;
@@ -47,6 +51,14 @@ export const PageCta = async ({
             </a>
           )}
         </div>
+        {extraLabel && extraHref && (
+          <Link
+            href={extraHref}
+            className="mt-5 inline-block text-sm font-medium text-brand underline-offset-4 hover:underline"
+          >
+            {extraLabel} →
+          </Link>
+        )}
       </div>
     </section>
   );

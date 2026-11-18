@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getContent } from "@/lib/site-content/server";
 import type { Metadata } from "next";
+import Link from "next/link";
 import {
   contactIntro,
   contactLocation,
@@ -90,6 +91,16 @@ export default async function ContactPage() {
                 >
                   {location.navButton}
                 </a>
+              )}
+              {location.calendarLink && (
+                <p className="mt-4">
+                  <Link
+                    href="/#calendar"
+                    className="text-sm font-medium text-brand underline-offset-4 hover:underline"
+                  >
+                    {location.calendarLink} →
+                  </Link>
+                </p>
               )}
             </div>
 

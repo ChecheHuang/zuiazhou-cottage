@@ -52,6 +52,8 @@ export default async function AboutPage() {
           primaryLabel={cta.plansButton}
           primaryHref="/baby-party#plans"
           lineLabel={cta.lineButton}
+          extraLabel={cta.calendarLink}
+          extraHref="/#calendar"
         />
       </main>
       <SiteFooter />

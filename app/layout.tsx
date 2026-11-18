@@ -67,6 +67,7 @@ export default async function RootLayout({
   return (
     <html
       lang="zh-Hant"
+      data-scroll-behavior="smooth"
       className={`${notoSansTC.variable} ${cormorant.variable} h-full antialiased`}
       suppressHydrationWarning
     >
